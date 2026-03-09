@@ -1,0 +1,72 @@
+plugins {
+    id 'java-library'
+    id 'nu.studer.jooq' version '9.0'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    runtimeOnly 'org.postgresql:postgresql'
+    jooqGenerator 'org.postgresql:postgresql'
+    jooqGenerator 'org.jooq:jooq:3.20.9'// DB 접속용 드라이버
+    jooqGenerator 'org.jooq:jooq-meta:3.20.9'                 // DB 스키마 분석 엔진
+    jooqGenerator 'org.jooq:jooq-codegen:3.20.9'              // Java 코드 생성 엔진
+}
+
+jooq {
+    version = '3.20.9' // 사용하시는 jOOQ 버전 확인
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://192.168.0.82:5432/postgres' // Colima/Docker 주소
+                    user = 'postgres'
+                    password = 'postgres'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+
+                    // 1. 이름 규칙: POJO 이름 뒤에 Entity 붙이기
+                    strategy {
+                        matchers {
+                            tables {
+                                table {
+                                    pojoClass {
+                                        expression = '$0_ENTITY'
+                                        transform = 'PASCAL'
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        excludes = 'flyway_.*' // 관리용 테이블 제외
+                    }
+
+                    generate {
+                        // 2. POJO만 생성 (DAO는 제외)
+                        pojos = true
+                        daos = false
+
+                        // 3. 날짜 타입: LocalDateTime 자동 매핑
+                        javaTimeTypes = true
+                        interfaces = true
+                        // 추가 설정: Spring 환경에 최적화
+                        springAnnotations = true
+                        fluentSetters = true // 체이닝 방식 setter
+                        validationAnnotations = true // @NotNull 등 추가
+                    }
+
+                    target {
+                        packageName = 'com.homeproject.db.jooq'
+                        directory = 'build/generated-sources/jooq'
+                    }
+                }
+            }
+        }
+    }
+}

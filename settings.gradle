@@ -1,0 +1,6 @@
+rootProject.name = 'home-project'
+include 'backend:module-api'
+include 'backend:module-business'
+include 'backend:module-db'
+include 'backend:module-security'
+include 'backend:module-util'
