@@ -7,13 +7,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     runtimeOnly 'org.postgresql:postgresql'
     jooqGenerator 'org.postgresql:postgresql'
-    jooqGenerator 'org.jooq:jooq:3.20.9'// DB 접속용 드라이버
-    jooqGenerator 'org.jooq:jooq-meta:3.20.9'                 // DB 스키마 분석 엔진
-    jooqGenerator 'org.jooq:jooq-codegen:3.20.9'              // Java 코드 생성 엔진
+    jooqGenerator 'org.jooq:jooq:3.19.30'// DB 접속용 드라이버
+    jooqGenerator 'org.jooq:jooq-meta:3.19.30'                 // DB 스키마 분석 엔진
+    jooqGenerator 'org.jooq:jooq-codegen:3.19.30'              // Java 코드 생성 엔진
 }
 
 jooq {
-    version = '3.20.9' // 사용하시는 jOOQ 버전 확인
+    version = '3.19.30'
     configurations {
         main {
             generationTool {
@@ -35,6 +35,11 @@ jooq {
                                     pojoClass {
                                         expression = '$0_ENTITY'
                                         transform = 'PASCAL'
+                                    }
+                                    // 2. static 테이블 객체명 규칙 (추가)
+                                    tableIdentifier {
+                                        expression = '$0'
+                                        transform = 'UPPER' // 대문자로 변환
                                     }
                                 }
                             }
