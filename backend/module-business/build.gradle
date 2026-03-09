@@ -1,5 +1,7 @@
 dependencies {
     // 비즈니스 로직은 DB와 외부 통신, 유틸을 사용합니다.
-    implementation project(':backend:module-db')
-    implementation project(':backend:module-util')
+    implementation project(':module-db')
+    implementation project(':module-util')
+
+    bootJar{enabled=false}
 }

@@ -1,7 +1,12 @@
 dependencies {
     // api는 비즈니스 로직과 보안 모듈을 알고 있어야 합니다.
-    implementation project(':backend:module-business')
-    implementation project(':backend:module-security')
+    implementation project(':module-business')
+    implementation project(':module-security')
+    implementation project(':module-db')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
+
+bootJar{enabled=true}
+jar{enabled=true}

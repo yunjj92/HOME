@@ -1,0 +1,6 @@
+rootProject.name = 'home-project'
+include 'module-api'
+include 'module-business'
+include 'module-db'
+include 'module-security'
+include 'module-util'

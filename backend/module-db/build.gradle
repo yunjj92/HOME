@@ -6,11 +6,15 @@ plugins {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     runtimeOnly 'org.postgresql:postgresql'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     jooqGenerator 'org.postgresql:postgresql'
     jooqGenerator 'org.jooq:jooq:3.19.30'// DB 접속용 드라이버
     jooqGenerator 'org.jooq:jooq-meta:3.19.30'                 // DB 스키마 분석 엔진
     jooqGenerator 'org.jooq:jooq-codegen:3.19.30'              // Java 코드 생성 엔진
 }
+
+bootJar{enabled=false}
+jar{enabled=true}
 
 jooq {
     version = '3.19.30'
@@ -71,6 +75,10 @@ jooq {
                         directory = 'build/generated-sources/jooq'
                     }
                 }
+            }
+
+            test {
+                useJUnitPlatform() // JUnit 5 엔진을 사용하겠다고 선언
             }
         }
     }

@@ -2,6 +2,13 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
 }
+
+// module-api의 build.gradle (또는 Root에서 특정)
+project(':module-api') {
+    bootJar { enabled = true } // API 모듈만 실행 가능하게 설정
+    jar { enabled = false }
+}
+
 // 모든 하위 프로젝트(subprojects)에 공통 적용할 설정
 subprojects {
     group = 'com.homeproject'
@@ -11,7 +18,8 @@ subprojects {
     apply plugin: 'java-library' // 모듈 간 의존성 관리를 위해 권장
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
+    bootJar { enabled = false }
+    jar { enabled = true }
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
