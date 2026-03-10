@@ -1,4 +1,27 @@
+plugins {
+    id 'org.springdoc.openapi-gradle-plugin' version '1.8.0'
+}
+// 빌드 시점에 정적 파일을 생성하기 위한 설정
+openApi {
+    apiDocsUrl.set("http://localhost:8080/v3/api-docs") // 스펙을 뽑아올 주소
+    outputDir.set(layout.buildDirectory.dir("api-spec"))         // 저장 위치
+    outputFileName.set("openapi.yaml")               // 파일 이름
+}
+
+tasks.register('copyOpenApiSpec', Copy){
+    from layout.buildDirectory.file("api-spec/openapi.yaml")
+    into "../../frontend/specs"
+
+    dependsOn 'generateOpenApiDocs'
+}
+
+
 dependencies {
+    constraints {
+        implementation('org.apache.commons:commons-lang3:3.18.0'){
+            because 'previous versions have Uncontrolled Recursion vulnerability'
+        }
+    }
     // api는 비즈니스 로직과 보안 모듈을 알고 있어야 합니다.
     implementation project(':module-business')
     implementation project(':module-security')
@@ -6,7 +29,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation('org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0')
+
 }
 
 bootJar{enabled=true}
 jar{enabled=true}
+
+
