@@ -1,13 +1,9 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.0'
+    id 'org.springframework.boot' version '3.4.0' apply(false)
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
-// module-api의 build.gradle (또는 Root에서 특정)
-project(':module-api') {
-    bootJar { enabled = true } // API 모듈만 실행 가능하게 설정
-    jar { enabled = false }
-}
 
 // 모든 하위 프로젝트(subprojects)에 공통 적용할 설정
 subprojects {
@@ -36,4 +32,14 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
     }
+}
+
+// module-api의 build.gradle (또는 Root에서 특정)
+project(':module-api') {
+
+    bootJar {
+        enabled = true
+        mainClass.set('com.homeproject.api.MainApplication')
+    } // API 모듈만 실행 가능하게 설정
+    jar { enabled = false }
 }

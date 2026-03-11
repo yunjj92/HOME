@@ -2,6 +2,9 @@ dependencies {
     // 비즈니스 로직은 DB와 외부 통신, 유틸을 사용합니다.
     implementation project(':module-db')
     implementation project(':module-util')
-
-    bootJar{enabled=false}
+    // 1. Service 구현을 위한 Spring 핵심 기능
+    implementation 'org.springframework.boot:spring-boot-starter'
 }
+
+bootJar{ enabled = false}
+jar { enabled = true }

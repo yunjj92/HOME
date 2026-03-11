@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /  # 기본값
+  error:
+    include-message: always # 에러 발생 시 메시지 포함 (개발 편의성)
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: path_pattern_parser
+  security:
+    user:
+      name: admin
+      password: "1234"
+  datasource:
+    url: jdbc:postgresql://192.168.0.82:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jooq:
+      sql-dialect: POSTGRES # Specifies the jOOQ SQL dialect
