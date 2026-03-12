@@ -20,3 +20,6 @@ spring:
     driver-class-name: org.postgresql.Driver
   jooq:
       sql-dialect: POSTGRES # Specifies the jOOQ SQL dialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true

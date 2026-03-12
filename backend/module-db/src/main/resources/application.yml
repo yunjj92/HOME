@@ -6,3 +6,6 @@ spring:
     password: postgres
   jooq:
       sql-dialect: POSTGRES # Specifies the jOOQ SQL dialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
