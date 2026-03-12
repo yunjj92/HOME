@@ -83,3 +83,9 @@ jooq {
         }
     }
 }
+
+tasks.named('generateJooq') {
+    onlyIf {
+        !System.getenv().containsKey('CI')
+    }
+}
