@@ -24,9 +24,9 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc {
                     driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://192.168.0.82:5432/postgres' // Colima/Docker 주소
-                    user = 'postgres'
-                    password = 'postgres'
+                    url = System.getenv('JOOQ_DB_URL') ?: 'jdbc:postgresql://192.168.0.82:5432/postgres' // Colima/Docker 주소
+                    user = System.getenv('JOOQ_DB_USER') ?: 'postgres'
+                    password = System.getenv('JOOQ_DB_PASSWORD') ?: 'postgres'
                 }
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
@@ -81,11 +81,5 @@ jooq {
                 useJUnitPlatform() // JUnit 5 엔진을 사용하겠다고 선언
             }
         }
-    }
-}
-
-tasks.named('generateJooq') {
-    onlyIf {
-        !System.getenv().containsKey('CI')
     }
 }
