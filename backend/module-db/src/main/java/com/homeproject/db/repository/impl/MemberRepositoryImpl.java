@@ -2,6 +2,7 @@ package com.homeproject.db.repository.impl;
 
 
 import com.homeproject.db.jooq.tables.pojos.BanksEntity;
+import com.homeproject.db.jooq.tables.records.BanksRecord;
 import com.homeproject.db.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -23,6 +24,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public void save(BanksEntity banksEntity) {
-        dsl.insertInto(BANKS).set(dsl.newRecord()).execute();
+        BanksRecord banksRecord = dsl.newRecord(BANKS, banksEntity);
+        banksRecord.insert();
     }
 }
