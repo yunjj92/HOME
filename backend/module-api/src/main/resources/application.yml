@@ -20,7 +20,6 @@ spring:
     driver-class-name: org.postgresql.Driver
   jooq:
       sql-dialect: POSTGRES # Specifies the jOOQ SQL dialect
-
-jwt:
-  secret: hekg21743573185i71680303792211393rbphcarreaux75019
-  token-validity-in-seconds: 3600000
+  flyway:
+    enabled: true
+    baseline-on-migrate: true

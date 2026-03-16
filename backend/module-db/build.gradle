@@ -6,7 +6,11 @@ plugins {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jooq'
     implementation 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
     jooqGenerator 'org.postgresql:postgresql'
     jooqGenerator 'org.jooq:jooq:3.19.30'// DB 접속용 드라이버
     jooqGenerator 'org.jooq:jooq-meta:3.19.30'                 // DB 스키마 분석 엔진
@@ -22,12 +26,14 @@ jooq {
         main {
             generationTool {
                 logging = org.jooq.meta.jaxb.Logging.WARN
+
                 jdbc {
                     driver = 'org.postgresql.Driver'
                     url = System.getenv('JOOQ_DB_URL') ?: 'jdbc:postgresql://192.168.0.82:5432/postgres' // Colima/Docker 주소
                     user = System.getenv('JOOQ_DB_USER') ?: 'postgres'
                     password = System.getenv('JOOQ_DB_PASSWORD') ?: 'postgres'
                 }
+
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
 
@@ -76,10 +82,10 @@ jooq {
                     }
                 }
             }
-
-            test {
-                useJUnitPlatform() // JUnit 5 엔진을 사용하겠다고 선언
-            }
         }
     }
+}
+
+test {
+    useJUnitPlatform()
 }
