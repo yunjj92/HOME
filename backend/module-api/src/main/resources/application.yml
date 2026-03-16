@@ -23,3 +23,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+jwt:
+  secret: hekg21743573185i71680303792211393rbphcarreaux75019
+  token-validity-in-seconds: 3600000
