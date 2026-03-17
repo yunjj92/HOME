@@ -30,12 +30,13 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 // 3. 인가(Authorization) 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/signup", "/swagger-ui/index.html").permitAll() // 로그인, 회원가입은 허용
                         // 2. Swagger UI 관련 경로 허용
                         .requestMatchers(
+                                "/api/auth/**",
+                                "/api/login",
+                                "/api/signup",
                                 "/v3/api-docs/**",          // OpenAPI 명세 경로
                                 "/swagger-ui/**",           // Swagger UI HTML 페이지
                                 "/swagger-ui.html",         // 구버전 호환용
