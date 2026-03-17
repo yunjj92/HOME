@@ -59,12 +59,18 @@ subprojects {
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
     }
 
-    tasks.withType(Checkstyle).configureEach {
+    tasks.named('checkstyleMain', Checkstyle) {
         source = fileTree(project.projectDir) {
             include 'src/main/java/**/*.java'
+        }
+        classpath = files()
+    }
+
+    tasks.named('checkstyleTest', Checkstyle) {
+        source = fileTree(project.projectDir) {
             include 'src/test/java/**/*.java'
         }
-        exclude '**/build/**'
+        classpath = files()
     }
 }
 
