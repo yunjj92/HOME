@@ -60,9 +60,11 @@ subprojects {
     }
 
     tasks.withType(Checkstyle).configureEach {
-        source = fileTree('src') {
-            include '**/*.java'
+        source = fileTree(project.projectDir) {
+            include 'src/main/java/**/*.java'
+            include 'src/test/java/**/*.java'
         }
+        exclude '**/build/**'
     }
 }
 
