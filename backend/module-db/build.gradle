@@ -78,12 +78,24 @@ jooq {
 
                     target {
                         packageName = 'com.homeproject.db.jooq'
-                        directory = 'build/generated-sources/jooq'
+                        directory = "$buildDir/generated-sources/jooq"
                     }
                 }
             }
         }
     }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/generated-sources/jooq")
+        }
+    }
+}
+
+tasks.named('compileJava') {
+    dependsOn tasks.named('generateJooq')
 }
 
 test {
