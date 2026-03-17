@@ -42,6 +42,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Check code formatting (Spotless)
+        run: ./gradlew spotlessCheck
+
       - name: Build backend
         run: ./gradlew build
         env:
