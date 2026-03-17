@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.0' apply(false)
     id 'io.spring.dependency-management' version '1.1.6'
     id 'com.diffplug.spotless' version '8.3.0'
+    id 'checkstyle'
 }
 
 spotless {
@@ -23,6 +24,7 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'checkstyle'
 
     bootJar { enabled = false }
     jar { enabled = true }
@@ -49,6 +51,17 @@ subprojects {
             removeUnusedImports()
             trimTrailingWhitespace()
             endWithNewline()
+        }
+    }
+
+    checkstyle {
+        toolVersion = '13.3.0'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    }
+
+    tasks.withType(Checkstyle).configureEach {
+        source = fileTree('src') {
+            include '**/*.java'
         }
     }
 }
