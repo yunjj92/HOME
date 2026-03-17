@@ -10,8 +10,11 @@ import { HomeView } from './views/HomeView';
 import AuthView from './views/auth/AuthView';
 
 const queryClient = new QueryClient();
+const rootElement = document.getElementById('root');
 
-createRoot(document.getElementById('root')!).render(
+if(!rootElement) throw new Error('Root element not found');
+
+createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
