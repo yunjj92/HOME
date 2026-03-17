@@ -2,8 +2,17 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0' apply(false)
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.diffplug.spotless' version '8.3.0'
+    id 'checkstyle'
 }
 
+spotless {
+    format('misc') {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
 
 // 모든 하위 프로젝트(subprojects)에 공통 적용할 설정
 subprojects {
@@ -14,6 +23,9 @@ subprojects {
     apply plugin: 'java-library' // 모듈 간 의존성 관리를 위해 권장
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'com.diffplug.spotless'
+    apply plugin: 'checkstyle'
+
     bootJar { enabled = false }
     jar { enabled = true }
     java {
@@ -31,6 +43,34 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         implementation 'org.springframework.boot:spring-boot-starter-validation'
+    }
+
+    spotless {
+        java {
+            target 'src/*/java/**/*.java'
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+    }
+
+    checkstyle {
+        toolVersion = '13.3.0'
+        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    }
+
+    tasks.named('checkstyleMain', Checkstyle) {
+        source = fileTree(project.projectDir) {
+            include 'src/main/java/**/*.java'
+        }
+        classpath = files()
+    }
+
+    tasks.named('checkstyleTest', Checkstyle) {
+        source = fileTree(project.projectDir) {
+            include 'src/test/java/**/*.java'
+        }
+        classpath = files()
     }
 }
 
