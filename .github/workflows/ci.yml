@@ -29,6 +29,11 @@ jobs:
       run:
         working-directory: backend
 
+    env:
+      JOOQ_DB_URL: jdbc:postgresql://localhost:5432/postgres
+      JOOQ_DB_USER: postgres
+      JOOQ_DB_PASSWORD: postgres
+
     steps:
       - uses: actions/checkout@v4
 
@@ -42,12 +47,60 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres -d postgres; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Check DB before migration
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "\dt"
+
+      - name: Run Flyway migrate
+        run: ./gradlew :module-db:flywayMigrate --info --stacktrace
+
+      - name: Check DB after migration
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "\dt"
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "select * from flyway_schema_history;" || true
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -c "select * from configs limit 5;" || true
+
+      - name: Run jOOQ generation
+        run: ./gradlew :module-db:generateJooq --info --stacktrace
+
+      - name: Check generated jOOQ files
+        run: |
+          echo "=== generated-sources ==="
+          ls -R ./module-db/build/generated-sources || true
+
+          echo "=== Tables.java path ==="
+          find ./module-db/build -name "Tables.java" || true
+
+          echo "=== Show Tables.java head ==="
+          sed -n '1,60p' ./module-db/build/generated-sources/jooq/com/homeproject/db/jooq/Tables.java || true
+
+      - name: Compile module-db
+        run: ./gradlew :module-db:compileJava --info --stacktrace
+
       - name: Build backend
-        run: ./gradlew build
-        env:
-          JOOQ_DB_URL: jdbc:postgresql://localhost:5432/postgres
-          JOOQ_DB_USER: postgres
-          JOOQ_DB_PASSWORD: postgres
+        run: ./gradlew clean build --info --stacktrace
+
+      - name: Debug generated files on failure
+        if: failure()
+        run: |
+          echo "=== module-db/build ==="
+          ls -R ./module-db/build || true
+
+          echo "=== generated-sources ==="
+          ls -R ./module-db/build/generated-sources || true
+
+          echo "=== Tables.java path ==="
+          find ./module-db/build -name "Tables.java" || true
 
   frontend:
     name: Frontend CI
