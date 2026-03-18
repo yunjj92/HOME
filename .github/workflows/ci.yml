@@ -30,12 +30,12 @@ jobs:
         working-directory: backend
 
     env:
-      env:
       DB_HOST: localhost
       DB_PORT: 5432
       DB_NAME: postgres
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
+      JWT_SECRET: ci-test-jwt-secret-key-ci-test-jwt-secret-key
 
     steps:
       - uses: actions/checkout@v4
