@@ -7,6 +7,7 @@ import './styles.css';
 
 import { MainLayout } from './layouts/MainLayout';
 import { HomeView } from './views/HomeView';
+import AuthView from './views/auth/AuthView';
 
 const queryClient = new QueryClient();
 const rootElement = document.getElementById('root');
@@ -20,6 +21,9 @@ createRoot(rootElement).render(
         <Routes>
           <Route element={<MainLayout />}>
             <Route path='/' element={<HomeView />} />
+          </Route>
+          <Route element={<MainLayout />}>
+            <Route path='/authview' element={<AuthView/>} />
           </Route>
         </Routes>
       </BrowserRouter>

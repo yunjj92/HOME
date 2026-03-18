@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
 
 @Component
@@ -60,8 +61,9 @@ public class JwtTokenProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload(); // getBody() 대신 getPayload() 사용
-        //todo: userDetails 작성하여 아래 코드 변경 필요
-        return new UsernamePasswordAuthenticationToken("", "", null);
+
+        String userId = claims.getSubject();
+        return new UsernamePasswordAuthenticationToken(userId, token, Collections.emptyList());
     }
 
 }

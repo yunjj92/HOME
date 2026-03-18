@@ -37,6 +37,14 @@ export default defineConfig([
       // any 타입 사용 경고
       '@typescript-eslint/no-explicit-any': 'warn',
 
+      // 암시적 any (타입 미지정) 관련 규칙 비활성화
+      // "any를 직접 쓰지는 않되, 타입을 안 적어서 any가 되는 것은 허용" 하는 의도
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+
       // console 사용 경고
       'no-console': 'warn',
 
