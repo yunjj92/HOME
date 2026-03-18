@@ -1,6 +1,14 @@
 
      import React, { useState } from 'react';
      import { create, get } from '@github/webauthn-json';
+
+     // 1. 요소에 대한 타입 정의
+interface CredentialDescriptor {
+  id: BufferSource;
+  type: PublicKeyCredentialType;
+  transports?: AuthenticatorTransport[]; // 이 부분이 핵심
+}
+
     
      const AuthTest: React.FC = () => {
        const [username, setUsername] = useState('');
@@ -45,7 +53,7 @@
              setStatus('Registration Failed at Server.');
            }
          } catch (err) {
-           console.error(err);
+
            setStatus(`Error: ${err}`);
          }
        };
@@ -62,7 +70,7 @@
 
        // 2. --- FIX: Sanitize 'transports' in allowCredentials ---
        if (publicKeyOptions.allowCredentials) {
-         publicKeyOptions.allowCredentials = publicKeyOptions.allowCredentials.map((cred: any) => {
+         publicKeyOptions.allowCredentials = publicKeyOptions.allowCredentials.map((cred: CredentialDescriptor) => {
            // If transports is missing, null, or not an array, delete it so the browser uses defaults
            if (!cred.transports || !Array.isArray(cred.transports)) {
              delete cred.transports;
@@ -98,11 +106,13 @@
          setStatus('Login Failed.');
        }
      } catch (err) {
-       console.error(err);
        setStatus(`Error: ${err}`);
      }
    };
-
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const eventTarget: EventTarget & HTMLInputElement = e.target
+    setUsername(eventTarget.value);
+  };
     
        return (
          <div style={{ padding: '20px' }}>
@@ -112,7 +122,7 @@
                type="text"
                placeholder="Enter Username"
                value={username}
-               onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
              />
            </div>
            <div style={{ marginTop: '10px' }}>
