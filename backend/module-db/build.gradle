@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'nu.studer.jooq' version '9.0'
+    id 'org.flywaydb.flyway' version '10.17.0'
 }
 
 dependencies {
@@ -19,6 +20,13 @@ dependencies {
 
 bootJar{enabled=false}
 jar{enabled=true}
+
+flyway {
+    url = System.getenv('JOOQ_DB_URL') ?: 'jdbc:postgresql://192.168.0.82:5432/postgres'
+    user = System.getenv('JOOQ_DB_USER') ?: 'postgres'
+    password = System.getenv('JOOQ_DB_PASSWORD') ?: 'postgres'
+    schemas = ['public']
+}
 
 jooq {
     version = '3.19.30'
@@ -94,6 +102,10 @@ sourceSets {
     }
 }
 
+tasks.named('generateJooq') {
+    dependsOn tasks.named('flywayMigrate')
+}
+
 tasks.named('compileJava') {
     dependsOn tasks.named('generateJooq')
 }
@@ -101,3 +113,4 @@ tasks.named('compileJava') {
 test {
     useJUnitPlatform()
 }
+
