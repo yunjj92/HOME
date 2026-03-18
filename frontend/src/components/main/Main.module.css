@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* 전체 컨테이너: 그림자, 둥근 모서리, 배경색 */
+.container {
+  @apply bg-white p-6 shadow-xl rounded-2xl;
+}
+
+/* 'Solutions' 드롭다운 제목 */
+.dropdownTrigger {
+  @apply flex items-center text-sm font-semibold leading-6 text-gray-900 focus:outline-none;
+}
+.chevronIcon {
+  @apply h-5 w-5 flex-none text-gray-400 ml-1;
+}
+
+/* 카드 격자 (Grid): 기본 1열, md 브레이크포인트 이상 4열 */
+.grid {
+  @apply grid grid-cols-1 md:grid-cols-4 gap-x-8 gap-y-10 p-6;
+}
+
+/* 개별 카드 */
+.card {
+  @apply flex flex-col;
+}
+
+/* 아이콘 컨테이너 */
+.iconWrapper {
+  @apply flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white;
+}
+.icon {
+  @apply h-6 w-6 text-gray-600 group-hover:text-indigo-600;
+}
+
+/* 카드 제목 */
+.cardTitle {
+  @apply mt-6 font-semibold text-gray-900;
+}
+
+/* 카드 설명 */
+.cardDescription {
+  @apply mt-1 text-gray-600;
+}
+
+/* 하단 푸터 영역 */
+.footer {
+  @apply bg-gray-50 p-4 grid grid-cols-1 divide-y divide-gray-100 sm:grid-cols-3 sm:divide-x sm:divide-y-0 rounded-b-2xl -m-6 mt-6;
+}
+
+/* 푸터 버튼 */
+.footerButton {
+  @apply flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100;
+}
+.footerIcon {
+  @apply h-5 w-5 flex-none text-gray-400;
+}
