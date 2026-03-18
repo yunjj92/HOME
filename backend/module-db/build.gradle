@@ -31,11 +31,26 @@ dependencies {
 bootJar{enabled=false}
 jar{enabled=true}
 
+def requireEnv(String key) {
+    def value = System.getenv(key)
+    if (value == null || value.trim().isEmpty()) {
+        throw new GradleException("Environment variable '${key}' is required but not set.")
+    }
+    return value
+}
+
+def dbHost = requireEnv("DB_HOST")
+def dbPort = requireEnv("DB_PORT")
+def dbName = requireEnv("DB_NAME")
+def dbUsername = requireEnv("DB_USERNAME")
+def dbPassword = requireEnv("DB_PASSWORD")
+
+def dbUrl = "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
+
 flyway {
-    url = System.getenv('JOOQ_DB_URL') ?: 'jdbc:postgresql://192.168.0.82:5432/postgres'
-    user = System.getenv('JOOQ_DB_USER') ?: 'postgres'
-    password = System.getenv('JOOQ_DB_PASSWORD') ?: 'postgres'
-    schemas = ['public']
+    url = dbUrl
+    user = dbUsername
+    password = dbPassword
 }
 
 jooq {
@@ -47,9 +62,9 @@ jooq {
 
                 jdbc {
                     driver = 'org.postgresql.Driver'
-                    url = System.getenv('JOOQ_DB_URL') ?: 'jdbc:postgresql://192.168.0.82:5432/postgres' // Colima/Docker 주소
-                    user = System.getenv('JOOQ_DB_USER') ?: 'postgres'
-                    password = System.getenv('JOOQ_DB_PASSWORD') ?: 'postgres'
+                    url = dbUrl
+                    user = dbUsername
+                    password = dbPassword
                 }
 
                 generator {

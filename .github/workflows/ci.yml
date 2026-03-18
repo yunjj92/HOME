@@ -30,9 +30,12 @@ jobs:
         working-directory: backend
 
     env:
-      JOOQ_DB_URL: jdbc:postgresql://localhost:5432/postgres
-      JOOQ_DB_USER: postgres
-      JOOQ_DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: ci-test-jwt-secret-key-ci-test-jwt-secret-key
 
     steps:
       - uses: actions/checkout@v4
@@ -58,19 +61,7 @@ jobs:
           done
 
       - name: Build backend
-        run: ./gradlew clean build --info --stacktrace
-
-      - name: Debug generated files on failure
-        if: failure()
-        run: |
-          echo "=== module-db/build ==="
-          ls -R ./module-db/build || true
-
-          echo "=== generated-sources ==="
-          ls -R ./module-db/build/generated-sources || true
-
-          echo "=== Tables.java path ==="
-          find ./module-db/build -name "Tables.java" || true
+        run: ./gradlew clean build
 
   frontend:
     name: Frontend CI
