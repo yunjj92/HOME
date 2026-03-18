@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -119,7 +118,7 @@ public class WebAuthnService {
         public Set<RegisteredCredential> lookupAll(ByteArray credentialId) {
              String incomingId = credentialId.getBase64Url();
              String storedCredentialId = configRepository.getValue("AUTH_CREDENTIAL_ID");
-             
+
              log.info("LookupAll - Incoming ID: {}", incomingId);
              log.info("LookupAll - Stored ID: {}", storedCredentialId);
 
@@ -128,7 +127,7 @@ public class WebAuthnService {
                  String sigCountStr = configRepository.getValue("AUTH_SIGNATURE_COUNT");
                  long signatureCount = sigCountStr != null ? Long.parseLong(sigCountStr) : 0;
                  String storedId = configRepository.getValue("AUTH_ID");
-                 
+
                  try {
                      return Collections.singleton(RegisteredCredential.builder()
                              .credentialId(credentialId)
@@ -166,19 +165,19 @@ public class WebAuthnService {
         public Optional<RegisteredCredential> lookup(ByteArray credentialId, ByteArray userHandle) {
              String incomingId = credentialId.getBase64Url();
              String storedCredentialId = configRepository.getValue("AUTH_CREDENTIAL_ID");
-             
+
              log.info("Lookup - Incoming ID: {}", incomingId);
              log.info("Lookup - Stored ID: {}", storedCredentialId);
              log.info("Lookup - Incoming UserHandle: {}", userHandle.getBase64Url());
 
-             // For single-user project, if the credential ID matches what we have, 
+             // For single-user project, if the credential ID matches what we have,
              // we return it even if the userHandle from browser is empty/null
              if (storedCredentialId != null && incomingId.equals(storedCredentialId)) {
                  String publicKey = configRepository.getValue("AUTH_PUBLIC_KEY");
                  String sigCountStr = configRepository.getValue("AUTH_SIGNATURE_COUNT");
                  long signatureCount = sigCountStr != null ? Long.parseLong(sigCountStr) : 0;
                  String storedId = configRepository.getValue("AUTH_ID");
-                 
+
                  try {
                      return Optional.of(RegisteredCredential.builder()
                              .credentialId(credentialId)
