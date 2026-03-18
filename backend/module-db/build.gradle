@@ -39,11 +39,13 @@ def requireEnv(String key) {
     return value
 }
 
-def dbUrl = System.getenv('JOOQ_DB_URL') ?:
-        "jdbc:postgresql://${requireEnv('DB_HOST')}:${requireEnv('DB_PORT')}/${requireEnv('DB_NAME')}"
+def dbHost = requireEnv("DB_HOST")
+def dbPort = requireEnv("DB_PORT")
+def dbName = requireEnv("DB_NAME")
+def dbUsername = requireEnv("DB_USERNAME")
+def dbPassword = requireEnv("DB_PASSWORD")
 
-def dbUsername = System.getenv('JOOQ_DB_USER') ?: requireEnv('DB_USERNAME')
-def dbPassword = System.getenv('JOOQ_DB_PASSWORD') ?: requireEnv('DB_PASSWORD')
+def dbUrl = "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
 
 flyway {
     url = dbUrl
