@@ -29,6 +29,11 @@ jobs:
       run:
         working-directory: backend
 
+    env:
+      JOOQ_DB_URL: jdbc:postgresql://localhost:5432/postgres
+      JOOQ_DB_USER: postgres
+      JOOQ_DB_PASSWORD: postgres
+
     steps:
       - uses: actions/checkout@v4
 
@@ -42,18 +47,30 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Check code formatting (Spotless)
-        run: ./gradlew spotlessCheck
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
-      - name: Check code style (Checkstyle)
-        run: ./gradlew checkstyleMain checkstyleTest
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres -d postgres; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
 
       - name: Build backend
-        run: ./gradlew build
-        env:
-          JOOQ_DB_URL: jdbc:postgresql://localhost:5432/postgres
-          JOOQ_DB_USER: postgres
-          JOOQ_DB_PASSWORD: postgres
+        run: ./gradlew clean build --info --stacktrace
+
+      - name: Debug generated files on failure
+        if: failure()
+        run: |
+          echo "=== module-db/build ==="
+          ls -R ./module-db/build || true
+
+          echo "=== generated-sources ==="
+          ls -R ./module-db/build/generated-sources || true
+
+          echo "=== Tables.java path ==="
+          find ./module-db/build -name "Tables.java" || true
 
   frontend:
     name: Frontend CI
