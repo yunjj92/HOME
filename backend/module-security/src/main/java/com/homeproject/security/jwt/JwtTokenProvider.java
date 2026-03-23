@@ -22,7 +22,7 @@ public class JwtTokenProvider {
 
     // 0.12.x에서는 SecretKey 객체를 직접 다루는 것을 권장합니다.
     public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.token-validity-in-seconds}") long expirationTime) {
+                            @Value("${jwt.token-validity-in-millis}") long expirationTime) {
         this.expirationTime = expirationTime;
         // 0.12.x 방식: Keys.hmacShaKeyFor 이용
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
