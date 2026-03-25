@@ -1,6 +1,6 @@
 package com.homeproject.security.webauthn;
 
-import com.homeproject.db.repository.ConfigRepository;
+import com.homeproject.db.config.ConfigRepository;
 import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;

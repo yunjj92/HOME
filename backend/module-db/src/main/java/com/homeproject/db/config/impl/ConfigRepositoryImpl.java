@@ -1,6 +1,6 @@
-package com.homeproject.db.repository.impl;
+package com.homeproject.db.config.impl;
 
-import com.homeproject.db.repository.ConfigRepository;
+import com.homeproject.db.config.ConfigRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
