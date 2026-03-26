@@ -1,4 +1,4 @@
-package com.homeproject.business.accounts.dto;
+package com.homeproject.business.account.dto;
 
 import com.homeproject.db.accounts.dto.BankProjection;
 

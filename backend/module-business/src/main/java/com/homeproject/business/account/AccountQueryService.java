@@ -1,7 +1,7 @@
-package com.homeproject.business.accounts;
+package com.homeproject.business.account;
 
-import com.homeproject.business.accounts.dto.AccountResponse;
-import com.homeproject.business.accounts.dto.BankResponse;
+import com.homeproject.business.account.dto.AccountResponse;
+import com.homeproject.business.account.dto.BankResponse;
 import com.homeproject.db.accounts.AccountsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

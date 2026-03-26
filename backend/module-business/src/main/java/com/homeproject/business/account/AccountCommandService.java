@@ -1,7 +1,7 @@
-package com.homeproject.business.accounts;
+package com.homeproject.business.account;
 
-import com.homeproject.business.accounts.dto.AccountRequest;
-import com.homeproject.business.accounts.dto.BankRequest;
+import com.homeproject.business.account.dto.AccountRequest;
+import com.homeproject.business.account.dto.BankRequest;
 import com.homeproject.db.accounts.AccountsRepository;
 import com.homeproject.db.accounts.dto.AccountCommand;
 import com.homeproject.db.accounts.dto.BankCommand;

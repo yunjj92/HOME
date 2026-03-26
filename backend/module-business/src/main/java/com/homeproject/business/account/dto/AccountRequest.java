@@ -1,4 +1,4 @@
-package com.homeproject.business.accounts.dto;
+package com.homeproject.business.account.dto;
 
 public record AccountRequest(
         Integer id,
