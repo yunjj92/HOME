@@ -1,5 +1,6 @@
 package com.homeproject.db.accounts.impl;
 
+import com.homeproject.db.accounts.dto.BankProjection;
 import com.homeproject.db.jooq.tables.records.AccountsRecord;
 import com.homeproject.db.jooq.tables.records.BanksRecord;
 import com.homeproject.db.accounts.AccountsRepository;
@@ -12,9 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.homeproject.db.jooq.Tables.ACCOUNTS;
+import static com.homeproject.db.jooq.Tables.*;
 import static com.homeproject.db.jooq.tables.VAccounts.V_ACCOUNTS;
-import static com.homeproject.db.jooq.Tables.BANKS;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 
 @Repository
@@ -28,6 +28,13 @@ public class AccountsRepositoryImpl implements AccountsRepository {
         return dsl
                 .selectFrom(V_ACCOUNTS)
                 .fetchInto(AccountProjection.class);
+    }
+
+    @Override
+    public List<BankProjection> getBankList() {
+        return dsl
+                .selectFrom(V_BANKS)
+                .fetchInto(BankProjection.class);
     }
 
     @Override
