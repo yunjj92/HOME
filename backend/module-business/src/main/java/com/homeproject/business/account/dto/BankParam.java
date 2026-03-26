@@ -1,6 +1,6 @@
 package com.homeproject.business.account.dto;
 
-public record BankRequest(
+public record BankParam(
         Integer id,
         String name,
         String requestedBy,

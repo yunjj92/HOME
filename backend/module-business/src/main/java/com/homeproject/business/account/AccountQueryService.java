@@ -1,7 +1,7 @@
 package com.homeproject.business.account;
 
-import com.homeproject.business.account.dto.AccountResponse;
-import com.homeproject.business.account.dto.BankResponse;
+import com.homeproject.business.account.dto.AccountResult;
+import com.homeproject.business.account.dto.BankResult;
 import com.homeproject.db.accounts.AccountsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,17 +18,17 @@ public class AccountQueryService {
 
     private final AccountsRepository accountsRepository;
 
-    public List<AccountResponse> getAccountList() {
+    public List<AccountResult> getAccountList() {
         return accountsRepository.getAccountList()
                 .stream()
-                .map(AccountResponse::from)
+                .map(AccountResult::from)
                 .toList();
     }
 
-    public List<BankResponse> getBankList() {
+    public List<BankResult> getBankList() {
         return accountsRepository.getBankList()
                 .stream()
-                .map(BankResponse::from)
+                .map(BankResult::from)
                 .toList();
     }
 }

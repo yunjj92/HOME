@@ -1,7 +1,7 @@
 package com.homeproject.business.account;
 
-import com.homeproject.business.account.dto.AccountRequest;
-import com.homeproject.business.account.dto.BankRequest;
+import com.homeproject.business.account.dto.AccountParam;
+import com.homeproject.business.account.dto.BankParam;
 import com.homeproject.db.accounts.AccountsRepository;
 import com.homeproject.db.accounts.dto.AccountCommand;
 import com.homeproject.db.accounts.dto.BankCommand;
@@ -14,35 +14,35 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountCommandService {
     private final AccountsRepository accountsRepository;
 
-    private BankCommand toBankCommand(BankRequest bankRequest) {
+    private BankCommand toBankCommand(BankParam bankParam) {
         return new BankCommand(
-                bankRequest.id(),
-                bankRequest.name(),
-                bankRequest.requestedBy()
+                bankParam.id(),
+                bankParam.name(),
+                bankParam.requestedBy()
         );
     }
 
-    private AccountCommand toAccountCommand(AccountRequest accountRequest) {
+    private AccountCommand toAccountCommand(AccountParam accountParam) {
         return new AccountCommand(
-                accountRequest.id(),
-                accountRequest.bankId(),
-                accountRequest.accountType(),
-                accountRequest.name(),
-                accountRequest.owner(),
-                accountRequest.currencyType(),
-                accountRequest.accountNumber(),
-                accountRequest.description(),
-                accountRequest.requestedBy()
+                accountParam.id(),
+                accountParam.bankId(),
+                accountParam.accountType(),
+                accountParam.name(),
+                accountParam.owner(),
+                accountParam.currencyType(),
+                accountParam.accountNumber(),
+                accountParam.description(),
+                accountParam.requestedBy()
         );
     }
 
     @Transactional
-    public void saveBank(BankRequest bankRequest) {
-        BankCommand bankCommand = toBankCommand(bankRequest);
+    public void saveBank(BankParam bankParam) {
+        BankCommand bankCommand = toBankCommand(bankParam);
 
-        if(bankRequest.id() == null) {
+        if(bankParam.id() == null) {
             accountsRepository.insertBank(bankCommand);
-        } else if(bankRequest.toDelete()) {
+        } else if(bankParam.toDelete()) {
             accountsRepository.deleteBank(bankCommand);
         } else {
             accountsRepository.updateBank(bankCommand);
@@ -50,12 +50,12 @@ public class AccountCommandService {
     }
 
     @Transactional
-    public void saveAccount(AccountRequest accountRequest) {
-        AccountCommand accountCommand = toAccountCommand(accountRequest);
+    public void saveAccount(AccountParam accountParam) {
+        AccountCommand accountCommand = toAccountCommand(accountParam);
 
-        if(accountRequest.id() == null) {
+        if(accountParam.id() == null) {
             accountsRepository.insertAccount(accountCommand);
-        } else if(accountRequest.toDelete()) {
+        } else if(accountParam.toDelete()) {
             accountsRepository.deleteAccount(accountCommand);
         } else {
             accountsRepository.updateAccount(accountCommand);

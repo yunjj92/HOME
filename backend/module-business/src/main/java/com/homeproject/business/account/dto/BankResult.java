@@ -4,7 +4,7 @@ import com.homeproject.db.accounts.dto.BankProjection;
 
 import java.time.LocalDateTime;
 
-public record BankResponse(
+public record BankResult(
         Integer id,
         String name,
         LocalDateTime createdAt,
@@ -12,8 +12,8 @@ public record BankResponse(
         LocalDateTime updatedAt,
         String updatedBy
 ) {
-    public static BankResponse from(BankProjection p) {
-        return new BankResponse(
+    public static BankResult from(BankProjection p) {
+        return new BankResult(
             p.id()
             , p.name()
             , p.createdAt()

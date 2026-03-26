@@ -1,6 +1,6 @@
 package com.homeproject.business.account.dto;
 
-public record AccountRequest(
+public record AccountParam(
         Integer id,
         Integer bankId,
         String accountType,
