@@ -17,4 +17,3 @@ public interface AccountsRepository {
     void updateBank(BankCommand bankCommand);
     void deleteBank(BankCommand bankCommand);
 }
-
