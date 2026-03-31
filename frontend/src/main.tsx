@@ -8,6 +8,7 @@ import './styles.css';
 import { MainLayout } from './layouts/MainLayout';
 import { HomeView } from './views/HomeView';
 import AuthView from './views/auth/AuthView';
+import { AccountManagementView } from './views/management/AccountManagementView';
 
 const queryClient = new QueryClient();
 const rootElement = document.getElementById('root');
@@ -24,6 +25,7 @@ createRoot(rootElement).render(
           </Route>
           <Route element={<MainLayout />}>
             <Route path='/authview' element={<AuthView/>} />
+            <Route path='/test' element={<AccountManagementView/>} />
           </Route>
         </Routes>
       </BrowserRouter>
