@@ -1,9 +1,21 @@
- import { z } from "zod";
- import { apiErrorSchema } from "./error";
+import { z } from "zod";
 
-export const createApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
-    z.object({
+export const apiErrorSchema = z.object({
+    message: z.string(),
+});
+
+export type ApiError = z.infer<typeof apiErrorSchema>;
+
+export function createApiResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
+    return z.object({
         success: z.boolean(),
         apiError: apiErrorSchema.nullable(),
         data: dataSchema,
     });
+}
+
+export type ApiResponse<T> = {
+    success: boolean;
+    apiError: ApiError | null;
+    data: T;
+};
