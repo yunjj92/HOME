@@ -32,9 +32,9 @@ import type {
 } from 'axios';
 
 import type {
+  ApiResponseAccountManagementResponse,
   FinishLoginParams,
   FinishRegistrationParams,
-  OrvalTest200,
   StartLoginParams,
   StartRegistrationParams
 } from './model';
@@ -270,79 +270,79 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       return useMutation(getFinishLoginMutationOptions(options), queryClient);
     }
     
-export const orvalTest = (
+export const initAccountManagement = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<OrvalTest200>> => {
+ ): Promise<AxiosResponse<ApiResponseAccountManagementResponse>> => {
     
     
     return axios.default.get(
-      `/api/orval/orval`,options
+      `/api/admin/account/init`,options
     );
   }
 
 
 
 
-export const getOrvalTestQueryKey = () => {
+export const getInitAccountManagementQueryKey = () => {
     return [
-    `/api/orval/orval`
+    `/api/admin/account/init`
     ] as const;
     }
 
     
-export const getOrvalTestQueryOptions = <TData = Awaited<ReturnType<typeof orvalTest>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getInitAccountManagementQueryOptions = <TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getOrvalTestQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getInitAccountManagementQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof orvalTest>>> = ({ signal }) => orvalTest({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof initAccountManagement>>> = ({ signal }) => initAccountManagement({ signal, ...axiosOptions });
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type OrvalTestQueryResult = NonNullable<Awaited<ReturnType<typeof orvalTest>>>
-export type OrvalTestQueryError = AxiosError<unknown>
+export type InitAccountManagementQueryResult = NonNullable<Awaited<ReturnType<typeof initAccountManagement>>>
+export type InitAccountManagementQueryError = AxiosError<unknown>
 
 
-export function useOrvalTest<TData = Awaited<ReturnType<typeof orvalTest>>, TError = AxiosError<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData>> & Pick<
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof orvalTest>>,
+          Awaited<ReturnType<typeof initAccountManagement>>,
           TError,
-          Awaited<ReturnType<typeof orvalTest>>
+          Awaited<ReturnType<typeof initAccountManagement>>
         > , 'initialData'
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useOrvalTest<TData = Awaited<ReturnType<typeof orvalTest>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData>> & Pick<
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof orvalTest>>,
+          Awaited<ReturnType<typeof initAccountManagement>>,
           TError,
-          Awaited<ReturnType<typeof orvalTest>>
+          Awaited<ReturnType<typeof initAccountManagement>>
         > , 'initialData'
       >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useOrvalTest<TData = Awaited<ReturnType<typeof orvalTest>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useOrvalTest<TData = Awaited<ReturnType<typeof orvalTest>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof orvalTest>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getOrvalTestQueryOptions(options)
+  const queryOptions = getInitAccountManagementQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

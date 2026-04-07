@@ -6,6 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './accountManagementResponse';
+export * from './accountResult';
+export * from './apiError';
+export * from './apiResponseAccountManagementResponse';
+export * from './bankResult';
 export * from './finishLoginParams';
 export * from './finishRegistrationParams';
 export * from './orvalTest200';
