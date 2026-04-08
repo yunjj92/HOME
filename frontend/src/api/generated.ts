@@ -24,46 +24,49 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import * as axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-
 import type {
   ApiResponseAccountManagementResponse,
+  ApiResponseLoginResponse,
+  ApiResponseStartRegistrationResponse,
+  ApiResponseString,
+  FinalizedRegistrationRequest,
   FinishLoginParams,
-  FinishRegistrationParams,
   StartLoginParams,
   StartRegistrationParams
 } from './model';
 
+import { axiosInstance } from '../custom/config/axios-instance';
+
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
 export const startRegistration = (
-    params: StartRegistrationParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Blob>> => {
-    
-    
-    return axios.default.post(
-      `/api/auth/register/options`,undefined,{
-        responseType: 'blob',
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
+    params: StartRegistrationParams,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseStartRegistrationResponse>(
+      {url: `/api/auth/register/options`, method: 'POST',
+        params, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getStartRegistrationMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startRegistration>>, TError,{params: StartRegistrationParams}, TContext>, axios?: AxiosRequestConfig}
+export const getStartRegistrationMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startRegistration>>, TError,{params: StartRegistrationParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof startRegistration>>, TError,{params: StartRegistrationParams}, TContext> => {
 
 const mutationKey = ['startRegistration'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -71,7 +74,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof startRegistration>>, {params: StartRegistrationParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  startRegistration(params,axiosOptions)
+          return  startRegistration(params,requestOptions)
         }
 
 
@@ -83,10 +86,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type StartRegistrationMutationResult = NonNullable<Awaited<ReturnType<typeof startRegistration>>>
     
-    export type StartRegistrationMutationError = AxiosError<unknown>
+    export type StartRegistrationMutationError = unknown
 
-    export const useStartRegistration = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startRegistration>>, TError,{params: StartRegistrationParams}, TContext>, axios?: AxiosRequestConfig}
+    export const useStartRegistration = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startRegistration>>, TError,{params: StartRegistrationParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof startRegistration>>,
         TError,
@@ -97,39 +100,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     }
     
 export const finishRegistration = (
-    finishRegistrationBody: string,
-    params: FinishRegistrationParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.default.post(
-      `/api/auth/register/finish`,
-      finishRegistrationBody,{
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
+    finalizedRegistrationRequest: FinalizedRegistrationRequest,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<void>(
+      {url: `/api/auth/register/finish`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: finalizedRegistrationRequest, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getFinishRegistrationMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: string;params: FinishRegistrationParams}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: string;params: FinishRegistrationParams}, TContext> => {
+export const getFinishRegistrationMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: FinalizedRegistrationRequest}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: FinalizedRegistrationRequest}, TContext> => {
 
 const mutationKey = ['finishRegistration'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finishRegistration>>, {data: string;params: FinishRegistrationParams}> = (props) => {
-          const {data,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finishRegistration>>, {data: FinalizedRegistrationRequest}> = (props) => {
+          const {data} = props ?? {};
 
-          return  finishRegistration(data,params,axiosOptions)
+          return  finishRegistration(data,requestOptions)
         }
 
 
@@ -140,45 +143,45 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type FinishRegistrationMutationResult = NonNullable<Awaited<ReturnType<typeof finishRegistration>>>
-    export type FinishRegistrationMutationBody = string
-    export type FinishRegistrationMutationError = AxiosError<unknown>
+    export type FinishRegistrationMutationBody = FinalizedRegistrationRequest
+    export type FinishRegistrationMutationError = unknown
 
-    export const useFinishRegistration = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: string;params: FinishRegistrationParams}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinishRegistration = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishRegistration>>, TError,{data: FinalizedRegistrationRequest}, TContext>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof finishRegistration>>,
         TError,
-        {data: string;params: FinishRegistrationParams},
+        {data: FinalizedRegistrationRequest},
         TContext
       > => {
       return useMutation(getFinishRegistrationMutationOptions(options), queryClient);
     }
     
 export const startLogin = (
-    params: StartLoginParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Blob>> => {
-    
-    
-    return axios.default.post(
-      `/api/auth/login/options`,undefined,{
-        responseType: 'blob',
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
+    params: StartLoginParams,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseLoginResponse>(
+      {url: `/api/auth/login/options`, method: 'POST',
+        params, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getStartLoginMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startLogin>>, TError,{params: StartLoginParams}, TContext>, axios?: AxiosRequestConfig}
+export const getStartLoginMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startLogin>>, TError,{params: StartLoginParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof startLogin>>, TError,{params: StartLoginParams}, TContext> => {
 
 const mutationKey = ['startLogin'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -186,7 +189,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof startLogin>>, {params: StartLoginParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  startLogin(params,axiosOptions)
+          return  startLogin(params,requestOptions)
         }
 
 
@@ -198,10 +201,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type StartLoginMutationResult = NonNullable<Awaited<ReturnType<typeof startLogin>>>
     
-    export type StartLoginMutationError = AxiosError<unknown>
+    export type StartLoginMutationError = unknown
 
-    export const useStartLogin = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startLogin>>, TError,{params: StartLoginParams}, TContext>, axios?: AxiosRequestConfig}
+    export const useStartLogin = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startLogin>>, TError,{params: StartLoginParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof startLogin>>,
         TError,
@@ -213,31 +216,32 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const finishLogin = (
     finishLoginBody: string,
-    params: FinishLoginParams, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Blob>> => {
-    
-    
-    return axios.default.post(
-      `/api/auth/login/finish`,
-      finishLoginBody,{
-        responseType: 'blob',
-    ...options,
-        params: {...params, ...options?.params},}
-    );
-  }
+    params: FinishLoginParams,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseString>(
+      {url: `/api/auth/login/finish`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: finishLoginBody,
+        params, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getFinishLoginMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishLogin>>, TError,{data: string;params: FinishLoginParams}, TContext>, axios?: AxiosRequestConfig}
+export const getFinishLoginMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishLogin>>, TError,{data: string;params: FinishLoginParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof finishLogin>>, TError,{data: string;params: FinishLoginParams}, TContext> => {
 
 const mutationKey = ['finishLogin'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -245,7 +249,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof finishLogin>>, {data: string;params: FinishLoginParams}> = (props) => {
           const {data,params} = props ?? {};
 
-          return  finishLogin(data,params,axiosOptions)
+          return  finishLogin(data,params,requestOptions)
         }
 
 
@@ -257,10 +261,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type FinishLoginMutationResult = NonNullable<Awaited<ReturnType<typeof finishLogin>>>
     export type FinishLoginMutationBody = string
-    export type FinishLoginMutationError = AxiosError<unknown>
+    export type FinishLoginMutationError = unknown
 
-    export const useFinishLogin = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishLogin>>, TError,{data: string;params: FinishLoginParams}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinishLogin = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finishLogin>>, TError,{data: string;params: FinishLoginParams}, TContext>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof finishLogin>>,
         TError,
@@ -271,15 +275,17 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     }
     
 export const initAccountManagement = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<ApiResponseAccountManagementResponse>> => {
     
-    
-    return axios.default.get(
-      `/api/admin/account/init`,options
-    );
-  }
-
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseAccountManagementResponse>(
+      {url: `/api/admin/account/init`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 
 
@@ -290,16 +296,16 @@ export const getInitAccountManagementQueryKey = () => {
     }
 
     
-export const getInitAccountManagementQueryOptions = <TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getInitAccountManagementQueryOptions = <TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getInitAccountManagementQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof initAccountManagement>>> = ({ signal }) => initAccountManagement({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof initAccountManagement>>> = ({ signal }) => initAccountManagement(requestOptions, signal);
 
       
 
@@ -309,36 +315,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type InitAccountManagementQueryResult = NonNullable<Awaited<ReturnType<typeof initAccountManagement>>>
-export type InitAccountManagementQueryError = AxiosError<unknown>
+export type InitAccountManagementQueryError = unknown
 
 
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof initAccountManagement>>,
           TError,
           Awaited<ReturnType<typeof initAccountManagement>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof initAccountManagement>>,
           TError,
           Awaited<ReturnType<typeof initAccountManagement>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -348,3 +354,8 @@ export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initA
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+

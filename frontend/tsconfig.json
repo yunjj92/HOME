@@ -1,7 +1,13 @@
 {
+  "compilerOptions": {
+    "jsx": "react-jsx", // 또는 "react"
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
+  
 }

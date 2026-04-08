@@ -1,6 +1,10 @@
 package com.homeproject.security.webauthn;
 
 import com.homeproject.db.config.ConfigRepository;
+import com.homeproject.security.webauthn.param.FinalizedLoginParam;
+import com.homeproject.security.webauthn.param.FinalizedRegistrationParam;
+import com.homeproject.security.webauthn.result.UserLoginResult;
+import com.homeproject.security.webauthn.result.UserRegistrationResult;
 import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
@@ -9,18 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class WebAuthnService {
+public class WebAuthnProcessor {
 
     private final ConfigRepository configRepository;
+
 
     @Value("${webauthn.relying-party.id}")
     private String rpId;
@@ -46,29 +49,34 @@ public class WebAuthnService {
                 .build();
     }
 
-    public PublicKeyCredentialCreationOptions startRegistration(String username) {
+    public UserRegistrationResult startRegistration(String username) {
+
         UserIdentity user = UserIdentity.builder()
                 .name(username)
                 .displayName(username)
                 .id(new ByteArray(username.getBytes()))
                 .build();
 
-        return getRelyingParty().startRegistration(StartRegistrationOptions.builder()
+        PublicKeyCredentialCreationOptions credentialCreationOptions = getRelyingParty().startRegistration(StartRegistrationOptions.builder()
                 .user(user)
                 .build());
+
+        return new UserRegistrationResult(username,  credentialCreationOptions);
     }
 
-    public RegistrationResult finishRegistration(String username, PublicKeyCredentialCreationOptions options, PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc) throws Exception {
+    public RegistrationResult finishRegistration(FinalizedRegistrationParam finalizedRegistrationParam) throws Exception {
+        String userName = finalizedRegistrationParam.username();
+
         RegistrationResult response = getRelyingParty().finishRegistration(FinishRegistrationOptions.builder()
-                .request(options)
-                .response(pkc)
+                .request(finalizedRegistrationParam.options())
+                .response(finalizedRegistrationParam.pkc())
                 .build());
 
-        log.info("Registration successful for user: {}", username);
+        log.info("Registration successful for user: {}", userName);
         String credId = response.getKeyId().getId().getBase64Url();
         log.info("Credential ID: {}", credId);
 
-        configRepository.setValue("AUTH_ID", username);
+        configRepository.setValue("AUTH_ID", userName);
         configRepository.setValue("AUTH_CREDENTIAL_ID", credId);
         configRepository.setValue("AUTH_PUBLIC_KEY", response.getPublicKeyCose().getBase64Url());
         configRepository.setValue("AUTH_SIGNATURE_COUNT", String.valueOf(response.getSignatureCount()));
@@ -76,16 +84,18 @@ public class WebAuthnService {
         return response;
     }
 
-    public AssertionRequest startAssertion(String username) {
-        return getRelyingParty().startAssertion(StartAssertionOptions.builder()
+    public UserLoginResult startAssertion(String username) {
+        AssertionRequest assertionRequest = getRelyingParty().startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(username))
                 .build());
+
+        return new UserLoginResult(username, assertionRequest);
     }
 
-    public AssertionResult finishAssertion(String username, AssertionRequest request, PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc) throws Exception {
+    public AssertionResult finishAssertion(FinalizedLoginParam finalizedLoginParam) throws Exception {
         AssertionResult response = getRelyingParty().finishAssertion(FinishAssertionOptions.builder()
-                .request(request)
-                .response(pkc)
+                .request(finalizedLoginParam.assertionRequest())
+                .response(finalizedLoginParam.pkc())
                 .build());
 
         if (response.isSuccess()) {

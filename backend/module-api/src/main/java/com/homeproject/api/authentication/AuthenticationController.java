@@ -1,80 +1,103 @@
 package com.homeproject.api.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homeproject.api.authentication.request.FinalizedRegistrationRequest;
+import com.homeproject.api.authentication.response.LoginResponse;
+import com.homeproject.api.authentication.response.StartRegistrationResponse;
+import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.security.jwt.JwtTokenProvider;
-import com.homeproject.security.webauthn.WebAuthnService;
+import com.homeproject.security.webauthn.WebAuthnProcessor;
+import com.homeproject.security.webauthn.param.FinalizedLoginParam;
+import com.homeproject.security.webauthn.param.FinalizedRegistrationParam;
+import com.homeproject.security.webauthn.result.UserLoginResult;
+import com.homeproject.security.webauthn.result.UserRegistrationResult;
 import com.yubico.webauthn.AssertionRequest;
 import com.yubico.webauthn.AssertionResult;
-import com.yubico.webauthn.RegistrationResult;
 import com.yubico.webauthn.data.PublicKeyCredential;
-import com.yubico.webauthn.data.AuthenticatorAssertionResponse;
-import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
-import com.yubico.webauthn.data.ClientAssertionExtensionOutputs;
-import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
 import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Tag(name="auth", description  = "사용자 인증 및 로그인 API")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final WebAuthnService webAuthnService;
+    private final WebAuthnProcessor webAuthnProcessor;
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
-
     // In-memory store for challenges. In a production app, use Redis or a proper session.
     private final Map<String, PublicKeyCredentialCreationOptions> registrationOptionsStore = new ConcurrentHashMap<>();
+
+
     private final Map<String, AssertionRequest> assertionRequestStore = new ConcurrentHashMap<>();
 
+    @Operation
     @PostMapping("/register/options")
-    public String startRegistration(@RequestParam String username) throws Exception {
-        PublicKeyCredentialCreationOptions options = webAuthnService.startRegistration(username);
-        registrationOptionsStore.put(username, options);
-        return objectMapper.writeValueAsString(options);
+    public ApiResponse<StartRegistrationResponse> startRegistration(@RequestParam String username){
+        try {
+            UserRegistrationResult userRegistrationResult = webAuthnProcessor.startRegistration(username);
+            registrationOptionsStore.put(username, userRegistrationResult.creationOptions());
+            return ApiResponse.success(StartRegistrationResponse.from(userRegistrationResult));
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
     }
 
     @PostMapping("/register/finish")
-    public void finishRegistration(@RequestParam String username, @RequestBody String responseJson) throws Exception {
-        PublicKeyCredentialCreationOptions options = registrationOptionsStore.get(username);
-        if (options == null) {
-            throw new RuntimeException("Registration options not found");
-        }
+    public void finishRegistration(@RequestBody FinalizedRegistrationRequest finalizedRegistrationRequest) throws Exception {
+        String username = finalizedRegistrationRequest.getUsername();
+        FinalizedRegistrationParam finalizedRegistrationParam
+                = new FinalizedRegistrationParam(
+                username,
+                registrationOptionsStore.get(username),
+                PublicKeyCredential.parseRegistrationResponseJson(finalizedRegistrationRequest.getResponseJson())
+        );
 
-        PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
-                PublicKeyCredential.parseRegistrationResponseJson(responseJson);
-
-        RegistrationResult result = webAuthnService.finishRegistration(username, options, pkc);
+        webAuthnProcessor.finishRegistration(finalizedRegistrationParam);
         registrationOptionsStore.remove(username);
+
     }
 
     @PostMapping("/login/options")
-    public String startLogin(@RequestParam String username) throws Exception {
-        AssertionRequest request = webAuthnService.startAssertion(username);
-        assertionRequestStore.put(username, request);
-        return objectMapper.writeValueAsString(request);
+    public ApiResponse<LoginResponse> startLogin(@RequestParam String username){
+        try{
+            UserLoginResult loginResult = webAuthnProcessor.startAssertion(username);
+            assertionRequestStore.put(username, loginResult.assertionRequest());
+            return ApiResponse.success(LoginResponse.from(loginResult));
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
     }
 
     @PostMapping("/login/finish")
-    public String finishLogin(@RequestParam String username, @RequestBody String responseJson) throws Exception {
-        AssertionRequest request = assertionRequestStore.get(username);
-        if (request == null) {
-            throw new RuntimeException("Assertion request not found");
-        }
+    public ApiResponse<String> finishLogin(@RequestParam String username, @RequestBody String responseJson) throws Exception {
 
-        PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc =
-                PublicKeyCredential.parseAssertionResponseJson(responseJson);
+        try {
+            AssertionRequest request = assertionRequestStore.get(username);
+            if (request == null) {
+                throw new RuntimeException("Assertion request not found");
+            }
 
-        AssertionResult result = webAuthnService.finishAssertion(username, request, pkc);
-        if (result.isSuccess()) {
+            FinalizedLoginParam finalizedLoginParam = new FinalizedLoginParam(username, request, PublicKeyCredential.parseAssertionResponseJson(responseJson));
+
+            AssertionResult result = webAuthnProcessor.finishAssertion(finalizedLoginParam);
+
+            if(!result.isSuccess()) {
+                throw new RuntimeException("Authentication failed");
+            }
+
             assertionRequestStore.remove(username);
-            return jwtTokenProvider.createToken(username);
-        } else {
-            throw new RuntimeException("Authentication failed");
+            return ApiResponse.success(jwtTokenProvider.createToken(username));
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
         }
     }
+
 }
