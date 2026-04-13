@@ -36,8 +36,6 @@ import type {
 } from './model';
 
 import { axiosInstance } from '../custom/config/axios-instance';
-
-
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
@@ -311,7 +309,7 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type InitAccountManagementQueryResult = NonNullable<Awaited<ReturnType<typeof initAccountManagement>>>
@@ -354,8 +352,3 @@ export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initA
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-
-

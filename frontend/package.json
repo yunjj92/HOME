@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "api:gen": "orval"
+    "api:gen": "orval && pnpm api:zod",
+    "api:zod": "node scripts/generate-zod.mjs"
   },
   "dependencies": {
     "@github/webauthn-json": "^2.1.1",
@@ -20,6 +21,7 @@
     "@tanstack/react-router": "^1.168.2",
     "@tanstack/react-router-devtools": "^1.166.11",
     "@tanstack/router-devtools": "^1.166.11",
+    "@tanstack/virtual-file-routes": "^1.161.7",
     "axios": "^1.13.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

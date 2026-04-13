@@ -1,28 +1,38 @@
 import { useState } from "react";
-import { useFinishLogin, useStartLogin } from "../../api/generated";
 import { prepareLoginOptions } from "./transformLoginResultParam";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
+import { useLoginData } from "../../hooks/auth/UseLoginData";
+import type { LoginResponse } from "../../api/model";
+import { useFinishLoginData } from "../../hooks/auth/UseFinishLoginData";
 
 
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
-  const { mutateAsync: startLoginProcess } = useStartLogin();
+  const { mutateAsync: startLoginProcess } = useLoginData();
 
-  const {mutateAsync: finishLoginProcess} = useFinishLogin();
+  const {mutateAsync: finishLoginProcess} = useFinishLoginData();
 
   const handleLogin = async () => {
 
       try {
-      const loginOptions = await startLoginProcess({params: {username}}); 
-      const requestOptions = prepareLoginOptions(loginOptions);
-      const assertion = await navigator.credentials.get({ publicKey: requestOptions });       
-      
-      const accessToken = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}});
-      localStorage.setItem('accessToken', accessToken);
-      navigate('/home');
+        const {data: loginOptions} = await startLoginProcess({params: {username}}); 
+        const requestOptions = prepareLoginOptions(loginOptions as LoginResponse);
+        const assertion = await navigator.credentials.get({ publicKey: requestOptions });       
+        
+        const {data: finishedLoginResponse, success:LoginSuccess
+        } = await finishLoginProcess(
+          {username,
+            jsonparam: JSON.stringify(assertion)
+          }
+        )
+
+        if(finishedLoginResponse && LoginSuccess){
+          localStorage.setItem('accessToken', finishedLoginResponse);
+          navigate({ to: '/home' });
+        }
+  
       } catch (error) {
-        console.error('Login failed:', error);
         alert('Login failed. Please try again.');
       }
    }

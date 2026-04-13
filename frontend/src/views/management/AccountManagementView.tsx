@@ -1,7 +1,7 @@
 ﻿import { AccountList } from "../../components/account/AccountList";
 import { useAccountManagementData } from "../../hooks/management/UseAccountManagementData";
 
-export function AccountManagementView() {
+export const AccountManagementView = () => {
 
     const response = useAccountManagementData();
 
@@ -12,7 +12,7 @@ export function AccountManagementView() {
             return (
                 <div>
                     <div>message: {response.message}</div>
-                    <div>status: {response.code}</div>
+                    <div>status: {response.code}</div>s
                 </div>
             );
         default:
@@ -23,11 +23,11 @@ export function AccountManagementView() {
     
     return (
         <div>
-            <div>은행 수: {bankResultList.length}</div>
-            <div>계좌 수: {accountResultList.length}</div>
+            <div>은행 수: {bankResultList?.length}</div>
+            <div>계좌 수: {accountResultList?.length}</div>
 
             <h3>계좌 목록</h3>
-            <AccountList accounts={accountResultList} banks={bankResultList} />
+            <AccountList accounts={accountResultList ?? []} banks={bankResultList ?? []} />
         </div>
     );
 }

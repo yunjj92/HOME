@@ -18,13 +18,17 @@ public class AccountController {
     private final AccountQueryService accountQueryService;
     private final AccountCommandService accountCommandService;
 
-    @GetMapping(value = "/init", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/init")
     public ApiResponse<AccountManagementResponse> initAccountManagement() {
-        AccountManagementResponse accountManagementResponse = new AccountManagementResponse(
-                accountQueryService.getAccountList(),
-                accountQueryService.getBankList()
-        );
 
-        return ApiResponse.success(accountManagementResponse);
+        try {
+            AccountManagementResponse accountManagementResponse = new AccountManagementResponse(
+            accountQueryService.getAccountList(),
+                    accountQueryService.getBankList()
+            );
+            return ApiResponse.success(accountManagementResponse);
+        }catch (Exception e){
+            return ApiResponse.error(e.getMessage(), "");
+        }
     }
 }

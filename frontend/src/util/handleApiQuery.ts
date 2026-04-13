@@ -3,27 +3,31 @@ import type { ApiQueryResult } from "../types/ApiQueryResult";
 import { isAxiosError } from "axios";
 import type { ApiResponse } from "../schemas/common/api";
 
-type ApiQuerySource<T> = {
-    data?: {
-        data: ApiResponse<T>;
-    };
-    isLoading: boolean;
-    error: unknown;
-};
-
+/**
+ * Option B: Pure processor for API responses.
+ * It now takes individual pieces of state instead of a hook result object.
+ */
 export function handleApiQuery<T>(
-    apiHookResult: ApiQuerySource<T>,
-    schema: ZodType<any>): ApiQueryResult<T> {
+    rawData: ApiResponse<T> | undefined | null,
+    isLoading: boolean,
+    error: unknown,
+    schema: ZodType<any>
+): ApiQueryResult<T> {
 
-    // API 통신 결과 수신
-    const { data, isLoading, error } = apiHookResult;
-
-    if(isLoading) {
+    if (isLoading) {
         return { status: "loading" };
-    };
+    }
 
-    if(error) {
-        if(isAxiosError(error)) {
+    if (rawData === null) {
+        return {
+            status: "error",
+            message: "API returned null data.",
+            code: "Data is null.",
+        };
+    }
+
+    if (error) {
+        if (isAxiosError(error)) {
             return {
                 status: "error",
                 message: error.message,
@@ -34,35 +38,30 @@ export function handleApiQuery<T>(
         return {
             status: "error",
             message: "Unknown Error",
-            code: "Unknow Error",
+            code: "Unknown Error",
         };
     }
 
-    // zod 스키마로 데이터 변환
-    console.log("data", data);
-    const parsedData = schema.safeParse(data?.data);
+    // [Check for rawData presence]
+    // If it's a mutation that hasn't run, data might be undefined even if not loading
+    if (!rawData) {
+        return { status: "loading" };
+    }
 
-    if(!parsedData.success) {
+    // Zod parsing
+     const parsedData = schema.parse(rawData);
+
+     console.log("Parsed data:", parsedData.success ===true);
+    if (!parsedData.success) {
         return {
             status: "error",
-            message: parsedData.error.message,
+            message: parsedData.s.message,
             code: "Parsed data error.",
-        };
-    }
-
-    // 백엔드 송신 데이터 확인
-    const realData = parsedData.data;
-
-    if(!realData.success) {
-        return {
-            status: "error",
-            message: realData.apiError.message,
-            code: "Api error."
         };
     }
 
     return {
         status: "success",
-        data: realData.data,
-    }
+        data: parsedData.data,
+    };
 }

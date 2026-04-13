@@ -1,27 +1,36 @@
-import type { Account } from "../../schemas/account/account";
-import type { Bank } from "../../schemas/account/bank";
+import { useEffect, useState } from "react";
+import type { AccountResult } from "../../api/zod/accountResult.zod";
+import type { BankResult } from "../../api/zod/bankResult.zod";
+
 
 type AccountListProps = {
-    accounts: Account[];
-    banks: Bank[];
+    accounts: AccountResult[];
+    banks: BankResult[];
 }
 
-export function AccountList({ accounts, banks }: AccountListProps) {
-    const bankMap = new Map<number, string>(
-        banks.map((bank) => [bank.id, bank.name])
-    );
+export function AccountList({ banks }: AccountListProps) {
 
-    const getBankName = (bankId: number | null) => {
-        if(bankId == null) return "-";
-        return bankMap.get(bankId) ?? "-";
+    const [bankMap, setBankMap] = useState(new Map<string, string>());
+    
+    const addItem = (banks: BankResult) =>{
+        useEffect(() => {
+        const newMap = new Map(bankMap);
+        newMap.set(banks.id?.toString() ?? '-', banks.name ?? '-');
+        setBankMap(newMap);
+        }, [banks]);
     }
+
+    for(const bank of banks){
+        addItem(bank);
+    }
+
 
     return (
         <div>
             <ul>
-                {accounts.map((account) => (
-                    <li key={account.id}>
-                        {account.name} / {getBankName(account.bankId)}
+                {Array.from(bankMap.entries()).map(([bankId, bankName]) => (
+                    <li key={bankId}>
+                        {bankName} (ID: {bankId})
                     </li>
                 ))}
             </ul>

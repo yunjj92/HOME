@@ -1,8 +1,9 @@
 import { create } from "@github/webauthn-json/browser-ponyfill";
 import { useState } from "react";
-import { useFinishRegistration, useStartRegistration } from "../../api/generated";
+import { useFinishRegistration } from "../../api/generated";
 import { prepareCreationOptions } from "./transformAuthResult";
 import { Link } from "@tanstack/react-router";
+import { useStartRegistrationData } from "../../hooks/auth/UseStartRegistrationData";
 
 
 
@@ -12,16 +13,17 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const {mutateAsync: startRegistration} = useStartRegistration();
+  const {mutateAsync: startRegistration} = useStartRegistrationData();
   
   const {mutateAsync: finishRegistration} = useFinishRegistration();
 
   const processRegistration = async () => {
+
     try {
       
-      const  registrationResult = await startRegistration({params: {username}});
+      const {data:registrationResult} = await startRegistration({params: {username}});
       
-      const creationOptions = prepareCreationOptions(registrationResult);
+      const creationOptions = prepareCreationOptions(registrationResult ?? {} as any );
 
       const credential = await create({
         publicKey: creationOptions.publicKey,
@@ -87,7 +89,7 @@ export const RegistrationForm = () => {
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-out-allowed"
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-out-allowed"
             >
               {status === 'loading' ? 'Registering...' : 'Register with Passkey'}
             </button>
@@ -104,7 +106,9 @@ export const RegistrationForm = () => {
 
         <p className="mt-10 text-center text-sm text-gray-500">
           Already have an account?{' '}
-          <Link className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500" to="/login">Sign in</Link>
+          <Link to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+            Sign in
+          </Link>
         </p>
       </div>
     </div>

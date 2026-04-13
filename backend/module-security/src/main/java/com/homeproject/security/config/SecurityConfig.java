@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -21,38 +26,60 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 1. CSRF 및 HTTP Basic 인증 비활성화 (JWT를 사용하므로)
+                // 1. CORS 설정 추가
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 2. CSRF 및 HTTP Basic 인증 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 
-                // 2. 세션 정책: Stateless 설정 (JWT의 핵심)
+                // 3. 세션 정책: Stateless 설정
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // 3. 인가(Authorization) 설정
+
+                // 4. 인가(Authorization) 설정
                 .authorizeHttpRequests(auth -> auth
-                        // 2. Swagger UI 관련 경로 허용
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/login",
-                                "/api/signup",
-                                "/v3/api-docs/**",          // OpenAPI 명세 경로
-                                "/swagger-ui/**",           // Swagger UI HTML 페이지
-                                "/swagger-ui.html",         // 구버전 호환용
-                                "/swagger-resources/**",    // Swagger 자원
-                                "/webjars/**"               // static 자원
-                                , "/api/admin/**"
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
-                        .anyRequest().authenticated() // 나머지는 인증 필요
+                        .anyRequest().authenticated()
                 )
 
-                // 4. JWT 필터 추가
-                // UsernamePasswordAuthenticationFilter 실행 전에 우리가 만든 jwtAuthenticationFilter를 먼저 실행
+                // 5. JWT 필터 추가
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // CORS 세부 설정을 위한 Bean 추가
+    @Bean
+    public CorsConfigurationSource
+    corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 허용할 프론트엔드 도메인 (실제 사용하는 주소로 변경하세요)
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:8080"));
+
+        // 허용할 HTTP 메서드
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 허용할 헤더 (Authorization 포함 필수)
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+
+        // 자격 증명(Cookie 등) 허용 여부
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx", // 또는 "react"
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "allowSyntheticDefaultImports": true
   },
   "files": [],
