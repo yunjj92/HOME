@@ -8,15 +8,18 @@ type AccountListProps = {
     banks: BankResult[];
 }
 
-export function AccountList({ banks }: AccountListProps) {
+export function AccountList({ accounts, banks }: AccountListProps) {
 
-const bankMap = useMemo(() => {
+    const bankMap = useMemo(() => {
     const map = new Map();
     for (const bank of banks) {
         map.set(bank.id?.toString() ?? '-', bank.name ?? '-');
     }
     return map;
 }, [banks]);
+
+
+    if(accounts.length == 0) console.log("accounts 0")
 
     return (
         <div>

@@ -3,23 +3,18 @@ import { useAccountManagementData } from "../../hooks/management/UseAccountManag
 
 export const AccountManagementView = () => {
 
-    const response = useAccountManagementData();
+    const {finalData, isLoading, isError} = useAccountManagementData();
 
-    switch(response.status) {
-        case "loading":
-            return <div>로딩 중</div>;
-        case "error":
-            return (
-                <div>
-                    <div>message: {response.message}</div>
-                    <div>status: {response.code}</div>s
-                </div>
-            );
-        default:
-            break;
+    if(isLoading){
+        return <div>로딩 중</div>;
+    }  
+    
+    if(isError){
+        return <div>확인 필요</div>;
     }
 
-    const { accountResultList, bankResultList } = response.data;
+
+    const {accountResultList, bankResultList} = finalData ?? {}
     
     return (
         <div>
