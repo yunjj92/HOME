@@ -12,8 +12,8 @@ export const accountSchema = z.object({
   description: z.string(),
   createdAt: z.string(),
   createdBy: z.string(),
-  updatedAt: z.string(),
-  updatedBy: z.string(),
+  updatedAt: z.string().nullable(),
+  updatedBy: z.string().nullable(),
 });
 
 export type Account = z.infer<typeof accountSchema>;
