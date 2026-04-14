@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html",         // 구버전 호환용
                                 "/swagger-resources/**",    // Swagger 자원
                                 "/webjars/**"               // static 자원
+                                , "/api/admin/**"
                         ).permitAll()
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
