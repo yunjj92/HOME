@@ -30,16 +30,24 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
                     queryKey: getInitAccountManagementQueryKey(),
                 })
             },
-            onError: (error) => {
-                console.error(`저장 실패`, error);
+            onError: () => {
                 alert(`저장 중 오류가 발생했습니다.`);
             },
         }
     });
 
+    const createEmptyRow = (): BankRow => ({
+        id: null,
+        name: "",
+        createdAt: null,
+        updatedAt: null,
+        toDelete: false,
+    });
+
     // 기존 은행 리스트 변환, 은행리스트 리로드마다 실행
     const [rows, setRows] = useState<BankRow[]>([]);
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setRows([
             ...bankList.map((bank) => ({
                 id: bank.id,
@@ -57,13 +65,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
         setRows((prev) => [...prev, createEmptyRow()]);
     };
 
-    const createEmptyRow = (): BankRow => ({
-        id: null,
-        name: "",
-        createdAt: null,
-        updatedAt: null,
-        toDelete: false,
-    });
+    
 
     // 행수정
     const modifyRowName = (targetIndex: number, value: string) => {
@@ -80,7 +82,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
     const removeRow = (targetIndex: number) => {
         setRows((prev) => {
             if(prev[targetIndex].id === null) {
-                return prev.filter((row, idx) => idx !== targetIndex);
+                return prev.filter((_, idx) => idx !== targetIndex);
             } else {
                 return prev.map((row, idx) => idx === targetIndex ? { ...row, toDelete: true } : row);
             }
@@ -198,7 +200,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
                 <div className="flex justify-end">
                     <button
                         type="button"
-                        onClick={save}
+                        onClick={() => { void save(); }}
                         className="rounded bg-gray-200 px-4 py-2"
                     >
                         저장

@@ -13,7 +13,7 @@ type ApiQuerySource<T> = {
 
 export function handleApiQuery<T>(
     apiHookResult: ApiQuerySource<T>,
-    schema: ZodType<any>): ApiQueryResult<T> {
+    schema: ZodType<ApiResponse<T>>): ApiQueryResult<T> {
 
     // API 통신 결과 수신
     const { data, isLoading, error } = apiHookResult;
@@ -34,7 +34,7 @@ export function handleApiQuery<T>(
         return {
             status: "error",
             message: "Unknown Error",
-            code: "Unknow Error",
+            code: "Unknown Error",
         };
     }
 
@@ -55,7 +55,7 @@ export function handleApiQuery<T>(
     if(!realData.success) {
         return {
             status: "error",
-            message: realData.apiError.message,
+            message: realData.apiError?.message ?? "",
             code: "Api error."
         };
     }
