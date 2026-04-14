@@ -2,14 +2,12 @@ package com.homeproject.api.authentication.response;
 
 import com.homeproject.security.webauthn.result.UserLoginResult;
 import com.yubico.webauthn.AssertionRequest;
-import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import com.yubico.webauthn.data.PublicKeyCredentialRequestOptions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor

@@ -5,7 +5,6 @@ import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.business.account.AccountCommandService;
 import com.homeproject.business.account.AccountQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
