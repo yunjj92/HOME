@@ -5,8 +5,8 @@ export const bankSchema = z.object({
   name: z.string(),
   createdAt: z.string(),
   createdBy: z.string(),
-  updatedAt: z.string(),
-  updatedBy: z.string(),
+  updatedAt: z.string().nullable(),
+  updatedBy: z.string().nullable(),
 });
 
 export type Bank = z.infer<typeof bankSchema>;

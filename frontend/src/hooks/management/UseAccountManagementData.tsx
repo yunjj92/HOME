@@ -9,6 +9,6 @@ import type { ApiQueryResult } from "../../types/ApiQueryResult";
 export function useAccountManagementData(): ApiQueryResult<AccountManagementData> {
     return handleApiQuery<AccountManagementData>(
         useInitAccountManagement(), 
-        initAccountManagementResponseSchema
+        initAccountManagementResponseSchema,
     );
 }

@@ -39,7 +39,6 @@ export function handleApiQuery<T>(
     }
 
     // zod 스키마로 데이터 변환
-    console.log("data", data);
     const parsedData = schema.safeParse(data?.data);
 
     if(!parsedData.success) {

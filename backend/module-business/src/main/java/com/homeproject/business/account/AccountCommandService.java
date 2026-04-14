@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AccountCommandService {
@@ -37,15 +39,17 @@ public class AccountCommandService {
     }
 
     @Transactional
-    public void saveBank(BankParam bankParam) {
-        BankCommand bankCommand = toBankCommand(bankParam);
+    public void saveBanks(List<BankParam> bankParams) {
+        for(BankParam bankParam : bankParams) {
+            BankCommand bankCommand = toBankCommand(bankParam);
 
-        if(bankParam.id() == null) {
-            accountsRepository.insertBank(bankCommand);
-        } else if(bankParam.toDelete()) {
-            accountsRepository.deleteBank(bankCommand);
-        } else {
-            accountsRepository.updateBank(bankCommand);
+            if(bankParam.id() == null) {
+                accountsRepository.insertBank(bankCommand);
+            } else if(bankParam.toDelete()) {
+                accountsRepository.deleteBank(bankCommand);
+            } else {
+                accountsRepository.updateBank(bankCommand);
+            }
         }
     }
 

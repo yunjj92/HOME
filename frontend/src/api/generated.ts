@@ -33,6 +33,7 @@ import type {
 
 import type {
   ApiResponseAccountManagementResponse,
+  BankUpdateRequest,
   FinishLoginParams,
   FinishRegistrationParams,
   StartLoginParams,
@@ -268,6 +269,63 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
         TContext
       > => {
       return useMutation(getFinishLoginMutationOptions(options), queryClient);
+    }
+    
+export const updateBanks = (
+    bankUpdateRequest: BankUpdateRequest[], options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Blob>> => {
+    
+    
+    return axios.default.post(
+      `/api/admin/account/update_banks`,
+      bankUpdateRequest,{
+        responseType: 'blob',
+    ...options,}
+    );
+  }
+
+
+
+export const getUpdateBanksMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateBanks'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateBanks>>, {data: BankUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateBanks(data,axiosOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateBanksMutationResult = NonNullable<Awaited<ReturnType<typeof updateBanks>>>
+    export type UpdateBanksMutationBody = BankUpdateRequest[]
+    export type UpdateBanksMutationError = AxiosError<unknown>
+
+    export const useUpdateBanks = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateBanks>>,
+        TError,
+        {data: BankUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateBanksMutationOptions(options), queryClient);
     }
     
 export const initAccountManagement = (
