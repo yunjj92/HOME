@@ -3,37 +3,48 @@ import { prepareLoginOptions } from "./transformLoginResultParam";
 import { useNavigate } from "@tanstack/react-router";
 import { useLoginData } from "../../hooks/auth/UseLoginData";
 import { useFinishLoginData } from "../../hooks/auth/UseFinishLoginData";
+import type { LoginResponse } from "../../api/model";
+import { get } from "@github/webauthn-json/browser-ponyfill";
 
 
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
   const { mutateAsync: startLoginProcess } = useLoginData();
-
   const {mutateAsync: finishLoginProcess} = useFinishLoginData();
 
-  const handleLogin = async () => {
+  const handleLoginStart = async () => {
 
       try {
-        const {data: loginOptions} = await startLoginProcess({params: {username}}); 
-        const requestOptions = prepareLoginOptions(loginOptions ?? {});
-        const assertion = await navigator.credentials.get({ publicKey: requestOptions });       
-        
-        const {data: finishedLoginResponse, success:LoginSuccess
-        } = await finishLoginProcess(
+        const { data: loginOptions } = await startLoginProcess({params: {username}}); 
+
+        const requestOptions = prepareLoginOptions(loginOptions ?? {} as LoginResponse);
+        const assertion = await get({ publicKey: requestOptions });       
+
+        return assertion
+  
+      } catch (error) {
+        alert(`Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+   }
+
+   const handleLoginFinish = async (assertion: any) =>{
+
+      const dataResult = await finishLoginProcess(
           {username,
             jsonparam: JSON.stringify(assertion)
           }
-        )
+        );
 
-        if(finishedLoginResponse && LoginSuccess){
-          localStorage.setItem('accessToken', finishedLoginResponse);
-          navigate({ to: '/home' });
+      const finishResult = dataResult.data
+      const loginSuccess = dataResult.success
+
+       alert(`result: ${finishResult} and success? ${loginSuccess}`)
+ 
+        if(finishResult && loginSuccess){
+          localStorage.setItem('accessToken', finishResult);
+          void navigate({ to: '/home' });
         }
-  
-      } catch (error) {
-        alert('Login failed. Please try again.');
-      }
    }
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +71,21 @@ export const LoginForm: React.FC= () => {
              />
           </div>
           <div style={{ marginTop: '10px' }}>
-             <button onClick={handleLogin} style={{ marginLeft: '10px' }}>Login</button>
+             <button onClick={() =>{
+              
+              const login = async() => {
+               
+                const loginFinishParam = await handleLoginStart();
+                
+                if (loginFinishParam) {
+                  await handleLoginFinish(loginFinishParam)
+                }
+
+              }
+
+              void login()
+
+             }} style={{ marginLeft: '10px' }}>Login</button>
            </div>
         </div>
       );

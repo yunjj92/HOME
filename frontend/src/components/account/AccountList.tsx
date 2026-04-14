@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import type { AccountResult } from "../../api/zod/accountResult.zod";
 import type { BankResult } from "../../api/zod/bankResult.zod";
 
@@ -10,20 +10,13 @@ type AccountListProps = {
 
 export function AccountList({ banks }: AccountListProps) {
 
-    const [bankMap, setBankMap] = useState(new Map<string, string>());
-    
-    const addItem = (banks: BankResult) =>{
-        useEffect(() => {
-        const newMap = new Map(bankMap);
-        newMap.set(banks.id?.toString() ?? '-', banks.name ?? '-');
-        setBankMap(newMap);
-        }, [banks]);
+const bankMap = useMemo(() => {
+    const map = new Map();
+    for (const bank of banks) {
+        map.set(bank.id?.toString() ?? '-', bank.name ?? '-');
     }
-
-    for(const bank of banks){
-        addItem(bank);
-    }
-
+    return map;
+}, [banks]);
 
     return (
         <div>

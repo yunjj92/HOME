@@ -9,7 +9,7 @@ interface UseFinishLoginParam{
 }
 
 export function useFinishLoginData() {
-    const { mutateAsync , data, isPending: isLoading, error} = useFinishLogin();
+    const { mutateAsync , data, isPending: isLoading, error, isSuccess} = useFinishLogin();
 
     const result = handleApiQuery<string>(
         data as ApiResponse<string> | null | undefined,
@@ -22,5 +22,5 @@ export function useFinishLoginData() {
         return await mutateAsync({data: param.jsonparam, params: {username: param.username}});
     }
     
-    return{ mutateAsync: finishLoginProcess, result};
+    return{ mutateAsync: finishLoginProcess, result, isSuccess};
 }

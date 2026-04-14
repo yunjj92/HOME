@@ -17,42 +17,39 @@ export const RegistrationForm = () => {
   
   const {mutateAsync: finishRegistration} = useFinishRegistration();
 
-  const processRegistration = async () => {
+  const processRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
+    
+    e.preventDefault();
+    if (!username) return;
 
     try {
-      
-      const {data:registrationResult} = await startRegistration({params: {username}});
-      
-      const creationOptions = prepareCreationOptions(registrationResult ?? {} as any );
+      setStatus('loading');
+      const startResult = await startRegistration({params: {username}});
+
+      if(!startResult.success || !startResult.data){
+        throw new Error(startResult.apiError?.message || "Registration start failed");
+      }
+
+      const creationOptions = prepareCreationOptions(startResult.data);
 
       const credential = await create({
         publicKey: creationOptions.publicKey,
       });
 
       await finishRegistration({data: {username: username, responseJson: JSON.stringify(credential)}});
+
       setStatus('success');
       setMessage('Registration Successful!');
 
 
     } catch (error) {
-      alert(`Registration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setStatus('error');
+      setMessage(error instanceof Error ? error.message : 'Unknown error');
+      // eslint-disable-next-line no-console
+      console.error('Registration failed:', error);
     }
 
   }
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username) return;
-
-    try {
-
-      processRegistration();
-
-    } catch (err) {
-      setStatus('error');
-      setMessage(err instanceof Error ? err.message : 'Registration failed'); 
-    }
-  };
 
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -66,7 +63,9 @@ export const RegistrationForm = () => {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleRegister}>
+        <form className="space-y-6" onSubmit={(e) => {
+          void processRegistration(e);
+        }}>
           <div>
             <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
               Username

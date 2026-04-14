@@ -25,7 +25,7 @@ AXIOS_INSTANCE.interceptors.response.use(
       localStorage.removeItem('accessToken');
       window.location.href = '/login'; // 로그인 페이지로 리디렉션
     }
-    return Promise.reject(error);
+    return Promise.reject(new Error(error.response?.data?.message || 'An error occurred'));
   }
 );
 
@@ -42,7 +42,7 @@ export const axiosInstance = <T>(
     cancelToken: source.token,
   }).then(({ data }) => data);
 
-  // @ts-ignore
+  // @ts-expect-error - Orval adds cancel to the promise
   promise.cancel = () => {
     source.cancel('Query was cancelled by React Query');
   };

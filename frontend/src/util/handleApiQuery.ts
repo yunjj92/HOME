@@ -11,7 +11,7 @@ export function handleApiQuery<T>(
     rawData: ApiResponse<T> | undefined | null,
     isLoading: boolean,
     error: unknown,
-    schema: ZodType<any>
+    schema: ZodType<unknown>
 ): ApiQueryResult<T> {
 
     if (isLoading) {
@@ -49,13 +49,14 @@ export function handleApiQuery<T>(
     }
 
     // Zod parsing
-     const parsedData = schema.parse(rawData);
+     const parsedData = schema.safeParse(rawData);
 
+     // eslint-disable-next-line no-console
      console.log("Parsed data:", parsedData.success ===true);
     if (!parsedData.success) {
         return {
             status: "error",
-            message: parsedData.s.message,
+            message: parsedData.error.message,
             code: "Parsed data error.",
         };
     }
