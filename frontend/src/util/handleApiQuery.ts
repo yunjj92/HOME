@@ -63,6 +63,6 @@ export function handleApiQuery<T>(
 
     return {
         status: "success",
-        data: parsedData.data,
+        data: parsedData.data as T,
     };
 }
