@@ -13,6 +13,7 @@ import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  InvalidateOptions,
   MutationFunction,
   QueryClient,
   QueryFunction,
@@ -29,6 +30,8 @@ import type {
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
   ApiResponseString,
+  ApiResponseVoid,
+  BankUpdateRequest,
   FinalizedRegistrationRequest,
   FinishLoginParams,
   StartLoginParams,
@@ -272,6 +275,64 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getFinishLoginMutationOptions(options), queryClient);
     }
     
+export const updateBanks = (
+    bankUpdateRequest: BankUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/admin/account/update_banks`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: bankUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateBanksMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateBanks'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateBanks>>, {data: BankUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateBanks(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateBanksMutationResult = NonNullable<Awaited<ReturnType<typeof updateBanks>>>
+    export type UpdateBanksMutationBody = BankUpdateRequest[]
+    export type UpdateBanksMutationError = unknown
+
+    export const useUpdateBanks = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateBanks>>, TError,{data: BankUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateBanks>>,
+        TError,
+        {data: BankUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateBanksMutationOptions(options), queryClient);
+    }
+    
 export const initAccountManagement = (
     
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
@@ -351,4 +412,14 @@ export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initA
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateInitAccountManagement = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getInitAccountManagementQueryKey() }, options);
+
+  return queryClient;
 }
