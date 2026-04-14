@@ -2,7 +2,6 @@ import { useState } from "react";
 import { prepareLoginOptions } from "./transformLoginResultParam";
 import { useNavigate } from "@tanstack/react-router";
 import { useLoginData } from "../../hooks/auth/UseLoginData";
-import type { LoginResponse } from "../../api/model";
 import { useFinishLoginData } from "../../hooks/auth/UseFinishLoginData";
 
 
@@ -17,7 +16,7 @@ export const LoginForm: React.FC= () => {
 
       try {
         const {data: loginOptions} = await startLoginProcess({params: {username}}); 
-        const requestOptions = prepareLoginOptions(loginOptions as LoginResponse);
+        const requestOptions = prepareLoginOptions(loginOptions ?? {});
         const assertion = await navigator.credentials.get({ publicKey: requestOptions });       
         
         const {data: finishedLoginResponse, success:LoginSuccess

@@ -30,7 +30,11 @@ function mapType(type, isOptional) {
   else if (type === 'unknown') zodType = 'z.unknown()';
   else if (type.endsWith('[]')) {
     const baseType = type.slice(0, -2);
-    zodType = `z.array(${toZodSchemaName(baseType)})`;
+    if (PRIMITIVE_TYPES.includes(baseType)) {
+      zodType = `z.array(${mapType(baseType, false)})`;
+    } else {
+      zodType = `z.array(${toZodSchemaName(baseType)})`;
+    }
   } else {
     zodType = toZodSchemaName(type);
   }
@@ -108,8 +112,8 @@ files.forEach(file => {
     
     // Check if it's an enum-like type
     if (content.includes(`export const ${typeName} = {`)) {
-        outputContent += `import { ${typeName} } from '../model/${fileNameNoExt}';\n`;
-        outputContent += `\nexport const ${schemaName} = z.nativeEnum(${typeName});\n`;
+        outputContent += `import { ${typeName} as ${typeName}Model } from '../model/${fileNameNoExt}';\n`;
+        outputContent += `\nexport const ${schemaName} = z.nativeEnum(${typeName}Model);\n`;
     } else {
         // Handle simple types like appId: string
         if (typeValue.trim() === 'string') {

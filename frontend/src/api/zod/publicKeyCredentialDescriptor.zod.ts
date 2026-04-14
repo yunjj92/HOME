@@ -4,7 +4,7 @@ import { publicKeyCredentialDescriptorTypeSchema } from './publicKeyCredentialDe
 export const publicKeyCredentialDescriptorSchema = z.object({
   type: publicKeyCredentialDescriptorTypeSchema.nullish(),
   id: z.string().nullish(),
-  transports: z.array(stringSchema).nullish(),
+  transports: z.array(z.string()).nullish(),
 });
 
 export type PublicKeyCredentialDescriptor = z.infer<typeof publicKeyCredentialDescriptorSchema>;

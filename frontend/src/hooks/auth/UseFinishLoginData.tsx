@@ -11,7 +11,7 @@ interface UseFinishLoginParam{
 export function useFinishLoginData() {
     const { mutateAsync , data, isPending: isLoading, error} = useFinishLogin();
 
-    const result = handleApiQuery<String>(
+    const result = handleApiQuery<string>(
         data as ApiResponse<string> | null | undefined,
         isLoading,
         error,

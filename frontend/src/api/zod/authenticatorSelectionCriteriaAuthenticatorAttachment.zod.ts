@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AuthenticatorSelectionCriteriaAuthenticatorAttachment } from '../model/authenticatorSelectionCriteriaAuthenticatorAttachment';
+import { AuthenticatorSelectionCriteriaAuthenticatorAttachment as AuthenticatorSelectionCriteriaAuthenticatorAttachmentModel } from '../model/authenticatorSelectionCriteriaAuthenticatorAttachment';
 
-export const authenticatorSelectionCriteriaAuthenticatorAttachmentSchema = z.nativeEnum(AuthenticatorSelectionCriteriaAuthenticatorAttachment);
+export const authenticatorSelectionCriteriaAuthenticatorAttachmentSchema = z.nativeEnum(AuthenticatorSelectionCriteriaAuthenticatorAttachmentModel);
 export type AuthenticatorSelectionCriteriaAuthenticatorAttachment = z.infer<typeof authenticatorSelectionCriteriaAuthenticatorAttachmentSchema>;

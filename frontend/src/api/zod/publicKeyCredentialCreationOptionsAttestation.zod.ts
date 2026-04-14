@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PublicKeyCredentialCreationOptionsAttestation } from '../model/publicKeyCredentialCreationOptionsAttestation';
+import { PublicKeyCredentialCreationOptionsAttestation as PublicKeyCredentialCreationOptionsAttestationModel } from '../model/publicKeyCredentialCreationOptionsAttestation';
 
-export const publicKeyCredentialCreationOptionsAttestationSchema = z.nativeEnum(PublicKeyCredentialCreationOptionsAttestation);
+export const publicKeyCredentialCreationOptionsAttestationSchema = z.nativeEnum(PublicKeyCredentialCreationOptionsAttestationModel);
 export type PublicKeyCredentialCreationOptionsAttestation = z.infer<typeof publicKeyCredentialCreationOptionsAttestationSchema>;
