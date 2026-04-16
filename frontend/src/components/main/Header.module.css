@@ -2,7 +2,7 @@
 @import "tailwindcss";
 /* 팝오버 패널: 전체 너비를 차지하게 설정 */
 .popoverPanel {
-  @apply absolute inset-x-0 top-0 -z-10 bg-white pt-14 shadow-lg ring-1 ring-gray-900/5;
+  @apply absolute inset-x-0 top-0 -z-10 bg-white pt-20 shadow-lg ring-1 ring-gray-900/5;
 }
 
 /* 그리드 컨테이너: 이미지처럼 4열로 배치 */

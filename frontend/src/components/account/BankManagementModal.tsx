@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import type { Bank } from "../../schemas/account/bank";
+import { useEffect, useMemo, useState } from "react";
 import { bankRequestSchema } from "../../schemas/account/bankRequest";
 import { getInitAccountManagementQueryKey, useUpdateBanks } from "../../api/generated";
 import { useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 import { formatDateTime } from "../../util/formatDateTime";
+import type { BankResult } from "../../api/model";
 
 type BankManagementModalProps = {
-    bankList: Bank[],
+    bankList: BankResult[],
     onClose: () => void,
 };
 
@@ -22,6 +22,20 @@ type BankRow = {
 export function BankManagementModal({ bankList, onClose }: BankManagementModalProps) {
 
     // 은행 데이터 저장 hook 세팅
+
+
+    const banks: BankRow[] = useMemo(() => {
+    if (!bankList) return [];
+    
+    return bankList.map((bank) => ({
+        id: bank.id ?? null,
+        name: bank.name ?? '-',
+        createdAt: bank.createdAt ?? null,
+        updatedAt: bank.updatedAt ?? null,
+        toDelete: false,
+    }));
+    }, [bankList]);
+    
     const queryClient = useQueryClient();
     const updateBanksMutation = useUpdateBanks({
         mutation: {
@@ -49,7 +63,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setRows([
-            ...bankList.map((bank) => ({
+            ...banks.map((bank) => ({
                 id: bank.id,
                 name: bank.name,
                 createdAt: bank.createdAt,
@@ -95,7 +109,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
                 if(row.id === null) return row.name?.length ?? 0 > 0;
                 if(row.id !== null) {
                     if(row.toDelete) return true;
-                    if(row.name.trim() !== bankList.find((bank) => bank.id === row.id)?.name.trim()) return true;
+                    if(row.name.trim() !== banks.find((bank) => bank.id === row.id)?.name.trim()) return true;
                 }
             }).map(row => ({
                 id: row.id,

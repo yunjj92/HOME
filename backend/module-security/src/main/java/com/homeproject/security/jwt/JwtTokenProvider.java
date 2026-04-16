@@ -1,10 +1,9 @@
 package com.homeproject.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +14,7 @@ import java.security.Key;
 import java.util.Collections;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
     private final Key key;
@@ -44,13 +44,19 @@ public class JwtTokenProvider {
     // 토큰 검증 및 파싱: parserBuilder()가 사라지고 parser()가 빌더 역할을 겸함
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()
+            JwtParser jwtParser =  Jwts.parser()
                     .verifyWith((SecretKey) key) // 0.12 버전 핵심: verifyWith 사용
-                    .build()
-                    .parseSignedClaims(token); // parseClaimsJws 대신 사용
+                    .build();
+
+            jwtParser.parseSignedClaims(token); // parseClaimsJws 대신 사용
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        }catch (ExpiredJwtException e){
+            log.info("Expired JWT token");
+            throw new ExpiredJwtException(null, null, "Expired");
+        }catch (JwtException e) {
+            throw new JwtException("invalid JWT token");
+        }catch (IllegalArgumentException e){
+            throw new IllegalArgumentException("illegal argument exception");
         }
     }
 

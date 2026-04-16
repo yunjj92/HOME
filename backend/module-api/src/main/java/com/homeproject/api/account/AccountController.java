@@ -7,11 +7,9 @@ import com.homeproject.business.account.AccountCommandService;
 import com.homeproject.business.account.AccountQueryService;
 import com.homeproject.business.account.dto.BankParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/account")
@@ -29,14 +27,18 @@ public class AccountController {
         );
     }
 
-    @GetMapping(value = "/init", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/init")
     public ApiResponse<AccountManagementResponse> initAccountManagement() {
-        AccountManagementResponse accountManagementResponse = new AccountManagementResponse(
-                accountQueryService.getAccountList(),
-                accountQueryService.getBankList()
-        );
 
-        return ApiResponse.success(accountManagementResponse);
+        try {
+            AccountManagementResponse accountManagementResponse = new AccountManagementResponse(
+            accountQueryService.getAccountList(),
+                    accountQueryService.getBankList()
+            );
+            return ApiResponse.success(accountManagementResponse);
+        }catch (Exception e){
+            return ApiResponse.error(e.getMessage(), "");
+        }
     }
 
     @PostMapping(value = "/update_banks")

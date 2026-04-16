@@ -1,27 +1,32 @@
-import type { Account } from "../../schemas/account/account";
-import type { Bank } from "../../schemas/account/bank";
+import { useMemo } from "react";
+import type { AccountResult } from "../../api/zod/accountResult.zod";
+import type { BankResult } from "../../api/zod/bankResult.zod";
+
 
 type AccountListProps = {
-    accounts: Account[];
-    banks: Bank[];
+    accounts: AccountResult[];
+    banks: BankResult[];
 }
 
 export function AccountList({ accounts, banks }: AccountListProps) {
-    const bankMap = new Map<number, string>(
-        banks.map((bank) => [bank.id, bank.name])
-    );
 
-    const getBankName = (bankId: number | null) => {
-        if(bankId == null) return "-";
-        return bankMap.get(bankId) ?? "-";
+    const bankMap = useMemo(() => {
+    const map = new Map();
+    for (const bank of banks) {
+        map.set(bank.id?.toString() ?? '-', bank.name ?? '-');
     }
+    return map;
+}, [banks]);
+
+
+    if(accounts.length == 0) console.log("accounts 0")
 
     return (
         <div>
             <ul>
-                {accounts.map((account) => (
-                    <li key={account.id}>
-                        {account.name} / {getBankName(account.bankId)}
+                {Array.from(bankMap.entries()).map(([bankId, bankName]) => (
+                    <li key={bankId}>
+                        {bankName} (ID: {bankId})
                     </li>
                 ))}
             </ul>
