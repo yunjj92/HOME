@@ -1,8 +1,8 @@
-import { useStartRegistration } from "../../api/generated";
-import type { StartRegistrationResponse } from "../../api/model";
-import { startRegistrationResponseSchema, type StartRegistrationData } from "../../api/zod/startRegistrationResponse.zod";
-import type { ApiResponse } from "../../schemas/common/api";
-import { handleApiQuery } from "../../util/handleApiQuery";
+import { useStartRegistration } from "../../../api/generated";
+import type { StartRegistrationResponse } from "../../../api/model";
+import { startRegistrationResponseSchema, type StartRegistrationData } from "../../../api/zod/startRegistrationResponse.zod";
+import type { ApiResponse } from "../../../schemas/common/api";
+import { handleApiQuery } from "../../../util/handleApiQuery";
 
 export function useStartRegistrationData() {
  

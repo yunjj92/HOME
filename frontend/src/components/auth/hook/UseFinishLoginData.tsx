@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { useFinishLogin } from "../../api/generated";
-import { handleApiQuery } from "../../util/handleApiQuery";
-import { createApiResponseSchema, type ApiResponse } from '../../schemas/common/api';
+import { useFinishLogin } from "../../../api/generated";
+import { handleApiQuery } from "../../../util/handleApiQuery";
+import { createApiResponseSchema, type ApiResponse } from '../../../schemas/common/api';
 
 interface UseFinishLoginParam{
     username: string;

@@ -24,7 +24,7 @@ import {
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../auth/stores/authStore';
 
 const products = [
   { name: 'Management', description: 'Get a better understanding of your money', href: '/account', icon: ChartPieIcon },

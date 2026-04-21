@@ -1,11 +1,8 @@
 import { create } from "@github/webauthn-json/browser-ponyfill";
 import { useState } from "react";
-import { useFinishRegistration } from "../../api/generated";
-import { prepareCreationOptions } from "./transformAuthResult";
+import { useFinishRegistration, useStartRegistration } from "../../api/generated";
+import { prepareCreationOptions } from "./function/transformAuthResult";
 import { Link } from "@tanstack/react-router";
-import { useStartRegistrationData } from "../../hooks/auth/UseStartRegistrationData";
-
-
 
 export const RegistrationForm = () => {
 
@@ -13,7 +10,7 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const {mutateAsync: startRegistration} = useStartRegistrationData();
+  const {mutateAsync: startRegistration} = useStartRegistration();
   
   const {mutateAsync: finishRegistration} = useFinishRegistration();
 
@@ -45,8 +42,6 @@ export const RegistrationForm = () => {
     } catch (error) {
       setStatus('error');
       setMessage(error instanceof Error ? error.message : 'Unknown error');
-      // eslint-disable-next-line no-console
-      console.error('Registration failed:', error);
     }
 
   }

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../components/auth/stores/authStore';
 import { UserSchema } from '../schemas/userSchema';
 
 export function HomeView() {

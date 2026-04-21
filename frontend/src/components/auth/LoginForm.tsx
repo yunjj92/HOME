@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { prepareLoginOptions } from "./transformLoginResultParam";
 import { useNavigate } from "@tanstack/react-router";
-import { useLoginData } from "../../hooks/auth/UseLoginData";
-import { useFinishLoginData } from "../../hooks/auth/UseFinishLoginData";
 import type { LoginResponse } from "../../api/model";
 import { get } from "@github/webauthn-json/browser-ponyfill";
+import { prepareLoginOptions } from "./function/transformLoginResultParam";
+import { useFinishLogin, useStartLogin } from "../../api/generated";
 
 
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
-  const { mutateAsync: startLoginProcess } = useLoginData();
-  const {mutateAsync: finishLoginProcess} = useFinishLoginData();
+  const {mutateAsync: startLoginProcess } = useStartLogin();
+  const {mutateAsync: finishLoginProcess} = useFinishLogin();
 
   const handleLoginStart = async () => {
 
@@ -30,11 +29,7 @@ export const LoginForm: React.FC= () => {
 
    const handleLoginFinish = async (assertion: any) =>{
 
-      const dataResult = await finishLoginProcess(
-          {username,
-            jsonparam: JSON.stringify(assertion)
-          }
-        );
+      const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}});
 
       const finishResult = dataResult.data
       const loginSuccess = dataResult.success
