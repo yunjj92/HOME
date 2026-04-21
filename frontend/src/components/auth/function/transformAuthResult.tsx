@@ -8,6 +8,7 @@ import type { StartRegistrationResponse } from "../../../api/model";
 const prepareCreationOptions = (data: StartRegistrationResponse): CredentialCreationOptions => {
 
   return {
+
     publicKey: {
       // 1. RP 정보
       rp: {
@@ -16,7 +17,7 @@ const prepareCreationOptions = (data: StartRegistrationResponse): CredentialCrea
       },
       // 2. 유저 정보 (ID는 반드시 Buffer여야 함)
       user: {
-        id:base64urlToBuffer(data.userId ?? ""), // userId가 없으면 기본값 사용
+        id: base64urlToBuffer(data.userId ?? ""), // userId가 없으면 기본값 사용
         name: data.username ?? "",
         displayName: data.displayName ?? "",
       },
