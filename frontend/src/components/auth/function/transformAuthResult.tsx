@@ -1,5 +1,5 @@
 import { base64urlToBuffer } from "@github/webauthn-json/extended";
-import type { StartRegistrationResponse } from "../../api/model";
+import type { StartRegistrationResponse } from "../../../api/model";
 
 
 /**

@@ -1,4 +1,4 @@
-import type { LoginResponse } from "../../api/model";
+import type { LoginResponse } from "../../../api/model";
 import { base64urlToBuffer } from "@github/webauthn-json/extended";
 
 const prepareLoginOptions = (data: LoginResponse): PublicKeyCredentialRequestOptions=> { 

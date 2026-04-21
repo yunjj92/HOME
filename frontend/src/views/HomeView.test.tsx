@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { HomeView } from './HomeView';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../components/auth/stores/authStore';
 
 afterEach(() => {
   cleanup();
