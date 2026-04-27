@@ -93,7 +93,7 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
                 if(row.id === null) return row.name?.length ?? 0 > 0;
                 if(row.id !== null) {
                     if(row.toDelete) return true;
-                    if(row.name.trim() !== banks.find((bank) => bank.id === row.id)?.name.trim()) return true;
+                    if(row.name.trim() !== rows.find((bank) => bank.id === row.id)?.name.trim()) return true;
                 }
             }).map(row => ({
                 id: row.id,
