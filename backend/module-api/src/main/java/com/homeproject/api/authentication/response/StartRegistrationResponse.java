@@ -1,6 +1,7 @@
 package com.homeproject.api.authentication.response;
 
 import com.homeproject.security.webauthn.result.UserRegistrationResult;
+import com.yubico.webauthn.data.ByteArray;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,8 +11,8 @@ public class StartRegistrationResponse {
 
     String username;
     String rpId;
-    String challenge;
-    String userId;
+    ByteArray challenge;
+    ByteArray userId;
     String displayName;
     String pubKeyCredParams;
 
@@ -19,8 +20,8 @@ public class StartRegistrationResponse {
         return new StartRegistrationResponse(
                 userRegistrationResult.userName(),
                 userRegistrationResult.creationOptions().getRp().getId(),
-                userRegistrationResult.creationOptions().getChallenge().toString(),
-                userRegistrationResult.creationOptions().getUser().getId().toString(),
+                userRegistrationResult.creationOptions().getChallenge(),
+                userRegistrationResult.creationOptions().getUser().getId(),
                 userRegistrationResult.creationOptions().getUser().getDisplayName(),
                 userRegistrationResult.creationOptions().getPubKeyCredParams().toString()
         );

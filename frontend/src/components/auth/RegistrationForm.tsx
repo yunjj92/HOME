@@ -29,6 +29,8 @@ export const RegistrationForm = () => {
 
       const creationOptions = prepareCreationOptions(startResult.data);
 
+      console.log("Prepared Creation Options:", creationOptions);
+
       const credential = await create({
         publicKey: creationOptions.publicKey,
       });
