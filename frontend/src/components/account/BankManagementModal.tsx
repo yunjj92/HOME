@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { bankRequestSchema } from "../../schemas/account/bankRequest";
 import { getInitAccountManagementQueryKey, useUpdateBanks } from "../../api/generated";
 import { useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 import { formatDateTime } from "../../util/formatDateTime";
-import type { BankResult } from "../../api/model";
+import type { BankResult } from "../../api/zod/bankResult.zod";
 
 type BankManagementModalProps = {
     bankList: BankResult[],
@@ -22,20 +22,6 @@ type BankRow = {
 export function BankManagementModal({ bankList, onClose }: BankManagementModalProps) {
 
     // 은행 데이터 저장 hook 세팅
-
-
-    const banks: BankRow[] = useMemo(() => {
-    if (!bankList) return [];
-    
-    return bankList.map((bank) => ({
-        id: bank.id ?? null,
-        name: bank.name ?? '-',
-        createdAt: bank.createdAt ?? null,
-        updatedAt: bank.updatedAt ?? null,
-        toDelete: false,
-    }));
-    }, [bankList]);
-    
     const queryClient = useQueryClient();
     const updateBanksMutation = useUpdateBanks({
         mutation: {
@@ -63,11 +49,11 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setRows([
-            ...banks.map((bank) => ({
-                id: bank.id,
-                name: bank.name,
-                createdAt: bank.createdAt,
-                updatedAt: bank.updatedAt,
+            ...bankList.map((bank) => ({
+                id: bank.id ?? 0,
+                name: bank.name ?? "",
+                createdAt: bank.createdAt ?? "",
+                updatedAt: bank.updatedAt ?? "",
                 toDelete: false,
             })),
             createEmptyRow(),
@@ -78,8 +64,6 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
     const addRow = () => {
         setRows((prev) => [...prev, createEmptyRow()]);
     };
-
-    
 
     // 행수정
     const modifyRowName = (targetIndex: number, value: string) => {

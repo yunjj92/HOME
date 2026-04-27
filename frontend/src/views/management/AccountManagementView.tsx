@@ -6,18 +6,23 @@ import { BankManagementModal } from "../../components/account/BankManagementModa
 
 export const AccountManagementView = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const {finalData, isLoading, isError} = useAccountManagementData();
+    const apiState = useAccountManagementData();
 
-    if(isLoading){
-        return <AccountListSkeleton />;
+    switch(apiState.status) {
+        case "loading":
+            return <AccountListSkeleton />;
+        case "error":
+            return (
+                <div>
+                    <div>message: {apiState.message}</div>
+                    <div>status: {apiState.code}</div>
+                </div>
+            );
+        default:
+            break;
     }
 
-    if(isError){
-        return <div>확인 필요</div>;
-    }
-
-
-    const {accountResultList, bankResultList} = finalData ?? {}
+    const {accountResultList, bankResultList} = apiState.data;
     
     return (
         <section className="space-y-4">
