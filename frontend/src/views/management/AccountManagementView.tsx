@@ -39,10 +39,6 @@ export const AccountManagementView = () => {
             </div>
 
             <div>
-                <div>은행 수: {bankResultList?.length}</div>
-                <div>계좌 수: {accountResultList?.length}</div>
-
-                <h3>계좌 목록</h3>
                 <AccountList accounts={accountResultList ?? []} banks={bankResultList ?? []} />
             </div>
 
