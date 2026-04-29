@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { bankRequestSchema } from "../../schemas/account/bankRequest";
-import { getInitAccountManagementQueryKey, useUpdateBanks } from "../../api/generated";
+import { useUpdateBanks } from "../../api/generated";
 import { useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 import { formatDateTime } from "../../util/formatDateTime";
@@ -25,11 +25,6 @@ export function BankManagementModal({ bankList, onClose }: BankManagementModalPr
     const queryClient = useQueryClient();
     const updateBanksMutation = useUpdateBanks({
         mutation: {
-            onSuccess: async () => {
-                await queryClient.invalidateQueries({
-                    queryKey: getInitAccountManagementQueryKey(),
-                })
-            },
             onError: () => {
                 alert(`저장 중 오류가 발생했습니다.`);
             },
