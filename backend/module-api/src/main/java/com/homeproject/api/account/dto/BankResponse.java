@@ -1,7 +1,6 @@
 package com.homeproject.api.account.dto;
 
 import com.homeproject.business.account.dto.BankResult;
-import com.homeproject.db.accounts.dto.BankProjection;
 
 import java.time.LocalDateTime;
 
