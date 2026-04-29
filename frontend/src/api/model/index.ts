@@ -7,10 +7,13 @@
  */
 
 export * from './accountManagementResponse';
+export * from './accountResponse';
 export * from './accountResult';
 export * from './allowedCredentialResponse';
 export * from './apiError';
 export * from './apiResponseAccountManagementResponse';
+export * from './apiResponseListAccountResponse';
+export * from './apiResponseListBankResponse';
 export * from './apiResponseLoginResponse';
 export * from './apiResponseStartRegistrationResponse';
 export * from './apiResponseString';
@@ -22,6 +25,7 @@ export * from './authenticatorSelectionCriteria';
 export * from './authenticatorSelectionCriteriaAuthenticatorAttachment';
 export * from './authenticatorSelectionCriteriaResidentKey';
 export * from './authenticatorSelectionCriteriaUserVerification';
+export * from './bankResponse';
 export * from './bankResult';
 export * from './bankUpdateRequest';
 export * from './finalizedRegistrationRequest';

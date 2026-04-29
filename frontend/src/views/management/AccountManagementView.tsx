@@ -1,12 +1,12 @@
 ﻿import { AccountList } from "../../components/account/AccountList";
-import { useAccountManagementData } from "../../hooks/management/UseAccountManagementData";
+import { useAccountManagementView } from "../../hooks/management/useAccountManagementView";
 import { AccountListSkeleton } from "../../components/account/AccountListSkeleton";
 import { useState } from "react";
 import { BankManagementModal } from "../../components/account/BankManagementModal";
 
 export const AccountManagementView = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const apiState = useAccountManagementData();
+    const apiState = useAccountManagementView();
 
     switch(apiState.status) {
         case "loading":
@@ -22,7 +22,7 @@ export const AccountManagementView = () => {
             break;
     }
 
-    const {accountResultList, bankResultList} = apiState.data;
+    const { accountResultList, bankResultList } = apiState.data;
     
     return (
         <section className="space-y-4">

@@ -1,7 +1,7 @@
 import type { ApiResponse } from "../schemas/common/api"
 
-export type QuerySnapshot<TData, TError> = {
-    data: ApiResponse<TData> | undefined;
+export type QuerySnapshot = {
+    data: ApiResponse<unknown> | undefined;
     isLoading: boolean;
-    error: TError | null;
+    error: Error | null;
 };
