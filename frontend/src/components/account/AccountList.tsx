@@ -1,17 +1,18 @@
 import { useMemo } from "react";
-import type { AccountResult } from "../../api/zod/accountResult.zod";
-import type { BankResult } from "../../api/zod/bankResult.zod";
 import { formatDateTime } from "../../util/formatDateTime";
-
+import type { AccountData } from "../../api/zod/accountResponse.zod";
+import type { BankData } from "../../api/zod/bankResponse.zod";
+import type { CodeData } from "../../api/zod/codeResponse.zod";
+import { useCodesMemo } from "../../hooks/common/useCodesMemo";
 
 type AccountListProps = {
-    accounts: AccountResult[];
-    banks: BankResult[];
+    accounts: AccountData[];
+    banks: BankData[];
+    accountTypeCodes: CodeData[];
+    currencyTypeCodes: CodeData[];
 };
 
-
-
-export function AccountList({ accounts, banks }: AccountListProps) {
+export function AccountList({ accounts, banks, accountTypeCodes, currencyTypeCodes }: AccountListProps) {
 
     const bankMap = useMemo(() => {
         return new Map(banks.map((bank) => [bank.id, bank.name]));
@@ -21,9 +22,9 @@ export function AccountList({ accounts, banks }: AccountListProps) {
         if (bankId == null) return "-";
         return bankMap.get(bankId) ?? "-";
     };
-
-
-    if(accounts.length == 0) console.log("accounts 0")
+    
+    const accountTypeCodeMap = useCodesMemo(accountTypeCodes);
+    const currencyTypeCodeMap = useCodesMemo(currencyTypeCodes);
 
     return (
         <div className="rounded-lg border border-gray-200 bg-white">
@@ -50,9 +51,9 @@ export function AccountList({ accounts, banks }: AccountListProps) {
                     >
                     <td className="px-4 py-3">{account.name ?? "-"}</td>
                     <td className="px-4 py-3">{getBankName(account.bankId ?? 0)}</td>
-                    <td className="px-4 py-3">{account.accountType ?? "-"}</td>
+                    <td className="px-4 py-3">{accountTypeCodeMap.get(account.accountType)}</td>
                     <td className="px-4 py-3">{account.owner ?? "-"}</td>
-                    <td className="px-4 py-3">{account.currencyType ?? "-"}</td>
+                    <td className="px-4 py-3">{currencyTypeCodeMap.get(account.currencyType)}</td>
                     <td className="px-4 py-3">{account.accountNumber ?? "-"}</td>
                     <td className="px-4 py-3">{account.description ?? "-"}</td>
                     <td className="px-4 py-3">{formatDateTime(account.createdAt ?? "-")}</td>

@@ -1,9 +1,9 @@
-package com.homeproject.db.accounts;
+package com.homeproject.db.account;
 
-import com.homeproject.db.accounts.dto.AccountCommand;
-import com.homeproject.db.accounts.dto.AccountProjection;
-import com.homeproject.db.accounts.dto.BankCommand;
-import com.homeproject.db.accounts.dto.BankProjection;
+import com.homeproject.db.account.dto.AccountCommand;
+import com.homeproject.db.account.dto.AccountProjection;
+import com.homeproject.db.account.dto.BankCommand;
+import com.homeproject.db.account.dto.BankProjection;
 
 import java.util.List;
 

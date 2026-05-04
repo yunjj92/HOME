@@ -1,10 +1,10 @@
-package com.homeproject.db.accounts.impl;
+package com.homeproject.db.account.impl;
 
 import com.homeproject.db.DbTestApplication;
-import com.homeproject.db.accounts.AccountsRepository;
-import com.homeproject.db.accounts.dto.AccountCommand;
-import com.homeproject.db.accounts.dto.AccountProjection;
-import com.homeproject.db.accounts.dto.BankCommand;
+import com.homeproject.db.account.AccountsRepository;
+import com.homeproject.db.account.dto.AccountCommand;
+import com.homeproject.db.account.dto.AccountProjection;
+import com.homeproject.db.account.dto.BankCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
