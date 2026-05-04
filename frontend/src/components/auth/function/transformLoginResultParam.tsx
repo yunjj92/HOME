@@ -4,7 +4,7 @@ import { base64urlToBuffer } from "@github/webauthn-json/extended";
 const prepareLoginOptions = (data: LoginResponse): PublicKeyCredentialRequestOptions=> { 
 
 const preparedLoginOptions = {
-
+    
     allowCredentials: data.allowCredentials?.map(cred => ({
         id: base64urlToBuffer(cred.id ?? ""), // base64url 문자열을 ArrayBuffer로 변환
         transports: Array.isArray(cred.transport) ? cred.transport : new Array(cred.transport ?? ""), // transports가 배열인지 확인 후 설정
