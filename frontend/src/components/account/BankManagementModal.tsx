@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { bankRequestSchema } from "../../schemas/account/bankRequest";
-import { getInitAccountManagementQueryKey, useUpdateBanks } from "../../api/generated";
-import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateBanks } from "../../api/generated";
+//import { useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 import { formatDateTime } from "../../util/formatDateTime";
 import type { BankResult } from "../../api/zod/bankResult.zod";
@@ -22,14 +22,9 @@ type BankRow = {
 export function BankManagementModal({ bankList, onClose }: BankManagementModalProps) {
 
     // 은행 데이터 저장 hook 세팅
-    const queryClient = useQueryClient();
+    //const queryClient = useQueryClient();
     const updateBanksMutation = useUpdateBanks({
         mutation: {
-            onSuccess: async () => {
-                await queryClient.invalidateQueries({
-                    queryKey: getInitAccountManagementQueryKey(),
-                })
-            },
             onError: () => {
                 alert(`저장 중 오류가 발생했습니다.`);
             },

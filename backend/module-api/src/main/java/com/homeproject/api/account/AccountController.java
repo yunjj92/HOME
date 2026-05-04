@@ -1,6 +1,7 @@
 package com.homeproject.api.account;
 
-import com.homeproject.api.account.dto.AccountManagementResponse;
+import com.homeproject.api.account.dto.AccountResponse;
+import com.homeproject.api.account.dto.BankResponse;
 import com.homeproject.api.account.dto.BankUpdateRequest;
 import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.business.account.AccountCommandService;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/account")
+@RequestMapping("/api/account")
 public class AccountController {
 
     private final AccountQueryService accountQueryService;
@@ -27,16 +28,29 @@ public class AccountController {
         );
     }
 
-    @GetMapping(value = "/init")
-    public ApiResponse<AccountManagementResponse> initAccountManagement() {
-
+    @GetMapping(value = "/get_accounts")
+    public ApiResponse<List<AccountResponse>> getAccounts() {
         try {
-            AccountManagementResponse accountManagementResponse = new AccountManagementResponse(
-            accountQueryService.getAccountList(),
-                    accountQueryService.getBankList()
+            return ApiResponse.success(
+                    accountQueryService.getAccountList()
+                    .stream()
+                    .map(AccountResponse::from)
+                    .toList()
             );
-            return ApiResponse.success(accountManagementResponse);
-        }catch (Exception e){
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
+    }
+
+    @GetMapping(value = "/get_banks")
+    public ApiResponse<List<BankResponse>> getBanks() {
+        try {
+            return ApiResponse.success(accountQueryService.getBankList()
+                    .stream()
+                    .map(BankResponse::from)
+                    .toList()
+            );
+        } catch (Exception e) {
             return ApiResponse.error(e.getMessage(), "");
         }
     }

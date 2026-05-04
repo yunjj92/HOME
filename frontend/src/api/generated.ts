@@ -26,7 +26,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  ApiResponseAccountManagementResponse,
+  ApiResponseListAccountResponse,
+  ApiResponseListBankResponse,
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
   ApiResponseString,
@@ -282,7 +283,7 @@ export const updateBanks = (
       
       
       return axiosInstance<ApiResponseVoid>(
-      {url: `/api/admin/account/update_banks`, method: 'POST',
+      {url: `/api/account/update_banks`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: bankUpdateRequest, signal
     },
@@ -333,14 +334,14 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getUpdateBanksMutationOptions(options), queryClient);
     }
     
-export const initAccountManagement = (
+export const getBanks = (
     
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
       
       
-      return axiosInstance<ApiResponseAccountManagementResponse>(
-      {url: `/api/admin/account/init`, method: 'GET', signal
+      return axiosInstance<ApiResponseListBankResponse>(
+      {url: `/api/account/get_banks`, method: 'GET', signal
     },
       options);
     }
@@ -348,66 +349,66 @@ export const initAccountManagement = (
 
 
 
-export const getInitAccountManagementQueryKey = () => {
+export const getGetBanksQueryKey = () => {
     return [
-    `/api/admin/account/init`
+    `/api/account/get_banks`
     ] as const;
     }
 
     
-export const getInitAccountManagementQueryOptions = <TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetBanksQueryOptions = <TData = Awaited<ReturnType<typeof getBanks>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getInitAccountManagementQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetBanksQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof initAccountManagement>>> = ({ signal }) => initAccountManagement(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getBanks>>> = ({ signal }) => getBanks(requestOptions, signal);
 
       
 
       
 
-   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type InitAccountManagementQueryResult = NonNullable<Awaited<ReturnType<typeof initAccountManagement>>>
-export type InitAccountManagementQueryError = unknown
+export type GetBanksQueryResult = NonNullable<Awaited<ReturnType<typeof getBanks>>>
+export type GetBanksQueryError = unknown
 
 
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
+export function useGetBanks<TData = Awaited<ReturnType<typeof getBanks>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof initAccountManagement>>,
+          Awaited<ReturnType<typeof getBanks>>,
           TError,
-          Awaited<ReturnType<typeof initAccountManagement>>
+          Awaited<ReturnType<typeof getBanks>>
         > , 'initialData'
       >, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>> & Pick<
+export function useGetBanks<TData = Awaited<ReturnType<typeof getBanks>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof initAccountManagement>>,
+          Awaited<ReturnType<typeof getBanks>>,
           TError,
-          Awaited<ReturnType<typeof initAccountManagement>>
+          Awaited<ReturnType<typeof getBanks>>
         > , 'initialData'
       >, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export function useGetBanks<TData = Awaited<ReturnType<typeof getBanks>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initAccountManagement>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof initAccountManagement>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export function useGetBanks<TData = Awaited<ReturnType<typeof getBanks>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getBanks>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getInitAccountManagementQueryOptions(options)
+  const queryOptions = getGetBanksQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -415,11 +416,104 @@ export function useInitAccountManagement<TData = Awaited<ReturnType<typeof initA
 }
 
 
-export const invalidateInitAccountManagement = async (
+export const invalidateGetBanks = async (
  queryClient: QueryClient,  options?: InvalidateOptions
   ): Promise<QueryClient> => {
 
-  await queryClient.invalidateQueries({ queryKey: getInitAccountManagementQueryKey() }, options);
+  await queryClient.invalidateQueries({ queryKey: getGetBanksQueryKey() }, options);
+
+  return queryClient;
+}
+
+
+
+export const getAccounts = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListAccountResponse>(
+      {url: `/api/account/get_accounts`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetAccountsQueryKey = () => {
+    return [
+    `/api/account/get_accounts`
+    ] as const;
+    }
+
+    
+export const getGetAccountsQueryOptions = <TData = Awaited<ReturnType<typeof getAccounts>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAccountsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAccounts>>> = ({ signal }) => getAccounts(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAccountsQueryResult = NonNullable<Awaited<ReturnType<typeof getAccounts>>>
+export type GetAccountsQueryError = unknown
+
+
+export function useGetAccounts<TData = Awaited<ReturnType<typeof getAccounts>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccounts>>,
+          TError,
+          Awaited<ReturnType<typeof getAccounts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAccounts<TData = Awaited<ReturnType<typeof getAccounts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccounts>>,
+          TError,
+          Awaited<ReturnType<typeof getAccounts>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAccounts<TData = Awaited<ReturnType<typeof getAccounts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAccounts<TData = Awaited<ReturnType<typeof getAccounts>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccounts>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAccountsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetAccounts = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetAccountsQueryKey() }, options);
 
   return queryClient;
 }
