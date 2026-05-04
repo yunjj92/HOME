@@ -1,12 +1,12 @@
-package com.homeproject.db.accounts.impl;
+package com.homeproject.db.account.impl;
 
-import com.homeproject.db.accounts.dto.BankProjection;
+import com.homeproject.db.account.dto.BankProjection;
 import com.homeproject.db.jooq.tables.records.AccountsRecord;
 import com.homeproject.db.jooq.tables.records.BanksRecord;
-import com.homeproject.db.accounts.AccountsRepository;
-import com.homeproject.db.accounts.dto.AccountCommand;
-import com.homeproject.db.accounts.dto.AccountProjection;
-import com.homeproject.db.accounts.dto.BankCommand;
+import com.homeproject.db.account.AccountsRepository;
+import com.homeproject.db.account.dto.AccountCommand;
+import com.homeproject.db.account.dto.AccountProjection;
+import com.homeproject.db.account.dto.BankCommand;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
