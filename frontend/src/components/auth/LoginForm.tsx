@@ -4,18 +4,21 @@ import type { LoginResponse } from "../../api/model";
 import { get } from "@github/webauthn-json/browser-ponyfill";
 import { prepareLoginOptions } from "./function/transformLoginResultParam";
 import { useFinishLogin, useStartLogin } from "../../api/generated";
+import { validateMutateResult } from "../../util/validateMutateResult";
+import { startLoginParamsSchema } from "../../api/zod/startLoginParams.zod";
+import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
 
 
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
-  const {mutateAsync: startLoginProcess } = useStartLogin();
-  const {mutateAsync: finishLoginProcess} = useFinishLogin();
+  const {validateMutateAsync: startLoginProcess } = validateMutateResult(useStartLogin());
+  const {validateMutateAsync: finishLoginProcess} = validateMutateResult(useFinishLogin());
 
   const handleLoginStart = async () => {
 
       try {
-        const { data: loginOptions } = await startLoginProcess({params: {username}}); 
+        const { data: loginOptions } = await startLoginProcess({params: {username}}, {startLoginParamsSchema}); 
 
         const requestOptions = prepareLoginOptions(loginOptions ?? {} as LoginResponse);
         const assertion = await get({ publicKey: requestOptions });       
@@ -29,7 +32,7 @@ export const LoginForm: React.FC= () => {
 
    const handleLoginFinish = async (assertion: any) =>{
 
-      const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}});
+      const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}}, {finishLoginParamsSchema});
 
       const finishResult = dataResult.data
       const loginSuccess = dataResult.success

@@ -1,6 +1,7 @@
 package com.homeproject.security.webauthn;
 
-import com.homeproject.db.config.ConfigRepository;
+import com.homeproject.db.users.UsersRepository;
+import com.homeproject.db.users.dto.UserCommand;
 import com.homeproject.security.webauthn.param.FinalizedLoginParam;
 import com.homeproject.security.webauthn.param.FinalizedRegistrationParam;
 import com.homeproject.security.webauthn.result.UserLoginResult;
@@ -8,42 +9,39 @@ import com.homeproject.security.webauthn.result.UserRegistrationResult;
 import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class WebAuthnProcessor {
 
-    private final ConfigRepository configRepository;
+    private final UsersRepository usersRepository;
+    private final RelyingParty relyingParty;
 
+    public WebAuthnProcessor(
+            UsersRepository usersRepository,
+            @Value("${webauthn.relying-party.id}") String rpId,
+            @Value("${webauthn.relying-party.name}") String rpName,
+            @Value("${webauthn.relying-party.origins}") String origins
+    ) {
+        this.usersRepository = usersRepository;
 
-    @Value("${webauthn.relying-party.id}")
-    private String rpId;
-
-    @Value("${webauthn.relying-party.name}")
-    private String rpName;
-
-    @Value("${webauthn.relying-party.origins}")
-    private String origins;
-
-    private RelyingParty getRelyingParty() {
         Set<String> originSet = Arrays.stream(origins.split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
 
-        return RelyingParty.builder()
+        this.relyingParty = RelyingParty.builder()
                 .identity(RelyingPartyIdentity.builder()
                         .id(rpId)
                         .name(rpName)
                         .build())
-                .credentialRepository(new ConfigCredentialRepository())
+                .credentialRepository(new DbCredentialRepository())
                 .origins(originSet)
                 .build();
     }
@@ -56,7 +54,7 @@ public class WebAuthnProcessor {
                 .id(new ByteArray(username.getBytes()))
                 .build();
 
-        PublicKeyCredentialCreationOptions credentialCreationOptions = getRelyingParty().startRegistration(StartRegistrationOptions.builder()
+        PublicKeyCredentialCreationOptions credentialCreationOptions = relyingParty.startRegistration(StartRegistrationOptions.builder()
                 .user(user)
                 .build());
 
@@ -66,7 +64,7 @@ public class WebAuthnProcessor {
     public RegistrationResult finishRegistration(FinalizedRegistrationParam finalizedRegistrationParam) throws Exception {
         String userName = finalizedRegistrationParam.username();
 
-        RegistrationResult response = getRelyingParty().finishRegistration(FinishRegistrationOptions.builder()
+        RegistrationResult response = relyingParty.finishRegistration(FinishRegistrationOptions.builder()
                 .request(finalizedRegistrationParam.options())
                 .response(finalizedRegistrationParam.pkc())
                 .build());
@@ -75,16 +73,20 @@ public class WebAuthnProcessor {
         String credId = response.getKeyId().getId().getBase64Url();
         log.info("Credential ID: {}", credId);
 
-        configRepository.setValue("AUTH_ID", userName);
-        configRepository.setValue("AUTH_CREDENTIAL_ID", credId);
-        configRepository.setValue("AUTH_PUBLIC_KEY", response.getPublicKeyCose().getBase64Url());
-        configRepository.setValue("AUTH_SIGNATURE_COUNT", String.valueOf(response.getSignatureCount()));
+        usersRepository.insertUser(
+                new UserCommand(
+                        userName,
+                        credId,
+                        response.getPublicKeyCose().getBase64Url(),
+                        (int) (response.getSignatureCount()),
+                        userName
+                ));
 
         return response;
     }
 
     public UserLoginResult startAssertion(String username) {
-        AssertionRequest assertionRequest = getRelyingParty().startAssertion(StartAssertionOptions.builder()
+        AssertionRequest assertionRequest = relyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(username))
                 .build());
 
@@ -92,113 +94,89 @@ public class WebAuthnProcessor {
     }
 
     public AssertionResult finishAssertion(FinalizedLoginParam finalizedLoginParam) throws Exception {
-        AssertionResult response = getRelyingParty().finishAssertion(FinishAssertionOptions.builder()
+        AssertionResult response = relyingParty.finishAssertion(FinishAssertionOptions.builder()
                 .request(finalizedLoginParam.assertionRequest())
                 .response(finalizedLoginParam.pkc())
                 .build());
 
         if (response.isSuccess()) {
-             configRepository.setValue("AUTH_SIGNATURE_COUNT", String.valueOf(response.getSignatureCount()));
+            usersRepository.updateSignatureCount(
+                    finalizedLoginParam.username(),
+                    (int) (response.getSignatureCount()),
+                    "security-module"
+            );
         }
 
         return response;
     }
 
-    private class ConfigCredentialRepository implements CredentialRepository {
+    private class DbCredentialRepository implements CredentialRepository {
         @Override
         public Set<PublicKeyCredentialDescriptor> getCredentialIdsForUsername(String username) {
-            String storedId = configRepository.getValue("AUTH_ID");
-            if (username.equals(storedId)) {
-                String credentialId = configRepository.getValue("AUTH_CREDENTIAL_ID");
-                if (credentialId != null) {
-                    try {
-                        return Collections.singleton(PublicKeyCredentialDescriptor.builder()
-                                .id(ByteArray.fromBase64Url(credentialId))
-                                .build());
-                    } catch (Base64UrlException e) {
-                        log.error("Failed to decode credential ID", e);
-                    }
-                }
-            }
-            return Collections.emptySet();
+            return usersRepository.getUserByUserId(username)
+                    .map(user -> {
+                        try {
+                            return Collections.singleton(PublicKeyCredentialDescriptor.builder()
+                                    .id(ByteArray.fromBase64Url(user.getCredentialId()))
+                                    .build());
+                        } catch (Base64UrlException e) {
+                            log.error("Failed to decode credential ID for user: {}", username, e);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .orElse(Collections.emptySet());
         }
 
         @Override
         public Set<RegisteredCredential> lookupAll(ByteArray credentialId) {
-             String incomingId = credentialId.getBase64Url();
-             String storedCredentialId = configRepository.getValue("AUTH_CREDENTIAL_ID");
-
-             log.info("LookupAll - Incoming ID: {}", incomingId);
-             log.info("LookupAll - Stored ID: {}", storedCredentialId);
-
-             if (storedCredentialId != null && incomingId.equals(storedCredentialId)) {
-                 String publicKey = configRepository.getValue("AUTH_PUBLIC_KEY");
-                 String sigCountStr = configRepository.getValue("AUTH_SIGNATURE_COUNT");
-                 long signatureCount = sigCountStr != null ? Long.parseLong(sigCountStr) : 0;
-                 String storedId = configRepository.getValue("AUTH_ID");
-
-                 try {
-                     return Collections.singleton(RegisteredCredential.builder()
-                             .credentialId(credentialId)
-                             .userHandle(new ByteArray(storedId.getBytes()))
-                             .publicKeyCose(ByteArray.fromBase64Url(publicKey))
-                             .signatureCount(signatureCount)
-                             .build());
-                 } catch (Base64UrlException e) {
-                     log.error("Failed to decode public key", e);
-                 }
-             }
-             return Collections.emptySet();
+            return usersRepository.getUserByCredentialId(credentialId.getBase64Url())
+                    .map(user -> {
+                        try {
+                            return Collections.singleton(RegisteredCredential.builder()
+                                    .credentialId(credentialId)
+                                    .userHandle(new ByteArray(user.getUserId().getBytes()))
+                                    .publicKeyCose(ByteArray.fromBase64Url(user.getPublicKey()))
+                                    .signatureCount(user.getSignatureCount())
+                                    .build());
+                        } catch (Base64UrlException e) {
+                            log.error("Failed to decode public key for user: {}", user.getUserId(), e);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .orElse(Collections.emptySet());
         }
 
         @Override
         public Optional<ByteArray> getUserHandleForUsername(String username) {
-             String storedId = configRepository.getValue("AUTH_ID");
-             if (username.equals(storedId)) {
-                 return Optional.of(new ByteArray(username.getBytes()));
-             }
-             return Optional.empty();
+            return usersRepository.getUserByUserId(username)
+                    .map(user -> new ByteArray(user.getUserId().getBytes()));
         }
 
         @Override
         public Optional<String> getUsernameForUserHandle(ByteArray userHandle) {
-            String username = new String(userHandle.getBytes());
-            String storedId = configRepository.getValue("AUTH_ID");
-            if (username.equals(storedId)) {
-                return Optional.of(username);
-            }
-            return Optional.empty();
+            return Optional.of(new String(userHandle.getBytes()));
         }
 
         @Override
         public Optional<RegisteredCredential> lookup(ByteArray credentialId, ByteArray userHandle) {
-             String incomingId = credentialId.getBase64Url();
-             String storedCredentialId = configRepository.getValue("AUTH_CREDENTIAL_ID");
-
-             log.info("Lookup - Incoming ID: {}", incomingId);
-             log.info("Lookup - Stored ID: {}", storedCredentialId);
-             log.info("Lookup - Incoming UserHandle: {}", userHandle.getBase64Url());
-
-             // For single-user project, if the credential ID matches what we have,
-             // we return it even if the userHandle from browser is empty/null
-             if (storedCredentialId != null && incomingId.equals(storedCredentialId)) {
-                 String publicKey = configRepository.getValue("AUTH_PUBLIC_KEY");
-                 String sigCountStr = configRepository.getValue("AUTH_SIGNATURE_COUNT");
-                 long signatureCount = sigCountStr != null ? Long.parseLong(sigCountStr) : 0;
-                 String storedId = configRepository.getValue("AUTH_ID");
-
-                 try {
-                     return Optional.of(RegisteredCredential.builder()
-                             .credentialId(credentialId)
-                             .userHandle(new ByteArray(storedId.getBytes()))
-                             .publicKeyCose(ByteArray.fromBase64Url(publicKey))
-                             .signatureCount(signatureCount)
-                             .build());
-                 } catch (Base64UrlException e) {
-                     log.error("Failed to decode public key", e);
-                 }
-             }
-             return Optional.empty();
+            String userId = new String(userHandle.getBytes());
+            return usersRepository.getUserByUserId(userId)
+                    .filter(user -> Objects.equals(user.getCredentialId(), credentialId.getBase64Url()))
+                    .map(user -> {
+                        try {
+                            return RegisteredCredential.builder()
+                                    .credentialId(credentialId)
+                                    .userHandle(userHandle)
+                                    .publicKeyCose(ByteArray.fromBase64Url(user.getPublicKey()))
+                                    .signatureCount(user.getSignatureCount())
+                                    .build();
+                        } catch (Base64UrlException e) {
+                            log.error("Failed to decode public key for user: {}", user.getUserId(), e);
+                            return null;
+                        }
+                    });
         }
     }
 }
