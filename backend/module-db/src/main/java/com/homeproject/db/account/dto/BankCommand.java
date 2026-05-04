@@ -1,4 +1,4 @@
-package com.homeproject.db.accounts.dto;
+package com.homeproject.db.account.dto;
 
 public record BankCommand(
         Integer id,

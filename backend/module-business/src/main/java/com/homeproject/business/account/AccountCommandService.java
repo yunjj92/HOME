@@ -2,9 +2,9 @@ package com.homeproject.business.account;
 
 import com.homeproject.business.account.dto.AccountParam;
 import com.homeproject.business.account.dto.BankParam;
-import com.homeproject.db.accounts.AccountsRepository;
-import com.homeproject.db.accounts.dto.AccountCommand;
-import com.homeproject.db.accounts.dto.BankCommand;
+import com.homeproject.db.account.AccountsRepository;
+import com.homeproject.db.account.dto.AccountCommand;
+import com.homeproject.db.account.dto.BankCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

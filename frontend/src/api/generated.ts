@@ -28,6 +28,7 @@ import type {
 import type {
   ApiResponseListAccountResponse,
   ApiResponseListBankResponse,
+  ApiResponseListCodeResponse,
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
   ApiResponseString,
@@ -35,6 +36,7 @@ import type {
   BankUpdateRequest,
   FinalizedRegistrationRequest,
   FinishLoginParams,
+  GetCodesParams,
   StartLoginParams,
   StartRegistrationParams
 } from './model';
@@ -334,6 +336,100 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getUpdateBanksMutationOptions(options), queryClient);
     }
     
+export const getCodes = (
+    params: GetCodesParams,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListCodeResponse>(
+      {url: `/api/common/get_codes`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetCodesQueryKey = (params?: GetCodesParams,) => {
+    return [
+    `/api/common/get_codes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+    
+export const getGetCodesQueryOptions = <TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCodesQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCodes>>> = ({ signal }) => getCodes(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetCodesQueryResult = NonNullable<Awaited<ReturnType<typeof getCodes>>>
+export type GetCodesQueryError = unknown
+
+
+export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
+ params: GetCodesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCodes>>,
+          TError,
+          Awaited<ReturnType<typeof getCodes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
+ params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCodes>>,
+          TError,
+          Awaited<ReturnType<typeof getCodes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
+ params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
+ params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetCodesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetCodes = async (
+ queryClient: QueryClient, params: GetCodesParams, options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetCodesQueryKey(params) }, options);
+
+  return queryClient;
+}
+
+
+
 export const getBanks = (
     
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
