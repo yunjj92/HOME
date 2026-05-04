@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { formatDateTime } from "../../util/formatDateTime";
 import type { AccountData } from "../../api/zod/accountResponse.zod";
 import type { BankData } from "../../api/zod/bankResponse.zod";
@@ -10,22 +10,6 @@ type AccountListProps = {
     banks: BankData[];
     accountTypeCodes: CodeData[];
     currencyTypeCodes: CodeData[];
-};
-
-interface AccountRow {
-    id: number;
-    bankId: number;
-    bankName: string;
-    accountType: string;
-    name: string;
-    owner: string;
-    currencyType: string;
-    accountNumber: string;
-    description: string;
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
 };
 
 export function AccountList({ accounts, banks, accountTypeCodes, currencyTypeCodes }: AccountListProps) {

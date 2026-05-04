@@ -1,7 +1,6 @@
 package com.homeproject.api.common.dto;
 
 import com.homeproject.business.common.dto.CodeResult;
-import com.homeproject.db.common.dto.CodeProjection;
 
 import java.time.LocalDateTime;
 
