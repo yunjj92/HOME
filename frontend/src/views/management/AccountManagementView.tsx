@@ -22,7 +22,7 @@ export const AccountManagementView = () => {
             break;
     }
 
-    const { accountResultList, bankResultList } = apiState.data;
+    const { accounts, banks, accountTypeCodes, currencyTypeCodes } = apiState.data;
     
     return (
         <section className="space-y-4">
@@ -39,12 +39,12 @@ export const AccountManagementView = () => {
             </div>
 
             <div>
-                <AccountList accounts={accountResultList ?? []} banks={bankResultList ?? []} />
+                <AccountList accounts={accounts} banks={banks} accountTypeCodes={accountTypeCodes} currencyTypeCodes={currencyTypeCodes} />
             </div>
 
             {isModalOpen && (
                 <BankManagementModal
-                    bankList={bankResultList ?? []}
+                    bankList={banks ?? []}
                     onClose={() => setIsModalOpen(false)}
                 />
             )}
