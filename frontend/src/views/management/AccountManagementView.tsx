@@ -3,8 +3,6 @@ import { useAccountManagementView } from "../../hooks/management/useAccountManag
 import { AccountListSkeleton } from "../../components/account/AccountListSkeleton";
 import { useState } from "react";
 import { BankManagementModal } from "../../components/account/BankManagementModal";
-import { useListMapping } from "../../hooks/common/useListMapping";
-import { useCodesMapping } from "../../hooks/common/useCodesMapping";
 
 export const AccountManagementView = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,9 +25,6 @@ export const AccountManagementView = () => {
     }
 
     const { accounts, banks, accountTypeCodes, currencyTypeCodes } = apiState.data;
-    const bankMap = useListMapping(banks, "id", "name");
-    const accountTypeCodeMap = useCodesMapping(accountTypeCodes);
-    const currencyTypeCodeMap = useCodesMapping(currencyTypeCodes);
     
     return (
         <section className="space-y-4">
@@ -47,7 +42,7 @@ export const AccountManagementView = () => {
 
             <div>
                 {!isEditMode ? (
-                    <AccountList accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} />
+                    <AccountList accounts={accounts} banks={banks} accountTypeCodes={accountTypeCodes} currencyTypeCodes={currencyTypeCodes} />
                 ) : (
                     <h1>편집모드</h1>
                 )}

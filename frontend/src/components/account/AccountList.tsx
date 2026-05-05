@@ -1,15 +1,23 @@
 import { formatDateTime } from "../../util/formatDateTime";
 import type { AccountData } from "../../api/zod/accountResponse.zod";
 import { getMappingData } from "../../util/getMappingData";
+import type { BankData } from "../../api/zod/bankResponse.zod";
+import type { CodeData } from "../../api/zod/codeResponse.zod";
+import { useListMapping } from "../../hooks/common/useListMapping";
+import { useCodesMapping } from "../../hooks/common/useCodesMapping";
 
-type AccountListProps = {
+export type AccountListProps = {
     accounts: AccountData[];
-    bankMap: Map<number, string>;
-    accountTypeCodeMap: Map<string, string>;
-    currencyTypeCodeMap: Map<string, string>;
+    banks: BankData[];
+    accountTypeCodes: CodeData[];
+    currencyTypeCodes: CodeData[];
 };
 
-export function AccountList({ accounts, bankMap, accountTypeCodeMap, currencyTypeCodeMap }: AccountListProps) {
+export function AccountList({ accounts, banks, accountTypeCodes, currencyTypeCodes }: AccountListProps) {
+    const bankMap = useListMapping(banks, "id", "name");
+    const accountTypeCodeMap = useCodesMapping(accountTypeCodes);
+    const currencyTypeCodeMap = useCodesMapping(currencyTypeCodes);
+
     return (
         <div className="rounded-lg border border-gray-200 bg-white">
             <table className="w-full border-collapse text-sm">
