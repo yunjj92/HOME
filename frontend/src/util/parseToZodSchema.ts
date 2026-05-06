@@ -1,24 +1,20 @@
 import type { ZodType } from "zod";
-import type { ApiState } from "../types/ApiState";
 
 export function parseToZodSchema<T>(
-    apiState: ApiState,
-    zodSchema: ZodType<T>,
-): ApiState<T> {
-    if(apiState.status !== 'success') return apiState;
+    data: unknown,
+    schema: ZodType<T>,
+    fallback: T,
+) {
+    // 데이터 존재유무 확인
+    if(data == null) return fallback;
+    const parsed = schema.safeParse(data);
 
-    const parsedData = zodSchema.safeParse(apiState.data);
-
-    if(!parsedData.success) {
-        return {
-            status: "error",
-            message: parsedData.error.message,
-            code: parsedData.error.name,
-        };
+    // 파싱 에러 확인
+    if(parsed.error) {
+        alert(parsed.error);
+        return fallback;
     }
 
-    return {
-        status: "success",
-        data: parsedData.data,
-    }
+    // 정상 데이터 반환
+    return parsed.data;
 }
