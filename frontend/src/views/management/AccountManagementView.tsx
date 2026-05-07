@@ -56,27 +56,46 @@ export const AccountManagementView = () => {
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-400"
+                    className="cm-button"
                 >
                     은행 관리
                 </button>
             </div>
 
             <div>
+                <table className="cm-table">
+                <thead className="cm-thead">
+                    <tr className="cm-thead-tr">
+                        <th className="cm-th">계좌명</th>
+                        <th className="cm-th">은행명</th>
+                        <th className="cm-th">계좌타입</th>
+                        <th className="cm-th">소유주</th>
+                        <th className="cm-th">계좌통화</th>
+                        <th className="cm-th">계좌번호</th>
+                        <th className="cm-th">설명</th>
+                        <th className="cm-th">생성일</th>
+                        <th className="cm-th">최종수정일</th>
+                    </tr>
+                </thead>
                 {isLoading ? (
                     <AccountListSkeleton></AccountListSkeleton>
                 ) : !isEditMode ? (
                     <AccountList accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} />
                 ) : (
-                    <AccountListEdit accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} />
+                    <AccountListEdit accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} setIsEditModeFalse={() => setIsEditMode(false)} />
                 )}
+                </table>
             </div>
 
             <div className="flex items-center justify-end">
                 <button
                     type="button"
                     onClick={() => setIsEditMode(true)}
-                    className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-400"
+                    className={
+                        !isEditMode ?
+                            "cm-button"
+                            : "hidden"
+                    }
                 >
                     계좌정보 수정
                 </button>

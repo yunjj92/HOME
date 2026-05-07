@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { formatDateTime } from "../../util/formatDateTime";
-import { getMappingData } from "../../util/getMappingData";
-import type { AccountListProps } from "./AccountList";
+import type { AccountData } from "../../api/zod/accountResponse.zod";
+
+type AccountListProps = {
+    accounts: AccountData[];
+    bankMap: Map<number, string>;
+    accountTypeCodeMap: Map<string, string>;
+    currencyTypeCodeMap: Map<string, string>;
+    setIsEditModeFalse:() => void;
+};
 
 interface AccountRow {
     id: number | null | undefined;
@@ -19,7 +26,68 @@ interface AccountRow {
     toDelete: boolean;
 };
 
-export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currencyTypeCodeMap }: AccountListProps) {
+function ThisTdInput({value, onChange, disabled=false}: {
+    value: string | null | undefined;
+    onChange: (value: string) => void;
+    disabled: boolean;
+}) {
+    return (
+    <td className="cm-td">
+        <input
+            value={value ?? ""} 
+            onChange={(event) => onChange(event.target.value)}
+            disabled={disabled}
+            placeholder="Empty"
+            className="cm-input"
+        ></input>
+    </td>
+    )
+};
+
+function ThisTdSelect({value, onChange, map, disabled=false}: {
+    value: string | number | null | undefined;
+    onChange: (value: string) => void;
+    map: Map<string | number, string>;
+    disabled: boolean;
+}) {
+    return (
+        <td className="cm-td">
+            <select 
+                value={value ?? ""}
+                onChange={(event) => onChange(event.target.value)}
+                disabled={disabled}
+                className="cm-select"
+            >
+                <option key="0">선택</option>
+                {Array.from(map.entries()).map(([k, v]) => (
+                    <option key={k} value={k}>
+                        {v}
+                    </option>
+                ))}
+            </select>
+        </td>
+    )
+}
+
+
+export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currencyTypeCodeMap, setIsEditModeFalse }: AccountListProps) {
+    
+    const createEmptyRow = (): AccountRow => ({
+        id: null,
+        bankId: null,
+        accountType: null,
+        name: null,
+        owner: null,
+        currencyType: null,
+        accountNumber: null,
+        description: null,
+        createdAt: null,
+        createdBy: null,
+        updatedAt: null,
+        updatedBy: null,
+        toDelete: false,
+    });
+    
     const [rows, setRows] = useState<AccountRow[]>([...accounts.map((account) => ({
         id: account.id, 
         bankId: account.bankId,
@@ -34,49 +102,80 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
         updatedAt: account.updatedAt,
         updatedBy: account.updatedBy,
         toDelete: false,
-    }))]);
+        })),
+        createEmptyRow(),
+    ]);
+
+    const addRow = () => {
+        setRows((prev) => [...prev, createEmptyRow()]);
+    };
+
+    const modifyRow = (
+        target: number,
+        field: keyof AccountRow,
+        value: number | string,
+    ) => {
+        setRows((prev) => prev.map((row, index) => 
+            index === target ? { ...row, [field]: value } : row
+        ));
+    };
+
+    const removeRow = (targetIndex: number) => {
+        setRows((prev) => {
+            if(prev[targetIndex].id === null) {
+                return prev.filter((_, idx) => idx !== targetIndex);
+            } else {
+                return prev.map((row, idx) => idx === targetIndex ? { ...row, toDelete: true } : row);
+            }
+        }); 
+    };
 
     return (
-        <div className="rounded-lg border border-gray-200 bg-white">
-            <table className="w-full border-collapse text-sm">
-                <thead className="bg-gray-50">
-                    <tr className="border-b border-gray-200">
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">계좌명</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">은행명</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">계좌타입</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">소유주</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">계좌통화</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">계좌번호</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">설명</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">생성일</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-600">최종수정일</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {rows.map((row) => (
-                    <tr
-                    key={row.id}
-                    className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50"
-                    >
-                        <td className="px-4 py-3 text-center">
-                            <input
-                                value={row.name ?? ""} 
-                                placeholder="계좌명을 입력하세요"
-                                className="w-full rounded border border-gray-300 px-2 py-1"
-                                disabled={row.toDelete}></input>
-                        </td>
-                        <td className="px-4 py-3 text-center">{getMappingData(bankMap, row.bankId)}</td>
-                        <td className="px-4 py-3 text-center">{getMappingData(accountTypeCodeMap, row.accountType)}</td>
-                        <td className="px-4 py-3 text-center">{row.owner ?? "-"}</td>
-                        <td className="px-4 py-3 text-center">{getMappingData(currencyTypeCodeMap, row.currencyType)}</td>
-                        <td className="px-4 py-3 text-center">{row.accountNumber ?? "-"}</td>
-                        <td className="px-4 py-3 text-center">{row.description ?? "-"}</td>
-                        <td className="px-4 py-3 text-center">{formatDateTime(row.createdAt ?? "-")}</td>
-                        <td className="px-4 py-3 text-center">{formatDateTime(row.updatedAt ?? "-")}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
+        <tbody>
+        {rows.map((row, index) => (
+            <tr key={row.id} className={!row.toDelete ? "cm-tbody-tr" : "cm-tbody-tr-delete"}>
+                <ThisTdInput value={row.name} onChange={(value) => modifyRow(index, "name", value)} disabled={row.toDelete}/>
+                <ThisTdSelect value={row.bankId} onChange={(value) => modifyRow(index, "bankId", value)} map={bankMap} disabled={row.toDelete}/>
+                <ThisTdSelect value={row.accountType} onChange={(value) => modifyRow(index, "accountType", value)} map={accountTypeCodeMap} disabled={row.toDelete}/>
+                <ThisTdInput value={row.owner} onChange={(value) => modifyRow(index, "owner", value)} disabled={row.toDelete}/>
+                <ThisTdSelect value={row.currencyType} onChange={(value) => modifyRow(index, "currencyType", value)} map={currencyTypeCodeMap} disabled={row.toDelete}/>
+                <ThisTdInput value={row.accountNumber} onChange={(value) => modifyRow(index, "accountNumber", value)} disabled={row.toDelete}/>
+                <ThisTdInput value={row.description} onChange={(value) => modifyRow(index, "description", value)} disabled={row.toDelete}/>
+                <td className="px-4 py-3 text-center">{formatDateTime(row.createdAt ?? "-")}</td>
+                <td className="px-4 py-3 text-center">{formatDateTime(row.updatedAt ?? "-")}</td>
+                <td className="px-4 py-3 text-center">
+                    {index === rows.length - 1 ? (
+                        <button
+                        type="button"
+                        onClick={addRow}
+                        className="rounded bg-gray-200 px-4 py-1"
+                        >
+                        ＋
+                        </button>
+                    ) : (
+                        <button
+                        type="button"
+                        onClick={() => removeRow(index)}
+                        className="rounded bg-gray-200 px-4 py-1"
+                        >
+                        －
+                        </button>
+                    )}
+                </td>
+            </tr>
+        ))}
+            <tr className="cm-tbody-tr">
+                <td colSpan={10} className="cm-td">
+                    <div className="flex items-center justify-end gap-1">
+                        <button type="button" className="cm-button">
+                            저장
+                        </button>
+                        <button type="button" className="cm-button" onClick={setIsEditModeFalse}>
+                            취소
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
     );
 }

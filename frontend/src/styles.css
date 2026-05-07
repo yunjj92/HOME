@@ -1,1 +1,43 @@
 @import "tailwindcss";
+
+@layer components {
+    .cm-table {
+        @apply w-full border-collapse text-sm;
+    }
+
+    .cm-thead {
+        @apply bg-gray-100;
+    }
+
+    .cm-thead-tr {
+        @apply border-b border-gray-400;
+    }
+
+    .cm-th {
+        @apply px-4 py-3 text-center font-semibold text-gray-600;
+    }
+
+    .cm-tbody-tr {
+        @apply border-b border-gray-100 last:border-b-0 hover:bg-gray-50;
+    }
+
+    .cm-tbody-tr-delete {
+        @apply bg-red-200 opacity-50;
+    }
+
+    .cm-td {
+        @apply px-4 py-3 text-center
+    }
+
+    .cm-button {
+        @apply rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-400;
+    }
+
+    .cm-input {
+        @apply w-full rounded border border-gray-300 px-2 py-1;
+    }
+
+    .cm-select {
+        @apply w-full rounded border border-gray-300 px-2 py-1;
+    }
+}
