@@ -64,48 +64,37 @@ export const AccountManagementView = () => {
 
             <div>
                 <table className="cm-table">
-                <thead className="cm-thead">
-                    <tr className="cm-thead-tr">
-                        <th className="cm-th">계좌명</th>
-                        <th className="cm-th">은행명</th>
-                        <th className="cm-th">계좌타입</th>
-                        <th className="cm-th">소유주</th>
-                        <th className="cm-th">계좌통화</th>
-                        <th className="cm-th">계좌번호</th>
-                        <th className="cm-th">설명</th>
-                        <th className="cm-th">생성일</th>
-                        <th className="cm-th">최종수정일</th>
-                    </tr>
-                </thead>
-                {isLoading ? (
-                    <AccountListSkeleton></AccountListSkeleton>
-                ) : !isEditMode ? (
-                    <AccountList accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} />
-                ) : (
-                    <AccountListEdit accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} setIsEditModeFalse={() => setIsEditMode(false)} />
-                )}
+                    <thead className="cm-thead">
+                        <tr className="cm-thead-tr">
+                            <th className="cm-th">계좌명</th>
+                            <th className="cm-th">은행명</th>
+                            <th className="cm-th">계좌타입</th>
+                            <th className="cm-th">소유주</th>
+                            <th className="cm-th">계좌통화</th>
+                            <th className="cm-th">계좌번호</th>
+                            <th className="cm-th">설명</th>
+                            <th className="cm-th">생성일</th>
+                            <th className="cm-th">최종수정일</th>
+                        </tr>
+                    </thead>
+                    {isLoading ? (
+                        <AccountListSkeleton></AccountListSkeleton>
+                    ) : !isEditMode ? (
+                        <AccountList accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} />
+                    ) : (
+                        <AccountListEdit accounts={accounts} bankMap={bankMap} accountTypeCodeMap={accountTypeCodeMap} currencyTypeCodeMap={currencyTypeCodeMap} setIsEditModeFalse={() => setIsEditMode(false)} />
+                    )}
                 </table>
             </div>
 
             <div className="flex items-center justify-end">
-                <button
-                    type="button"
-                    onClick={() => setIsEditMode(true)}
-                    className={
-                        !isEditMode ?
-                            "cm-button"
-                            : "hidden"
-                    }
-                >
+                <button type="button" className={!isEditMode ? "cm-button" : "hidden"} onClick={() => setIsEditMode(true)}>
                     계좌정보 수정
                 </button>
             </div>
 
             {isModalOpen && (
-                <BankManagementModal
-                    bankList={banks ?? []}
-                    onClose={() => setIsModalOpen(false)}
-                />
+                <BankManagementModal bankList={banks ?? []} onClose={() => setIsModalOpen(false)}/>
             )}
         </section>
     );

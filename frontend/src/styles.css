@@ -26,7 +26,11 @@
     }
 
     .cm-td {
-        @apply px-4 py-3 text-center
+        @apply px-4 py-3 text-center;
+    }
+
+    .cm-table-button {
+        @apply rounded bg-gray-200 px-4 py-1;
     }
 
     .cm-button {

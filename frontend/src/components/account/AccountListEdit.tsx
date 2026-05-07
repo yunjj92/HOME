@@ -67,7 +67,7 @@ function ThisTdSelect({value, onChange, map, disabled=false}: {
             </select>
         </td>
     )
-}
+};
 
 
 export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currencyTypeCodeMap, setIsEditModeFalse }: AccountListProps) {
@@ -141,25 +141,13 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
                 <ThisTdSelect value={row.currencyType} onChange={(value) => modifyRow(index, "currencyType", value)} map={currencyTypeCodeMap} disabled={row.toDelete}/>
                 <ThisTdInput value={row.accountNumber} onChange={(value) => modifyRow(index, "accountNumber", value)} disabled={row.toDelete}/>
                 <ThisTdInput value={row.description} onChange={(value) => modifyRow(index, "description", value)} disabled={row.toDelete}/>
-                <td className="px-4 py-3 text-center">{formatDateTime(row.createdAt ?? "-")}</td>
-                <td className="px-4 py-3 text-center">{formatDateTime(row.updatedAt ?? "-")}</td>
-                <td className="px-4 py-3 text-center">
+                <td className="cm-td">{formatDateTime(row.createdAt ?? "-")}</td>
+                <td className="cm-td">{formatDateTime(row.updatedAt ?? "-")}</td>
+                <td className="cm-td">
                     {index === rows.length - 1 ? (
-                        <button
-                        type="button"
-                        onClick={addRow}
-                        className="rounded bg-gray-200 px-4 py-1"
-                        >
-                        ＋
-                        </button>
+                        <button type="button" className="cm-table-button" onClick={addRow}>＋</button>
                     ) : (
-                        <button
-                        type="button"
-                        onClick={() => removeRow(index)}
-                        className="rounded bg-gray-200 px-4 py-1"
-                        >
-                        －
-                        </button>
+                        <button type="button" className="cm-table-button" onClick={() => removeRow(index)}>－</button>
                     )}
                 </td>
             </tr>
@@ -167,12 +155,8 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
             <tr className="cm-tbody-tr">
                 <td colSpan={10} className="cm-td">
                     <div className="flex items-center justify-end gap-1">
-                        <button type="button" className="cm-button">
-                            저장
-                        </button>
-                        <button type="button" className="cm-button" onClick={setIsEditModeFalse}>
-                            취소
-                        </button>
+                        <button type="button" className="cm-button">저장</button>
+                        <button type="button" className="cm-button" onClick={setIsEditModeFalse}>취소</button>
                     </div>
                 </td>
             </tr>
