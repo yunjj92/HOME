@@ -7,11 +7,14 @@ import { useFinishLogin, useStartLogin } from "../../api/generated";
 import { resolveMutateResult } from "../../util/resolveMutateResult";
 import { startLoginParamsSchema } from "../../api/zod/startLoginParams.zod";
 import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
+import { useAuthStore } from "./stores/authStore";
+import { getJwtExpiration } from "../../util/jwt";
 
 
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
+  const login = useAuthStore((state) => state.login);
   const {resolveMutateAsync: startLoginProcess } = resolveMutateResult(useStartLogin());
   const {resolveMutateAsync: finishLoginProcess} = resolveMutateResult(useFinishLogin());
 
@@ -40,6 +43,9 @@ export const LoginForm: React.FC= () => {
  
         if(finishResult && loginSuccess){
           localStorage.setItem('accessToken', finishResult);
+          localStorage.setItem('userName', username);
+          const expiry = getJwtExpiration(finishResult);
+          login(username, expiry);
           void navigate({ to: '/home' });
         }
    }

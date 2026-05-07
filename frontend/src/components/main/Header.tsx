@@ -25,6 +25,7 @@ import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useAuthStore } from '../auth/stores/authStore';
+import { SessionTimer } from './SessionTimer';
 
 const products = [
   { name: 'Management', description: 'Get a better understanding of your money', href: '/account', icon: ChartPieIcon },
@@ -46,6 +47,7 @@ const Header = () => {
     const handleLogout = () => {
         logout();
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('userName');
         void navigate({ to: '/' });
     };
 
@@ -127,6 +129,7 @@ return (
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-x-6">
           {isLoggedIn ? (
             <>
+              <SessionTimer />
               <span className="text-sm font-semibold text-gray-900">Hello, {userName}</span>
               <button
                 onClick={handleLogout}
