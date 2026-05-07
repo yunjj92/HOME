@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFinishRegistration, useStartRegistration } from "../../api/generated";
 import { prepareCreationOptions } from "./function/transformAuthResult";
 import { Link } from "@tanstack/react-router";
+import { resolveMutateResult } from "../../util/resolveMutateResult";
 
 export const RegistrationForm = () => {
 
@@ -10,9 +11,9 @@ export const RegistrationForm = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const {mutateAsync: startRegistration} = useStartRegistration();
+  const { resolveMutateAsync: startRegistration } = resolveMutateResult(useStartRegistration());
   
-  const {mutateAsync: finishRegistration} = useFinishRegistration();
+  const { resolveMutateAsync: finishRegistration } = resolveMutateResult(useFinishRegistration());
 
   const processRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
     
@@ -20,14 +21,12 @@ export const RegistrationForm = () => {
     if (!username) return;
 
     try {
+      console.log('Starting registration for:', username);
       setStatus('loading');
       const startResult = await startRegistration({params: {username}});
+      console.log('Registration start result:', startResult);
 
-      if(!startResult.success || !startResult.data){
-        throw new Error(startResult.apiError?.message || "Registration start failed");
-      }
-
-      const creationOptions = prepareCreationOptions(startResult.data);
+      const creationOptions = prepareCreationOptions(startResult.data || {});
 
       const credential = await create({
         publicKey: creationOptions.publicKey,
@@ -40,6 +39,7 @@ export const RegistrationForm = () => {
 
 
     } catch (error) {
+      console.error('Registration error:', error);
       setStatus('error');
       setMessage(error instanceof Error ? error.message : 'Unknown error');
     }
