@@ -4,7 +4,7 @@ import type { LoginResponse } from "../../api/model";
 import { get } from "@github/webauthn-json/browser-ponyfill";
 import { prepareLoginOptions } from "./function/transformLoginResultParam";
 import { useFinishLogin, useStartLogin } from "../../api/generated";
-import { validateMutateResult } from "../../util/validateMutateResult";
+import { resolveMutateResult } from "../../util/resolveMutateResult";
 import { startLoginParamsSchema } from "../../api/zod/startLoginParams.zod";
 import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
 
@@ -12,31 +12,30 @@ import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
 export const LoginForm: React.FC= () => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
-  const {validateMutateAsync: startLoginProcess } = validateMutateResult(useStartLogin());
-  const {validateMutateAsync: finishLoginProcess} = validateMutateResult(useFinishLogin());
+  const {resolveMutateAsync: startLoginProcess } = resolveMutateResult(useStartLogin());
+  const {resolveMutateAsync: finishLoginProcess} = resolveMutateResult(useFinishLogin());
 
   const handleLoginStart = async () => {
 
-      try {
-        const { data: loginOptions } = await startLoginProcess({params: {username}}, {startLoginParamsSchema}); 
+     try {
+       const { data: loginOptions } = await startLoginProcess({params: {username}}, startLoginParamsSchema); 
 
-        const requestOptions = prepareLoginOptions(loginOptions ?? {} as LoginResponse);
-        const assertion = await get({ publicKey: requestOptions });       
+       const requestOptions = prepareLoginOptions(loginOptions ?? {} as LoginResponse);
+       const assertion = await get({ publicKey: requestOptions });       
 
-        return assertion
-  
-      } catch (error) {
-        alert(`Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      }
-   }
+       return assertion
 
-   const handleLoginFinish = async (assertion: any) =>{
+     } catch (error) {
+       alert(`Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+     }
+  }
 
-      const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}}, {finishLoginParamsSchema});
+  const handleLoginFinish = async (assertion: any) =>{
 
-      const finishResult = dataResult.data
-      const loginSuccess = dataResult.success
+     const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}}, finishLoginParamsSchema);
 
+     const finishResult = dataResult.data
+     const loginSuccess = dataResult.success
        alert(`result: ${finishResult} and success? ${loginSuccess}`)
  
         if(finishResult && loginSuccess){
