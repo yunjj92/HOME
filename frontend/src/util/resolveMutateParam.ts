@@ -18,8 +18,8 @@ export function resolveMutateParam<T extends z.ZodTypeAny>(
         return param;
     }
 
-    const resultOfValidation = inputSchema.safeParse(param); 
-
+    const resultOfValidation = inputSchema.safeParse(param.data); 
+    
     if(!resultOfValidation.success) {
         const issues = resultOfValidation.error.issues || [];
         return Response.json(

@@ -75,7 +75,7 @@ export function resolveMutateResult<
 
             // Handle application-level error
             const commonResult = result as CommonResponse;
-            if (commonResult && (!commonResult.success || !commonResult.data)) {
+            if (commonResult && (!commonResult.success)) {
                  throw getAlertError(ERROR_STATUS.INTERNAL_SERVER_ERROR, commonResult.apiError?.message || ERROR_MESSAGES.DEFAULT);
             }
             

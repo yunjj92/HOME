@@ -1,6 +1,5 @@
 ﻿import { AccountList } from "../../components/account/AccountList";
 import { useState } from "react";
-import { BankManagementModal } from "../../components/account/BankManagementModal";
 import { useGetAccounts, useGetBanks, useGetCodes } from "../../api/generated";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
@@ -45,21 +44,12 @@ export const AccountManagementView = () => {
     const currencyTypeCodeMap = useCodesMapping(currencyTypeCodes);
 
     // 상태관리
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     
     return (
         <section className="space-y-4">
             <div className="flex items-center justify-between">
                 <h1 className="text-xl font-bold">계좌 관리</h1>
-
-                <button
-                    type="button"
-                    onClick={() => setIsModalOpen(true)}
-                    className="cm-button"
-                >
-                    은행 관리
-                </button>
             </div>
 
             <div>
@@ -68,7 +58,7 @@ export const AccountManagementView = () => {
                         <tr className="cm-thead-tr">
                             <th className="cm-th">계좌명</th>
                             <th className="cm-th">은행명</th>
-                            <th className="cm-th">계좌타입</th>
+                            <th className="cm-th">계좌종류</th>
                             <th className="cm-th">소유주</th>
                             <th className="cm-th">계좌통화</th>
                             <th className="cm-th">계좌번호</th>
@@ -92,10 +82,6 @@ export const AccountManagementView = () => {
                     계좌정보 수정
                 </button>
             </div>
-
-            {isModalOpen && (
-                <BankManagementModal bankList={banks ?? []} onClose={() => setIsModalOpen(false)}/>
-            )}
         </section>
     );
 }
