@@ -84,7 +84,7 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
         mutation: {
             onSuccess: () => {
                 alert(`저장되었습니다.`);
-                queryClient.invalidateQueries({ queryKey: getGetAccountsQueryKey() });
+                void queryClient.invalidateQueries({ queryKey: getGetAccountsQueryKey() });
                 setIsEditModeFalse();
             },
         },
@@ -191,7 +191,7 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
             <tr className="cm-tbody-tr">
                 <td colSpan={10} className="cm-td">
                     <div className="flex items-center justify-end gap-1">
-                        <button type="button" className="cm-button" onClick={saveRows}>저장</button>
+                        <button type="button" className="cm-button" onClick={() => {void saveRows()}}>저장</button>
                         <button type="button" className="cm-button" onClick={setIsEditModeFalse}>취소</button>
                     </div>
                 </td>
