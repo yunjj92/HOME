@@ -2,12 +2,12 @@ import { z } from 'zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const bankResponseSchema = z.object({
-  id: z.number().nullish(),
-  name: z.string().nullish(),
-  createdAt: z.string().nullish(),
-  createdBy: z.string().nullish(),
-  updatedAt: z.string().nullish(),
-  updatedBy: z.string().nullish(),
+  id: z.number().optional(),
+  name: z.string().optional(),
+  createdAt: z.string().optional(),
+  createdBy: z.string().optional(),
+  updatedAt: z.string().nullable().optional(),
+  updatedBy: z.string().nullable().optional(),
 });
 
 export const bankDataSchema = bankResponseSchema;

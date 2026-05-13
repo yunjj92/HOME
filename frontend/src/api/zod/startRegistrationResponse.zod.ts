@@ -2,12 +2,12 @@ import { z } from 'zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const startRegistrationResponseSchema = z.object({
-  username: z.string().nullish(),
-  rpId: z.string().nullish(),
-  challenge: z.string().nullish(),
-  userId: z.string().nullish(),
-  displayName: z.string().nullish(),
-  pubKeyCredParams: z.string().nullish(),
+  username: z.string().optional(),
+  rpId: z.string().optional(),
+  challenge: z.string().optional(),
+  userId: z.string().optional(),
+  displayName: z.string().optional(),
+  pubKeyCredParams: z.string().optional(),
 });
 
 export const startRegistrationDataSchema = startRegistrationResponseSchema;

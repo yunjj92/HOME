@@ -4,8 +4,8 @@ import { bankResultSchema } from './bankResult.zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const accountManagementResponseSchema = z.object({
-  accountResultList: z.array(accountResultSchema).nullish(),
-  bankResultList: z.array(bankResultSchema).nullish(),
+  accountResultList: z.array(accountResultSchema).optional(),
+  bankResultList: z.array(bankResultSchema).optional(),
 });
 
 export const accountManagementDataSchema = accountManagementResponseSchema;

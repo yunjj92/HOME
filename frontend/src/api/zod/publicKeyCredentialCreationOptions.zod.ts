@@ -8,15 +8,15 @@ import { relyingPartyIdentitySchema } from './relyingPartyIdentity.zod';
 import { userIdentitySchema } from './userIdentity.zod';
 
 export const publicKeyCredentialCreationOptionsSchema = z.object({
-  rp: relyingPartyIdentitySchema.nullish(),
-  user: userIdentitySchema.nullish(),
-  challenge: z.string().nullish(),
-  pubKeyCredParams: z.array(publicKeyCredentialParametersSchema).nullish(),
-  timeout: z.number().nullish(),
-  excludeCredentials: z.array(publicKeyCredentialDescriptorSchema).nullish(),
-  authenticatorSelection: authenticatorSelectionCriteriaSchema.nullish(),
-  attestation: publicKeyCredentialCreationOptionsAttestationSchema.nullish(),
-  extensions: registrationExtensionInputsSchema.nullish(),
+  rp: relyingPartyIdentitySchema.optional(),
+  user: userIdentitySchema.optional(),
+  challenge: z.string().optional(),
+  pubKeyCredParams: z.array(publicKeyCredentialParametersSchema).optional(),
+  timeout: z.number().optional(),
+  excludeCredentials: z.array(publicKeyCredentialDescriptorSchema).optional(),
+  authenticatorSelection: authenticatorSelectionCriteriaSchema.optional(),
+  attestation: publicKeyCredentialCreationOptionsAttestationSchema.optional(),
+  extensions: registrationExtensionInputsSchema.optional(),
 });
 
 export type PublicKeyCredentialCreationOptions = z.infer<typeof publicKeyCredentialCreationOptionsSchema>;

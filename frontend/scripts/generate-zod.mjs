@@ -22,26 +22,35 @@ function toZodSchemaName(typeName) {
 const PRIMITIVE_TYPES = ['string', 'number', 'boolean', 'any', 'unknown'];
 
 function mapType(type, isOptional) {
+  const typeParts = type.split('|').map((t) => t.trim());
+  const includesNull = typeParts.includes('null');
+  const pureType = typeParts.filter((t) => t !== 'null' && t !== 'undefined').join('|');
+
   let zodType;
-  if (type === 'string') zodType = 'z.string()';
-  else if (type === 'number') zodType = 'z.number()';
-  else if (type === 'boolean') zodType = 'z.boolean()';
-  else if (type === 'any') zodType = 'z.any()';
-  else if (type === 'unknown') zodType = 'z.unknown()';
-  else if (type.endsWith('[]')) {
-    const baseType = type.slice(0, -2);
+  if (pureType === 'string') zodType = 'z.string()';
+  else if (pureType === 'number') zodType = 'z.number()';
+  else if (pureType === 'boolean') zodType = 'z.boolean()';
+  else if (pureType === 'any') zodType = 'z.any()';
+  else if (pureType === 'unknown') zodType = 'z.unknown()';
+  else if (pureType.endsWith('[]')) {
+    const baseType = pureType.slice(0, -2);
     if (PRIMITIVE_TYPES.includes(baseType)) {
       zodType = `z.array(${mapType(baseType, false)})`;
     } else {
       zodType = `z.array(${toZodSchemaName(baseType)})`;
     }
   } else {
-    zodType = toZodSchemaName(type);
+    zodType = toZodSchemaName(pureType);
+  }
+
+  if(includesNull) {
+    zodType += '.nullable()';
   }
 
   if (isOptional) {
-    zodType += '.nullish()';
+    zodType += '.optional()';
   }
+  
   return zodType;
 }
 
@@ -84,7 +93,7 @@ files.forEach(file => {
     
     const fieldLines = fieldsBlock.trim().split('\n');
     fieldLines.forEach(line => {
-      const match = line.match(/^\s*(\w+)(\??): ([\w\[\]]+);/);
+      const match = line.match(/^\s*(\w+)(\??): (.+);/);
       if (match) {
         const [__, fieldName, optional, type] = match;
         outputContent += `  ${fieldName}: ${mapType(type, !!optional)},\n`;

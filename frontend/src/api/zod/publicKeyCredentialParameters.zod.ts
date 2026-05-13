@@ -3,8 +3,8 @@ import { publicKeyCredentialParametersAlgSchema } from './publicKeyCredentialPar
 import { publicKeyCredentialParametersTypeSchema } from './publicKeyCredentialParametersType.zod';
 
 export const publicKeyCredentialParametersSchema = z.object({
-  alg: publicKeyCredentialParametersAlgSchema.nullish(),
-  type: publicKeyCredentialParametersTypeSchema.nullish(),
+  alg: publicKeyCredentialParametersAlgSchema.optional(),
+  type: publicKeyCredentialParametersTypeSchema.optional(),
 });
 
 export type PublicKeyCredentialParameters = z.infer<typeof publicKeyCredentialParametersSchema>;
