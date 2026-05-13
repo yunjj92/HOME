@@ -18,7 +18,7 @@ export function resolveMutateParam<T extends z.ZodTypeAny>(
         return param;
     }
 
-    const resultOfValidation = inputSchema.safeParse(param.data); 
+    const resultOfValidation = inputSchema.safeParse(param.data ?? param); 
     
     if(!resultOfValidation.success) {
         const issues = resultOfValidation.error.issues || [];

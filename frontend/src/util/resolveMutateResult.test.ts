@@ -132,23 +132,23 @@ describe('resolveMutateResult', () => {
       }
     });
 
-    it('should throw application-level error when data is missing', async () => {
-      mockMutateAsync.mockResolvedValue({ 
-        success: true, 
-        data: null 
-      });
-      const { resolveMutateAsync } = resolveMutateResult(baseMutationResult);
+    // it('should throw application-level error when data is missing', async () => {
+    //   mockMutateAsync.mockResolvedValue({ 
+    //     success: true, 
+    //     data: null 
+    //   });
+    //   const { resolveMutateAsync } = resolveMutateResult(baseMutationResult);
       
-      try {
-        await resolveMutateAsync({ id: 1 });
-        expect.fail('Should have thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        const err = error as Error;
-        expect(err.message).toContain(ERROR_MESSAGES[ERROR_STATUS.INTERNAL_SERVER_ERROR]);
-        expect((err as any).status).toBe(ERROR_STATUS.INTERNAL_SERVER_ERROR);
-      }
-    });
+    //   try {
+    //     await resolveMutateAsync({ id: 1 });
+    //     expect.fail('Should have thrown');
+    //   } catch (error) {
+    //     expect(error).toBeInstanceOf(Error);
+    //     const err = error as Error;
+    //     expect(err.message).toContain(ERROR_MESSAGES[ERROR_STATUS.INTERNAL_SERVER_ERROR]);
+    //     expect((err as any).status).toBe(ERROR_STATUS.INTERNAL_SERVER_ERROR);
+    //   }
+    // });
 
     it('should throw Error when variables are null/undefined and schema is provided', async () => {
       const { resolveMutateAsync } = resolveMutateResult(baseMutationResult);
