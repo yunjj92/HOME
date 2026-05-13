@@ -1,6 +1,7 @@
 package com.homeproject.api.account.dto;
 
 import com.homeproject.business.account.dto.BankResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,9 @@ public record BankResponse(
         String name,
         LocalDateTime createdAt,
         String createdBy,
+        @Schema(nullable = true)
         LocalDateTime updatedAt,
+        @Schema(nullable = true)
         String updatedBy
 ) {
     public static BankResponse from(BankResult p) {

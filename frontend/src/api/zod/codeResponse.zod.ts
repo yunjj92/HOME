@@ -2,15 +2,15 @@ import { z } from 'zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const codeResponseSchema = z.object({
-  id: z.number().nullish(),
-  type_id: z.number().nullish(),
-  code: z.string().nullish(),
-  name: z.string().nullish(),
-  description: z.string().nullish(),
-  createdAt: z.string().nullish(),
-  createdBy: z.string().nullish(),
-  updatedAt: z.string().nullish(),
-  updatedBy: z.string().nullish(),
+  id: z.number().optional(),
+  type_id: z.number().optional(),
+  code: z.string().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  createdAt: z.string().optional(),
+  createdBy: z.string().optional(),
+  updatedAt: z.string().nullable().optional(),
+  updatedBy: z.string().nullable().optional(),
 });
 
 export const codeDataSchema = codeResponseSchema;

@@ -4,10 +4,10 @@ import { authenticatorSelectionCriteriaResidentKeySchema } from './authenticator
 import { authenticatorSelectionCriteriaUserVerificationSchema } from './authenticatorSelectionCriteriaUserVerification.zod';
 
 export const authenticatorSelectionCriteriaSchema = z.object({
-  authenticatorAttachment: authenticatorSelectionCriteriaAuthenticatorAttachmentSchema.nullish(),
-  requireResidentKey: z.boolean().nullish(),
-  residentKey: authenticatorSelectionCriteriaResidentKeySchema.nullish(),
-  userVerification: authenticatorSelectionCriteriaUserVerificationSchema.nullish(),
+  authenticatorAttachment: authenticatorSelectionCriteriaAuthenticatorAttachmentSchema.optional(),
+  requireResidentKey: z.boolean().optional(),
+  residentKey: authenticatorSelectionCriteriaResidentKeySchema.optional(),
+  userVerification: authenticatorSelectionCriteriaUserVerificationSchema.optional(),
 });
 
 export type AuthenticatorSelectionCriteria = z.infer<typeof authenticatorSelectionCriteriaSchema>;

@@ -6,16 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CodeResponse {
+export interface AccountUpdateRequest {
   id?: number;
-  type_id?: number;
-  code?: string;
+  bankId?: number;
+  accountType?: string;
   name?: string;
+  owner?: string;
+  currencyType?: string;
+  accountNumber?: string;
   description?: string;
-  createdAt?: string;
-  createdBy?: string;
-  /** @nullable */
-  updatedAt?: string | null;
-  /** @nullable */
-  updatedBy?: string | null;
+  requestedBy?: string;
+  toDelete?: boolean;
 }

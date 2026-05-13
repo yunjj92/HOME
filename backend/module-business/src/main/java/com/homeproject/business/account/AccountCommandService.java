@@ -39,6 +39,21 @@ public class AccountCommandService {
     }
 
     @Transactional
+    public void saveAccounts(List<AccountParam> accountParams) {
+        for(AccountParam accountParam : accountParams) {
+            AccountCommand accountCommand = toAccountCommand(accountParam);
+
+            if(accountParam.id() == null) {
+                accountsRepository.insertAccount(accountCommand);
+            } else if(accountParam.toDelete()) {
+                accountsRepository.deleteAccount(accountCommand);
+            } else {
+                accountsRepository.updateAccount(accountCommand);
+            }
+        }
+    }
+
+    @Transactional
     public void saveBanks(List<BankParam> bankParams) {
         for(BankParam bankParam : bankParams) {
             BankCommand bankCommand = toBankCommand(bankParam);
@@ -50,19 +65,6 @@ public class AccountCommandService {
             } else {
                 accountsRepository.updateBank(bankCommand);
             }
-        }
-    }
-
-    @Transactional
-    public void saveAccount(AccountParam accountParam) {
-        AccountCommand accountCommand = toAccountCommand(accountParam);
-
-        if(accountParam.id() == null) {
-            accountsRepository.insertAccount(accountCommand);
-        } else if(accountParam.toDelete()) {
-            accountsRepository.deleteAccount(accountCommand);
-        } else {
-            accountsRepository.updateAccount(accountCommand);
         }
     }
 }

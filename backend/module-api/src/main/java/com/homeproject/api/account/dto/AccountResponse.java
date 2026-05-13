@@ -1,6 +1,7 @@
 package com.homeproject.api.account.dto;
 
 import com.homeproject.business.account.dto.AccountResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,9 @@ public record AccountResponse(
         String description,
         LocalDateTime createdAt,
         String createdBy,
+        @Schema(nullable = true)
         LocalDateTime updatedAt,
+        @Schema(nullable = true)
         String updatedBy
 ) {
     public static AccountResponse from(AccountResult p) {

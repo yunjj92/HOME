@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const finalizedRegistrationRequestSchema = z.object({
-  username: z.string().nullish(),
-  responseJson: z.string().nullish(),
+  username: z.string().optional(),
+  responseJson: z.string().optional(),
 });
 
 export type FinalizedRegistrationRequest = z.infer<typeof finalizedRegistrationRequestSchema>;

@@ -2,9 +2,9 @@ import { z } from 'zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const allowedCredentialResponseSchema = z.object({
-  type: z.string().nullish(),
-  id: z.string().nullish(),
-  transport: z.string().nullish(),
+  type: z.string().optional(),
+  id: z.string().optional(),
+  transport: z.string().optional(),
 });
 
 export const allowedCredentialDataSchema = allowedCredentialResponseSchema;

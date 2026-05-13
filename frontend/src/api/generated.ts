@@ -26,6 +26,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AccountUpdateRequest,
   ApiResponseListAccountResponse,
   ApiResponseListBankResponse,
   ApiResponseListCodeResponse,
@@ -334,6 +335,64 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getUpdateBanksMutationOptions(options), queryClient);
+    }
+    
+export const updateAccounts = (
+    accountUpdateRequest: AccountUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/account/update_accounts`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: accountUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateAccountsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAccounts>>, TError,{data: AccountUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAccounts>>, TError,{data: AccountUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateAccounts'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAccounts>>, {data: AccountUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateAccounts(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAccountsMutationResult = NonNullable<Awaited<ReturnType<typeof updateAccounts>>>
+    export type UpdateAccountsMutationBody = AccountUpdateRequest[]
+    export type UpdateAccountsMutationError = unknown
+
+    export const useUpdateAccounts = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAccounts>>, TError,{data: AccountUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateAccounts>>,
+        TError,
+        {data: AccountUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateAccountsMutationOptions(options), queryClient);
     }
     
 export const getCodes = (
