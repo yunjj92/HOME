@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { formatDateTime } from "../../util/formatDateTime";
 import type { BankData } from "../../api/zod/bankResponse.zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { resolveMutateResult } from "../../util/resolveMutateResult";
+import { getGetBanksQueryKey, useUpdateBanks } from "../../api/generated";
+import { bankUpdateRequestSchema } from "../../api/zod/bankUpdateRequest.zod";
+import z from "zod";
 
 type BankListProps = {
     banks: BankData[];
@@ -8,10 +13,12 @@ type BankListProps = {
 };
 
 interface BankRow {
-    id: number | null;
-    name: string;
-    createdAt: string | null;
-    updatedAt: string | null;
+    id?: number;
+    name?: string;
+    createdAt?: string;
+    updatedAt?: string | null;
+    rowKey: string;
+    toUpdate: boolean;
     toDelete: boolean;
 };
 
@@ -34,20 +41,31 @@ function ThisTdInput({value, onChange, disabled=false}: {
 };
 
 export function BankListEdit({ banks, setIsEditModeFalse }: BankListProps) {
+
+    const queryClient = useQueryClient();
+    const { resolveMutateAsync } = resolveMutateResult(useUpdateBanks({
+        mutation: {
+            onSuccess: () => {
+                alert(`저장되었습니다.`);
+                queryClient.invalidateQueries({ queryKey: getGetBanksQueryKey() });
+                setIsEditModeFalse();
+            },
+        },
+    }));
     
     const createEmptyRow = (): BankRow => ({
-        id: null,
-        name: "",
-        createdAt: null,
-        updatedAt: null,
+        rowKey: crypto.randomUUID(),
+        toUpdate: false,
         toDelete: false,
     });
     
     const [rows, setRows] = useState<BankRow[]>([...banks.map((bank) => ({
-        id: bank.id ?? 0,
-        name: bank.name ?? "",
-        createdAt: bank.createdAt ?? "",
-        updatedAt: bank.updatedAt ?? "",
+        id: bank.id,
+        name: bank.name,
+        createdAt: bank.createdAt,
+        updatedAt: bank.updatedAt,
+        rowKey: `old-${bank.id}`,
+        toUpdate: false,
         toDelete: false,
         })),
         createEmptyRow(),
@@ -63,7 +81,7 @@ export function BankListEdit({ banks, setIsEditModeFalse }: BankListProps) {
         value: number | string,
     ) => {
         setRows((prev) => prev.map((row, index) => 
-            index === target ? { ...row, [field]: value } : row
+            index === target ? { ...row, [field]: value, toUpdate: true } : row
         ));
     };
 
@@ -75,6 +93,25 @@ export function BankListEdit({ banks, setIsEditModeFalse }: BankListProps) {
                 return prev.map((row, idx) => idx === targetIndex ? { ...row, toDelete: true } : row);
             }
         }); 
+    };
+
+    const saveRows = async () => {
+        const saveRows = rows
+            .filter((row) => row.toUpdate || row.toDelete)
+            .map((row) => ({ ...row, requestedBy: "dev" }));
+        
+        if(saveRows.length === 0) return alert(`저장할 항목이 없습니다.`);
+        if(!confirm(`총 ${saveRows.length}건의 데이터를 저장하시겠습니까?`)) return;
+
+        await resolveMutateAsync({ data: saveRows }, z.array(z.union([
+            bankUpdateRequestSchema.extend({
+                id: z.number(),
+                toDelete: z.literal(true),
+            }),
+            bankUpdateRequestSchema.extend({
+                name: z.string().trim().min(1, "은행명이 입력되지 않았습니다."),
+            }),
+        ])));
     };
 
     return (
@@ -96,7 +133,7 @@ export function BankListEdit({ banks, setIsEditModeFalse }: BankListProps) {
             <tr className="cm-tbody-tr">
                 <td colSpan={10} className="cm-td">
                     <div className="flex items-center justify-end gap-1">
-                        <button type="button" className="cm-button">저장</button>
+                        <button type="button" className="cm-button" onClick={saveRows}>저장</button>
                         <button type="button" className="cm-button" onClick={setIsEditModeFalse}>취소</button>
                     </div>
                 </td>

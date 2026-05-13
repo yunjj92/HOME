@@ -86,8 +86,8 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
                 alert(`저장되었습니다.`);
                 queryClient.invalidateQueries({ queryKey: getGetAccountsQueryKey() });
                 setIsEditModeFalse();
-            }
-        }
+            },
+        },
     }));
 
     const createEmptyRow = (): AccountRow => ({
@@ -148,14 +148,22 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
         if(saveRows.length === 0) return alert(`저장할 항목이 없습니다.`);
         if(!confirm(`총 ${saveRows.length}건의 데이터를 저장하시겠습니까?`)) return;
 
-        await resolveMutateAsync({ data: saveRows }, z.array(accountUpdateRequestSchema.extend({
-            name: z.string().trim().min(1, "계좌명이 입력되지 않았습니다."),
-            bankId: z.number().min(1, "은행명이 입력되지 않았습니다."),
-            accountType: z.string().min(1, "계좌종류가 입력되지 않았습니다."),
-            owner: z.string().trim().min(1, "소유주가 입력되지 않았습니다."),
-            currencyType: z.string().min(1, "계좌통화가 입력되지 않았습니다."),
-            accountNumber: z.string().trim().min(1, "계좌번호가 입력되지 않았습니다."),
-        })));
+        await resolveMutateAsync({ data: saveRows }, z.array(z.union([
+            // 삭제일 경우
+            accountUpdateRequestSchema.extend({
+                id: z.number(),
+                toDelete: z.literal(true),
+            }),
+            // 신규 또는 수정일 경우
+            accountUpdateRequestSchema.extend({
+                name: z.string().trim().min(1, "계좌명이 입력되지 않았습니다."),
+                bankId: z.number().min(1, "은행명이 입력되지 않았습니다."),
+                accountType: z.string().min(1, "계좌종류가 입력되지 않았습니다."),
+                owner: z.string().trim().min(1, "소유주가 입력되지 않았습니다."),
+                currencyType: z.string().min(1, "계좌통화가 입력되지 않았습니다."),
+                accountNumber: z.string().trim().min(1, "계좌번호가 입력되지 않았습니다."),
+            }),
+        ])));
     };
 
     return (
