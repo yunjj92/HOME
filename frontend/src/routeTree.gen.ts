@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as managementMinistryManagementRouteImport } from './routes/management/ministryManagement'
 import { Route as authLoginRouteImport } from './routes/auth/login'
 import { Route as mainMainHomeRouteImport } from './routes/main/mainHome'
 import { Route as managementBankManagementRouteImport } from './routes/management/bankManagement'
 import { Route as managementAccountManagementRouteImport } from './routes/management/accountManagement'
 import { Route as authRegisterRouteImport } from './routes/auth/register'
 
+const managementMinistryManagementRoute =
+  managementMinistryManagementRouteImport.update({
+    id: '/ministry',
+    path: '/ministry',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -49,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/bank': typeof managementBankManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authLoginRoute
+  '/ministry': typeof managementMinistryManagementRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authRegisterRoute
@@ -56,6 +64,7 @@ export interface FileRoutesByTo {
   '/bank': typeof managementBankManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authLoginRoute
+  '/ministry': typeof managementMinistryManagementRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -64,13 +73,14 @@ export interface FileRoutesById {
   '/bank': typeof managementBankManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authLoginRoute
+  '/ministry': typeof managementMinistryManagementRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/bank' | '/home' | '/login'
+  fullPaths: '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/bank' | '/home' | '/login'
-  id: '__root__' | '/' | '/account' | '/bank' | '/home' | '/login'
+  to: '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
+  id: '__root__' | '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -79,10 +89,18 @@ export interface RootRouteChildren {
   managementBankManagementRoute: typeof managementBankManagementRoute
   mainMainHomeRoute: typeof mainMainHomeRoute
   authLoginRoute: typeof authLoginRoute
+  managementMinistryManagementRoute: typeof managementMinistryManagementRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ministry': {
+      id: '/ministry'
+      path: '/ministry'
+      fullPath: '/ministry'
+      preLoaderRoute: typeof managementMinistryManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -127,6 +145,7 @@ const rootRouteChildren: RootRouteChildren = {
   managementBankManagementRoute: managementBankManagementRoute,
   mainMainHomeRoute: mainMainHomeRoute,
   authLoginRoute: authLoginRoute,
+  managementMinistryManagementRoute: managementMinistryManagementRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

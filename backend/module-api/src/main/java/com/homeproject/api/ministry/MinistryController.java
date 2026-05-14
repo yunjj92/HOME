@@ -1,0 +1,55 @@
+package com.homeproject.api.ministry;
+
+import com.homeproject.api.ministry.dto.MinistryResponse;
+import com.homeproject.api.ministry.dto.MinistryUpdateRequest;
+import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.business.ministry.MinistryCommandService;
+import com.homeproject.business.ministry.MinistryQueryService;
+import com.homeproject.business.ministry.dto.MinistryParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/account")
+public class MinistryController {
+
+    private final MinistryQueryService ministryQueryService;
+    private final MinistryCommandService ministryCommandService;
+
+    private MinistryParam toMinistryParam(MinistryUpdateRequest ministryUpdateRequest) {
+        return new MinistryParam(
+                ministryUpdateRequest.id(),
+                ministryUpdateRequest.name(),
+                ministryUpdateRequest.description(),
+                ministryUpdateRequest.requestedBy(),
+                ministryUpdateRequest.toDelete()
+        );
+    }
+
+    @GetMapping(value = "/get_ministries")
+    public ApiResponse<List<MinistryResponse>> getMinistries() {
+        try {
+            return ApiResponse.success(
+                    ministryQueryService.getMinistryList()
+                    .stream()
+                    .map(MinistryResponse::from)
+                    .toList()
+            );
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
+    }
+
+    @PostMapping(value = "/update_ministries")
+    public ApiResponse<Void> updateMinistries(@RequestBody List<MinistryUpdateRequest> ministryUpdateRequests) {
+        List<MinistryParam> ministryParams = ministryUpdateRequests.stream()
+                .map(this::toMinistryParam)
+                .toList();
+        ministryCommandService.saveMinistries(ministryParams);
+
+        return ApiResponse.success(null);
+    }
+}

@@ -30,6 +30,7 @@ import type {
   ApiResponseListAccountResponse,
   ApiResponseListBankResponse,
   ApiResponseListCodeResponse,
+  ApiResponseListMinistryResponse,
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
   ApiResponseString,
@@ -38,6 +39,7 @@ import type {
   FinalizedRegistrationRequest,
   FinishLoginParams,
   GetCodesParams,
+  MinistryUpdateRequest,
   StartLoginParams,
   StartRegistrationParams
 } from './model';
@@ -279,6 +281,64 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getFinishLoginMutationOptions(options), queryClient);
     }
     
+export const updateMinistries = (
+    ministryUpdateRequest: MinistryUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/account/update_ministries`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: ministryUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateMinistriesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMinistries>>, TError,{data: MinistryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateMinistries>>, TError,{data: MinistryUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateMinistries'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateMinistries>>, {data: MinistryUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateMinistries(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateMinistriesMutationResult = NonNullable<Awaited<ReturnType<typeof updateMinistries>>>
+    export type UpdateMinistriesMutationBody = MinistryUpdateRequest[]
+    export type UpdateMinistriesMutationError = unknown
+
+    export const useUpdateMinistries = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateMinistries>>, TError,{data: MinistryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateMinistries>>,
+        TError,
+        {data: MinistryUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateMinistriesMutationOptions(options), queryClient);
+    }
+    
 export const updateBanks = (
     bankUpdateRequest: BankUpdateRequest[],
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
@@ -483,6 +543,99 @@ export const invalidateGetCodes = async (
   ): Promise<QueryClient> => {
 
   await queryClient.invalidateQueries({ queryKey: getGetCodesQueryKey(params) }, options);
+
+  return queryClient;
+}
+
+
+
+export const getMinistries = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListMinistryResponse>(
+      {url: `/api/account/get_ministries`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetMinistriesQueryKey = () => {
+    return [
+    `/api/account/get_ministries`
+    ] as const;
+    }
+
+    
+export const getGetMinistriesQueryOptions = <TData = Awaited<ReturnType<typeof getMinistries>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMinistriesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMinistries>>> = ({ signal }) => getMinistries(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMinistriesQueryResult = NonNullable<Awaited<ReturnType<typeof getMinistries>>>
+export type GetMinistriesQueryError = unknown
+
+
+export function useGetMinistries<TData = Awaited<ReturnType<typeof getMinistries>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMinistries>>,
+          TError,
+          Awaited<ReturnType<typeof getMinistries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMinistries<TData = Awaited<ReturnType<typeof getMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMinistries>>,
+          TError,
+          Awaited<ReturnType<typeof getMinistries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMinistries<TData = Awaited<ReturnType<typeof getMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetMinistries<TData = Awaited<ReturnType<typeof getMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMinistriesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetMinistries = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetMinistriesQueryKey() }, options);
 
   return queryClient;
 }
