@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import type { LoginResponse } from "../../api/model";
-import { get } from "@github/webauthn-json/browser-ponyfill";
+import { get, type AuthenticationPublicKeyCredential } from "@github/webauthn-json/browser-ponyfill";
 import { prepareLoginOptions } from "./function/transformLoginResultParam";
 import { useFinishLogin, useStartLogin } from "../../api/generated";
 import { resolveMutateResult } from "../../util/resolveMutateResult";
@@ -9,6 +8,7 @@ import { startLoginParamsSchema } from "../../api/zod/startLoginParams.zod";
 import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
 import { useAuthStore } from "./stores/authStore";
 import { getJwtExpiration } from "../../util/jwt";
+import { useState } from "react";
 
 
 export const LoginForm: React.FC= () => {
@@ -33,19 +33,21 @@ export const LoginForm: React.FC= () => {
      }
   }
 
-  const handleLoginFinish = async (assertion: any) =>{
+  const handleLoginFinish = async (assertion: AuthenticationPublicKeyCredential) =>{
 
      const dataResult = await finishLoginProcess({data: JSON.stringify(assertion), params: {username}}, finishLoginParamsSchema);
 
-     const finishResult = dataResult.data
+     // Assuming the backend now returns an object with accessToken and refreshToken
+     // even if the generated type still says string.
+     const finishResult = dataResult.data as unknown as { accessToken: string; refreshToken: string };
      const loginSuccess = dataResult.success
-       alert(`result: ${finishResult} and success? ${loginSuccess}`)
  
         if(finishResult && loginSuccess){
-          localStorage.setItem('accessToken', finishResult);
+          localStorage.setItem('accessToken', finishResult.accessToken);
+          localStorage.setItem('refreshToken', finishResult.refreshToken);
           localStorage.setItem('userName', username);
-          const expiry = getJwtExpiration(finishResult);
-          login(username, expiry);
+          const expiry = getJwtExpiration(finishResult.accessToken);
+          login(username, expiry, finishResult.refreshToken);
           void navigate({ to: '/home' });
         }
    }
@@ -81,7 +83,7 @@ export const LoginForm: React.FC= () => {
                 const loginFinishParam = await handleLoginStart();
                 
                 if (loginFinishParam) {
-                  await handleLoginFinish(loginFinishParam)
+                  await handleLoginFinish(loginFinishParam);
                 }
 
               }
@@ -96,3 +98,4 @@ export const LoginForm: React.FC= () => {
 
 }
 export default LoginForm;
+

@@ -18,18 +18,29 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private final Key key;
-    private final long expirationTime;
+    private final long accessTokenExpirationTime;
+    private final long refreshTokenExpirationTime;
 
     // 0.12.x에서는 SecretKey 객체를 직접 다루는 것을 권장합니다.
     public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.token-validity-in-millis}") long expirationTime) {
-        this.expirationTime = expirationTime;
+                            @Value("${jwt.access-token-validity-in-millis}") long accessTokenExpirationTime,
+                            @Value("${jwt.refresh-token-validity-in-millis}") long refreshTokenExpirationTime) {
+        this.accessTokenExpirationTime = accessTokenExpirationTime;
+        this.refreshTokenExpirationTime = refreshTokenExpirationTime;
         // 0.12.x 방식: Keys.hmacShaKeyFor 이용
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
+    public String createAccessToken(String userId) {
+        return createToken(userId, accessTokenExpirationTime);
+    }
+
+    public String createRefreshToken(String userId) {
+        return createToken(userId, refreshTokenExpirationTime);
+    }
+
     // 토큰 생성: 0.12.x에서는 .claims() 대신 .subject(), .issuedAt() 등을 직접 호출하는 흐름을 권장
-    public String createToken(String userId) {
+    private String createToken(String userId, long expirationTime) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expirationTime);
 

@@ -10,10 +10,11 @@ export function MainLayout() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
         const userName = localStorage.getItem('userName');
         if (token && userName) {
             const expiry = getJwtExpiration(token);
-            login(userName, expiry);
+            login(userName, expiry, refreshToken);
         }
     }, [login]);
 
@@ -24,7 +25,7 @@ export function MainLayout() {
             <main className="flex-1">
                 <Outlet />
             </main>
-...
+            <footer className="bg-white border-t py-8">
                 <div className="mx-auto flex max-w-7xl items-center justify-between h-full px-6 lg:px-8">
                     <p className="text-sm/6 text-gray-500">© 2026 Your Company. All rights reserved.</p>
                     <div className="flex gap-x-6">

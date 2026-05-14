@@ -6,6 +6,8 @@ import com.homeproject.api.authentication.response.LoginResponse;
 import com.homeproject.api.authentication.response.StartRegistrationResponse;
 import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.security.jwt.JwtTokenProvider;
+import com.homeproject.security.jwt.RefreshTokenService;
+import com.homeproject.security.jwt.TokenResponse;
 import com.homeproject.security.webauthn.WebAuthnProcessor;
 import com.homeproject.security.webauthn.param.FinalizedLoginParam;
 import com.homeproject.security.webauthn.param.FinalizedRegistrationParam;
@@ -31,6 +33,7 @@ public class AuthenticationController {
 
     private final WebAuthnProcessor webAuthnProcessor;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
     private final ObjectMapper objectMapper;
     // In-memory store for challenges. In a production app, use Redis or a proper session.
     private final Map<String, PublicKeyCredentialCreationOptions> registrationOptionsStore = new ConcurrentHashMap<>();
@@ -77,7 +80,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login/finish")
-    public ApiResponse<String> finishLogin(@RequestParam String username, @RequestBody String responseJson) throws Exception {
+    public ApiResponse<TokenResponse> finishLogin(@RequestParam String username, @RequestBody String responseJson) throws Exception {
 
         try {
             AssertionRequest request = assertionRequestStore.get(username);
@@ -94,7 +97,26 @@ public class AuthenticationController {
             }
 
             assertionRequestStore.remove(username);
-            return ApiResponse.success(jwtTokenProvider.createToken(username));
+            return ApiResponse.success(refreshTokenService.createTokens(username));
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ApiResponse<TokenResponse> refresh(@RequestParam String refreshToken) {
+        try {
+            return ApiResponse.success(refreshTokenService.refresh(refreshToken));
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage(), "");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestParam String refreshToken) {
+        try {
+            refreshTokenService.logout(refreshToken);
+            return ApiResponse.success(null);
         } catch (Exception e) {
             return ApiResponse.error(e.getMessage(), "");
         }

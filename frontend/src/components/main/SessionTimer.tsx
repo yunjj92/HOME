@@ -3,11 +3,11 @@ import { useAuthStore } from '../auth/stores/authStore';
 
 export const SessionTimer = () => {
   const { sessionExpiry, isLoggedIn, logout } = useAuthStore();
-  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+  const [remainingTime, setRemainingTime] = useState<number>(0);
 
   useEffect(() => {
     if (!isLoggedIn || !sessionExpiry) {
-      setRemainingTime(null);
+      setRemainingTime(0);
       return;
     }
 
@@ -20,7 +20,7 @@ export const SessionTimer = () => {
     return () => clearInterval(interval);
   }, [sessionExpiry, isLoggedIn, logout]);
 
-  if (!isLoggedIn || remainingTime === null) return null;
+  if (!isLoggedIn || remainingTime === 0) return null;
 
   const minutes = Math.floor(remainingTime / 60000);
   const seconds = Math.floor((remainingTime % 60000) / 1000);

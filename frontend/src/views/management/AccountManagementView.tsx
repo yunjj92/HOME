@@ -14,6 +14,7 @@ import { checkLoading } from "../../util/checkLoading";
 import { AccountListEdit } from "../../components/account/AccountListEdit";
 import { checkError } from "../../util/checkError";
 
+
 const queryConfig = {
     query: {
         staleTime: Infinity,

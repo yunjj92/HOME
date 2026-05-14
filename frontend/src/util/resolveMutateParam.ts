@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { ERROR_STATUS, ERROR_MESSAGES } from "./errorConstants";
 
-export function resolveMutateParam<T extends z.ZodTypeAny>(
+export function resolveMutateParam<T extends z.ZodTypeAny, TData>(
     inputSchema: T,
-    param: any,
-): z.output<T> | Response {
+    param: TData | null | undefined
+): TData | Response {
 
     if(param === null || param === undefined) {
         return Response.json(

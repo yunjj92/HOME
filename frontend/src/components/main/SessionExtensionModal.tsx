@@ -1,14 +1,16 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useAuthStore } from '../auth/stores/authStore';
+import axios from 'axios';
+import { getJwtExpiration } from '../../util/jwt';
 
 export const SessionExtensionModal = () => {
   const { isLoggedIn, sessionExpiry, login, logout } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [modalCountdown, setModalCountdown] = useState(60);
 
-  // Notification threshold: 1 minute (60,000 ms)
-  const THRESHOLD = 60000;
+  // Notification threshold: 5 minutes (300,000 ms)
+  const THRESHOLD = 300000;
 
   useEffect(() => {
     if (!isLoggedIn || !sessionExpiry) {
@@ -30,7 +32,7 @@ export const SessionExtensionModal = () => {
   }, [isLoggedIn, sessionExpiry, isOpen]);
 
   useEffect(() => { 
-    let timer: ReturnType<typeof setTimeout>; //todo: fix this type--- it should be NodeJS.Timeout but that causes issues in the browser environment.
+    let timer: ReturnType<typeof setTimeout>;
     if (isOpen && modalCountdown > 0) {
       timer = setTimeout(() => setModalCountdown(modalCountdown - 1), 1000);
     } else if (isOpen && modalCountdown <= 0) {
@@ -40,25 +42,38 @@ export const SessionExtensionModal = () => {
   }, [isOpen, modalCountdown]);
 
   const handleExtend = async () => {
-    // todo: In a real app, you would call an API to refresh the token.
-    // For now, we simulate extension by resetting the expiry (e.g., adding 30 more minutes).
-    // If you have a refresh API, call it here and use the new token's expiry.
-    
-    const currentToken = localStorage.getItem('accessToken');
+    const storedRefreshToken = localStorage.getItem('refreshToken');
     const userName = localStorage.getItem('userName');
     
-    if (currentToken && userName) {
-      // Simulation: Add 30 minutes (1800000 ms) to current time
-      const newExpiry = Date.now() + 1800000; 
-      
-      // If we had a real API, it would look like this:
-      // const newToken = await refreshSessionApi();
-      // localStorage.setItem('accessToken', newToken);
-      // const newExpiry = getJwtExpiration(newToken);
-      
-      login(userName, newExpiry);
-      setIsOpen(false);
-      alert('Session extended for 30 minutes (Simulated)');
+    if (storedRefreshToken && userName) {
+      try {
+        // Call the real refresh API using axios for consistency
+        const response = await axios.get('http://localhost:8080/api/auth/refresh', {
+          params: { refreshToken: storedRefreshToken }
+        });
+        
+        const result = response.data;
+        
+        if (result.success && result.data) {
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = result.data;
+          
+          localStorage.setItem('accessToken', newAccessToken);
+          if (newRefreshToken) {
+            localStorage.setItem('refreshToken', newRefreshToken);
+          }
+          
+          const newExpiry = getJwtExpiration(newAccessToken);
+          login(userName, newExpiry, newRefreshToken || storedRefreshToken);
+          setIsOpen(false);
+          alert('Session extended successfully');
+        } else {
+          throw new Error('Refresh failed');
+        }
+      } catch (error) {
+        handleLogout();
+      }
+    } else {
+      handleLogout();
     }
   };
 
@@ -117,7 +132,7 @@ export const SessionExtensionModal = () => {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                    onClick={handleExtend}
+                    onClick={void handleExtend}
                   >
                     Extend Session
                   </button>
