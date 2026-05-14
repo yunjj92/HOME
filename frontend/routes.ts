@@ -5,6 +5,7 @@ export const routes = rootRoute('__root.tsx', [
   route('/home', 'main/mainHome.tsx'),
   route('/account', 'management/accountManagement.tsx'),
   route('/bank', 'management/bankManagement.tsx'),
+  route('/ministry', 'management/ministryManagement.tsx'),
   route('/login', 'auth/login.tsx'),
 ])
 
