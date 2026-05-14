@@ -70,6 +70,7 @@ export const SessionExtensionModal = () => {
           throw new Error('Refresh failed');
         }
       } catch (error) {
+        alert('Failed to extend session. Please log in again. Error: ' + (error instanceof Error ? error.message : 'Unknown error'));
         handleLogout();
       }
     } else {

@@ -63,7 +63,19 @@ AXIOS_INSTANCE.interceptors.response.use(
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('userName');
           window.location.href = '/login';
-          return Promise.reject(refreshError);
+
+          if (axios.isAxiosError(refreshError)) {
+            // 여기서 error는 AxiosError 타입으로 추론됩니다.
+            return Promise.reject(new Error(refreshError.response?.data || refreshError.response?.status));
+          } else if (refreshError instanceof Error) {
+            // 일반적인 Error 객체인 경우
+            return Promise.reject(new Error(refreshError.message));
+          } else {
+            // 문자열이나 알 수 없는 타입인 경우
+             return Promise.reject(new Error("알 수 없는 에러:" + JSON.stringify(refreshError)));
+          }
+
+          
         }
       } else {
         // 리프레시 토큰이 없으면 로그인 페이지로 이동
