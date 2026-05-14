@@ -21,11 +21,8 @@ export const RegistrationForm = () => {
     if (!username) return;
 
     try {
-      console.log('Starting registration for:', username);
       setStatus('loading');
       const startResult = await startRegistration({params: {username}});
-      console.log('Registration start result:', startResult);
-
       const creationOptions = prepareCreationOptions(startResult.data || {});
 
       const credential = await create({
@@ -39,7 +36,7 @@ export const RegistrationForm = () => {
 
 
     } catch (error) {
-      console.error('Registration error:', error);
+
       setStatus('error');
       setMessage(error instanceof Error ? error.message : 'Unknown error');
     }

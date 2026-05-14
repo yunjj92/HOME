@@ -2,8 +2,14 @@ import type { UseMutationResult } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { resolveMutateParam } from "./resolveMutateParam";
 import { ERROR_STATUS, ERROR_MESSAGES } from "./errorConstants";
+import { z } from "zod";
 
-interface CommonResponse<T = any> {
+export interface MappedError extends Error {
+    status: number;
+    details?: string[];
+}
+
+interface CommonResponse<T = unknown> {
   success?: boolean;
   data?: T;
   apiError?: {
@@ -16,15 +22,15 @@ interface CommonResponse<T = any> {
 
 interface ResolveMutateResult<TData, TVariables> {
     isSuccess: boolean;
-    alertErrorIntoMap: Error | null;
-    resolveMutateAsync: (variables: TVariables, inputSchema?: any) => Promise<TData>;
+    alertErrorIntoMap: MappedError | null;
+    resolveMutateAsync: (variables: TVariables, inputSchema?: z.ZodTypeAny) => Promise<TData>;
 }
 
 export function resolveMutateResult<
-    TData = any,
-    TError = any,
-    TVariables = any,
-    TContext = any
+    TData = unknown,
+    TError = unknown,
+    TVariables = unknown,
+    TContext = unknown
 >(
     mutationResult: UseMutationResult<TData, TError, TVariables, TContext>
 ): ResolveMutateResult<TData, TVariables> {
@@ -32,7 +38,7 @@ export function resolveMutateResult<
     const {error, isSuccess} = mutationResult;
     const errResponse = isAxiosError<CommonResponse>(error) ? error.response : undefined;
 
-    const getAlertError = (status: number, message: string, details?: string[]) => {
+    const getAlertError = (status: number, message: string, details?: string[]): MappedError => {
         const mappedMessage = ERROR_MESSAGES[status as keyof typeof ERROR_MESSAGES];
         let baseMessage: string = (mappedMessage || message || ERROR_MESSAGES.DEFAULT );
      
@@ -45,9 +51,9 @@ export function resolveMutateResult<
             finalMessage = `${finalMessage}: ${details.join(', ')}`;
         }
         
-        const err = new Error(finalMessage);
-        (err as any).status = status;
-        (err as any).details = details;
+        const err = new Error(finalMessage) as MappedError;
+        err.status = status;
+        err.details = details;
         return err;
     }
     
@@ -58,7 +64,7 @@ export function resolveMutateResult<
             errResponse.data?.apiError?.message || ERROR_MESSAGES.DEFAULT,
             errResponse.data?.apiError?.details || errResponse.data?.details
         ) : null,
-        resolveMutateAsync: async (variables: TVariables, inputSchema?: any) => {
+        resolveMutateAsync: async (variables: TVariables, inputSchema?: z.ZodTypeAny) => {
 
             let targetVariables = variables;
             if(inputSchema) {
@@ -74,8 +80,8 @@ export function resolveMutateResult<
             const result = await mutationResult.mutateAsync(targetVariables);
 
             // Handle application-level error
-            const commonResult = result as CommonResponse;
-            if (commonResult && (!commonResult.success)) {
+            const commonResult = result as CommonResponse<TData>;
+            if (commonResult && (!commonResult.success || !commonResult.data)) {
                  throw getAlertError(ERROR_STATUS.INTERNAL_SERVER_ERROR, commonResult.apiError?.message || ERROR_MESSAGES.DEFAULT);
             }
             

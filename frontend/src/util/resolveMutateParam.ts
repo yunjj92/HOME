@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { ERROR_STATUS, ERROR_MESSAGES } from "./errorConstants";
 
-export function resolveMutateParam<T extends z.ZodTypeAny>(
+
+export function resolveMutateParam<T extends z.ZodTypeAny, TData>(
     inputSchema: T,
-    param: any,
-): z.output<T> | Response {
+    param: TData | null | undefined
+): TData | Response  {
 
     if(param === null || param === undefined) {
         return Response.json(
@@ -18,7 +19,8 @@ export function resolveMutateParam<T extends z.ZodTypeAny>(
         return param;
     }
 
-    const resultOfValidation = inputSchema.safeParse(param.data ?? param); 
+    const targetParam =  typeof param === 'object' && 'data' in param ? param.data : param;
+    const resultOfValidation = inputSchema.safeParse( targetParam ); 
     
     if(!resultOfValidation.success) {
         const issues = resultOfValidation.error.issues || [];
