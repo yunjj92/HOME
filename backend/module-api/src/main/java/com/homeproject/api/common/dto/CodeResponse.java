@@ -1,6 +1,7 @@
 package com.homeproject.api.common.dto;
 
 import com.homeproject.business.common.dto.CodeResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,9 @@ public record CodeResponse(
         String description,
         LocalDateTime createdAt,
         String createdBy,
+        @Schema(nullable = true)
         LocalDateTime updatedAt,
+        @Schema(nullable = true)
         String updatedBy
 ) {
     public static CodeResponse from(CodeResult p) {

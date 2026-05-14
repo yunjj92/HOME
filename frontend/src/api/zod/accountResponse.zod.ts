@@ -2,19 +2,19 @@ import { z } from 'zod';
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const accountResponseSchema = z.object({
-  id: z.number().nullish(),
-  bankId: z.number().nullish(),
-  bankName: z.string().nullish(),
-  accountType: z.string().nullish(),
-  name: z.string().nullish(),
-  owner: z.string().nullish(),
-  currencyType: z.string().nullish(),
-  accountNumber: z.string().nullish(),
-  description: z.string().nullish(),
-  createdAt: z.string().nullish(),
-  createdBy: z.string().nullish(),
-  updatedAt: z.string().nullish(),
-  updatedBy: z.string().nullish(),
+  id: z.number().optional(),
+  bankId: z.number().optional(),
+  bankName: z.string().optional(),
+  accountType: z.string().optional(),
+  name: z.string().optional(),
+  owner: z.string().optional(),
+  currencyType: z.string().optional(),
+  accountNumber: z.string().optional(),
+  description: z.string().optional(),
+  createdAt: z.string().optional(),
+  createdBy: z.string().optional(),
+  updatedAt: z.string().nullable().optional(),
+  updatedBy: z.string().nullable().optional(),
 });
 
 export const accountDataSchema = accountResponseSchema;

@@ -3,12 +3,12 @@ import { allowedCredentialResponseSchema } from './allowedCredentialResponse.zod
 import { createApiResponseSchema } from '../../schemas/common/api';
 
 export const loginResponseSchema = z.object({
-  username: z.string().nullish(),
-  challenge: z.string().nullish(),
-  timeout: z.string().nullish(),
-  rpId: z.string().nullish(),
-  allowCredentials: z.array(allowedCredentialResponseSchema).nullish(),
-  userVerification: z.string().nullish(),
+  username: z.string().optional(),
+  challenge: z.string().optional(),
+  timeout: z.string().optional(),
+  rpId: z.string().optional(),
+  allowCredentials: z.array(allowedCredentialResponseSchema).optional(),
+  userVerification: z.string().optional(),
 });
 
 export const loginDataSchema = loginResponseSchema;
