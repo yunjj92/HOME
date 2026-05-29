@@ -1,5 +1,5 @@
 ﻿import { AccountList } from "../../components/account/AccountList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetAccounts, useGetBanks, useGetCodes } from "../../api/generated";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
@@ -9,10 +9,8 @@ import { useListMapping } from "../../hooks/common/useListMapping";
 import { useCodesMapping } from "../../hooks/common/useCodesMapping";
 import { parseToZodSchema } from "../../util/parseToZodSchema";
 import { AccountListSkeleton } from "../../components/account/AccountListSkeleton";
-import { checkLoading } from "../../util/checkLoading";
 import { AccountListEdit } from "../../components/account/AccountListEdit";
-import { checkError } from "../../util/checkError";
-
+import { createErrorHandler } from "../../util/errorHandler.ts";
 
 const queryConfig = {
     query: {
@@ -24,20 +22,56 @@ const queryConfig = {
 
 export const AccountManagementView = () => {
     // 데이터 useQuery로 불러오기
-    const getAccountsResult = useGetAccounts(queryConfig);
-    const getBankResult = useGetBanks(queryConfig);
-    const getAccountTypeCodesResult = useGetCodes({ typeId: 1 }, queryConfig);
-    const getCurrencyTypeCodesResult = useGetCodes({ typeId: 2 }, queryConfig);
+    const {
+        isLoading: isAccountsLoading,
+        error: accountsError,
+        data: accountsData,
+    } = useGetAccounts(queryConfig);
+    const {
+        isLoading: isBanksLoading,
+        error: banksError,
+        data: banksData,
+    } = useGetBanks(queryConfig);
+    const {
+        isLoading: isAccountTypeCodesLoading,
+        error: accountTypeCodesError,
+        data: accountTypeCodesData,
+    } = useGetCodes({ typeId: 1 }, queryConfig);
+    const {
+        isLoading: isCurrencyTypeCodesLoading,
+        error: currencyTypeCodesError,
+        data: currencyTypeCodesData,
+    } = useGetCodes({ typeId: 2 }, queryConfig);
 
     // 로딩, 에러 체크
-    const isLoading = checkLoading(getAccountsResult, getBankResult, getAccountTypeCodesResult, getCurrencyTypeCodesResult);
-    checkError(getAccountsResult, getBankResult, getAccountTypeCodesResult, getCurrencyTypeCodesResult);
+    const isLoading = isAccountsLoading || isBanksLoading || isAccountTypeCodesLoading || isCurrencyTypeCodesLoading;
+
+    useEffect(() => {
+        if (isLoading) return;
+
+        const errorHandler = createErrorHandler();
+        errorHandler.collectResult({ error: accountsError, data: accountsData }, { source: "accounts" });
+        errorHandler.collectResult({ error: banksError, data: banksData }, { source: "banks" });
+        errorHandler.collectResult({ error: accountTypeCodesError, data: accountTypeCodesData }, { source: "accountTypeCodes" });
+        errorHandler.collectResult({ error: currencyTypeCodesError, data: currencyTypeCodesData }, { source: "currencyTypeCodes" });
+        errorHandler.flush();
+    }, [
+        isLoading,
+        accountsError,
+        accountsData,
+        banksError,
+        banksData,
+        accountTypeCodesError,
+        accountTypeCodesData,
+        currencyTypeCodesError,
+        currencyTypeCodesData,
+    ]);
 
     // 데이터 파싱
-    const accounts = parseToZodSchema(getAccountsResult.data?.data, z.array(accountDataSchema), []);
-    const banks = parseToZodSchema(getBankResult.data?.data, z.array(bankDataSchema), []);
-    const accountTypeCodes = parseToZodSchema(getAccountTypeCodesResult.data?.data, z.array(codeDataSchema), []);
-    const currencyTypeCodes = parseToZodSchema(getCurrencyTypeCodesResult.data?.data, z.array(codeDataSchema), []);
+    const accounts = parseToZodSchema(accountsData?.data, z.array(accountDataSchema), []);
+    const banks = parseToZodSchema(banksData?.data, z.array(bankDataSchema), []);
+    const accountTypeCodes = parseToZodSchema(accountTypeCodesData?.data, z.array(codeDataSchema), []);
+    const currencyTypeCodes = parseToZodSchema(currencyTypeCodesData?.data, z.array(codeDataSchema), []);
 
     // 맵핑 데이터 생성
     const bankMap = useListMapping(banks, "id", "name");

@@ -1,13 +1,12 @@
 import z from "zod";
 import { useGetBanks } from "../../api/generated"
-import { checkError } from "../../util/checkError";
-import { checkLoading } from "../../util/checkLoading";
 import { parseToZodSchema } from "../../util/parseToZodSchema";
 import { bankDataSchema } from "../../api/zod/bankResponse.zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BankList } from "../../components/account/BankList";
 import { BankListSkeleton } from "../../components/account/BankListSkeleton";
 import { BankListEdit } from "../../components/account/BankListEdit";
+import { createErrorHandler } from "../../util/errorHandler.ts";
 
 const queryConfig = {
     query: {
@@ -18,12 +17,21 @@ const queryConfig = {
 };
 
 export const BankManagementView = () => {
-    const getBankResult = useGetBanks(queryConfig);
+    const {
+        isLoading,
+        error: banksError,
+        data: banksData,
+    } = useGetBanks(queryConfig);
     
-    const isLoading = checkLoading(getBankResult);
-    checkError(getBankResult);
+    useEffect(() => {
+        if (isLoading) return;
 
-    const banks = parseToZodSchema(getBankResult.data?.data, z.array(bankDataSchema), []);
+        const errorHandler = createErrorHandler();
+        errorHandler.collectResult({ error: banksError, data: banksData }, { source: "banks" });
+        errorHandler.flush();
+    }, [isLoading, banksError, banksData]);
+
+    const banks = parseToZodSchema(banksData?.data, z.array(bankDataSchema), []);
 
     const [isEditMode, setIsEditMode] = useState(false);
 
