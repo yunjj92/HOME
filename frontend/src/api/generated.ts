@@ -44,7 +44,7 @@ import type {
   StartRegistrationParams
 } from './model';
 
-import { axiosInstance } from '../custom/config/axios-instance';
+import { axiosInstance } from '../services/common/axios-instance';
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 

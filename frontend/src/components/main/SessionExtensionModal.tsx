@@ -1,8 +1,8 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useAuthStore } from '../auth/stores/authStore';
+import { useAuthStore } from '../../hooks/authentication/authStore';
 import axios from 'axios';
-import { getJwtExpiration } from '../../util/jwt';
+import { getJwtExpiration } from '../../utils/jwt';
 
 export const SessionExtensionModal = () => {
   const { isLoggedIn, sessionExpiry, login, logout } = useAuthStore();

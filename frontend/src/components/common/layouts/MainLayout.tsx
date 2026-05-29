@@ -1,9 +1,9 @@
 import { Outlet } from "@tanstack/react-router";
-import Header from "../components/main/Header";
+import Header from "../../main/Header";
 import { useEffect } from "react";
-import { useAuthStore } from "../components/auth/stores/authStore";
-import { getJwtExpiration } from "../util/jwt";
-import { SessionExtensionModal } from "../components/main/SessionExtensionModal";
+import { useAuthStore } from "../../../hooks/authentication/authStore";
+import { getJwtExpiration } from "../../../utils/jwt";
+import { SessionExtensionModal } from "../../main/SessionExtensionModal";
 
 export function MainLayout() {
     const login = useAuthStore((state) => state.login);

@@ -1,5 +1,5 @@
 import { useSyncExternalStore, useCallback } from 'react';
-import { useAuthStore } from '../auth/stores/authStore';
+import { useAuthStore } from '../../hooks/authentication/authStore';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
 

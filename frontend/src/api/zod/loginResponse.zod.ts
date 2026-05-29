@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { allowedCredentialResponseSchema } from './allowedCredentialResponse.zod';
-import { createApiResponseSchema } from '../../schemas/common/api';
+import { createApiResponseSchema } from '../../services/schemas/common/api';
 
 export const loginResponseSchema = z.object({
   username: z.string().optional(),

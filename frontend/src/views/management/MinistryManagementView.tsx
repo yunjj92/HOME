@@ -1,12 +1,12 @@
 ﻿import z from "zod";
 import { useGetMinistries } from "../../api/generated";
-import { parseToZodSchema } from "../../util/parseToZodSchema";
+import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
 import { useEffect, useState } from "react";
-import { MinistryListSkeleton } from "../../components/ministry/MinistryListSkeleton";
-import { MinistryList } from "../../components/ministry/MinistryList";
-import { MinistryListEdit } from "../../components/ministry/MinistryListEdit";
-import { createErrorHandler } from "../../util/errorHandler.ts";
+import { MinistryListSkeleton } from "../../components/management/MinistryListSkeleton";
+import { MinistryList } from "../../components/management/MinistryList";
+import { MinistryListEdit } from "../../components/management/MinistryListEdit";
+import { createErrorHandler } from "../../utils/errorHandler.ts";
 
 
 const queryConfig = {

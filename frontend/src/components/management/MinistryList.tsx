@@ -1,5 +1,5 @@
 import type { MinistryData } from "../../api/zod/ministryResponse.zod";
-import { formatDateTime } from "../../util/formatDateTime";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 type MinistryListProps = {
     ministries: MinistryData[];

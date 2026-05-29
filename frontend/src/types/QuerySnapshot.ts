@@ -1,4 +1,4 @@
-import type { ApiResponse } from "../schemas/common/api"
+import type { ApiResponse } from "../services/schemas/common/api"
 
 export type QuerySnapshot = {
     data: ApiResponse<unknown> | undefined;

@@ -1,4 +1,4 @@
-﻿import { AccountList } from "../../components/account/AccountList";
+﻿import { AccountList } from "../../components/management/AccountList";
 import { useEffect, useState } from "react";
 import { useGetAccounts, useGetBanks, useGetCodes } from "../../api/generated";
 import z from "zod";
@@ -7,10 +7,10 @@ import { bankDataSchema } from "../../api/zod/bankResponse.zod";
 import { codeDataSchema } from "../../api/zod/codeResponse.zod";
 import { useListMapping } from "../../hooks/common/useListMapping";
 import { useCodesMapping } from "../../hooks/common/useCodesMapping";
-import { parseToZodSchema } from "../../util/parseToZodSchema";
-import { AccountListSkeleton } from "../../components/account/AccountListSkeleton";
-import { AccountListEdit } from "../../components/account/AccountListEdit";
-import { createErrorHandler } from "../../util/errorHandler.ts";
+import { parseToZodSchema } from "../../utils/parseToZodSchema";
+import { AccountListSkeleton } from "../../components/management/AccountListSkeleton";
+import { AccountListEdit } from "../../components/management/AccountListEdit";
+import { createErrorHandler } from "../../utils/errorHandler.ts";
 
 const queryConfig = {
     query: {

@@ -1,12 +1,12 @@
 import z from "zod";
 import { useGetBanks } from "../../api/generated"
-import { parseToZodSchema } from "../../util/parseToZodSchema";
+import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { bankDataSchema } from "../../api/zod/bankResponse.zod";
 import { useEffect, useState } from "react";
-import { BankList } from "../../components/account/BankList";
-import { BankListSkeleton } from "../../components/account/BankListSkeleton";
-import { BankListEdit } from "../../components/account/BankListEdit";
-import { createErrorHandler } from "../../util/errorHandler.ts";
+import { BankList } from "../../components/management/BankList";
+import { BankListSkeleton } from "../../components/management/BankListSkeleton";
+import { BankListEdit } from "../../components/management/BankListEdit";
+import { createErrorHandler } from "../../utils/errorHandler.ts";
 
 const queryConfig = {
     query: {

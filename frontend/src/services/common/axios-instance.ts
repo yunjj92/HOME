@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
-import { useAuthStore } from '../../components/auth/stores/authStore';
-import { getJwtExpiration } from '../../util/jwt';
+import { useAuthStore } from '../../hooks/authentication/authStore';
+import { getJwtExpiration } from '../../utils/jwt';
 
 export const AXIOS_INSTANCE = axios.create({
   // Vite의 환경 변수를 읽어옵니다.
