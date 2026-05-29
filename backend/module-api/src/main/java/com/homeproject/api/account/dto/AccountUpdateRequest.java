@@ -9,6 +9,5 @@ public record AccountUpdateRequest(
         String currencyType,
         String accountNumber,
         String description,
-        String requestedBy,
         boolean toDelete
 ) {};

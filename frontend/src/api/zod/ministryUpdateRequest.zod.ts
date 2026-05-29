@@ -4,7 +4,6 @@ export const ministryUpdateRequestSchema = z.object({
   id: z.number().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
-  requestedBy: z.string().optional(),
   toDelete: z.boolean().optional(),
 });
 

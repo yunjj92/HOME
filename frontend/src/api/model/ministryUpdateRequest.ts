@@ -10,6 +10,5 @@ export interface MinistryUpdateRequest {
   id?: number;
   name?: string;
   description?: string;
-  requestedBy?: string;
   toDelete?: boolean;
 }

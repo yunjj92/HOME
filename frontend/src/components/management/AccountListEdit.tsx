@@ -142,8 +142,7 @@ export function AccountListEdit({ accounts, bankMap, accountTypeCodeMap, currenc
 
     const saveRows = async () => {
         const saveRows = rows
-            .filter((row) => row.toUpdate || row.toDelete)
-            .map((row) => ({ ...row, requestedBy: "dev" }));
+            .filter((row) => row.toUpdate || row.toDelete);
         
         if(saveRows.length === 0) return alert(`저장할 항목이 없습니다.`);
         if(!confirm(`총 ${saveRows.length}건의 데이터를 저장하시겠습니까?`)) return;
