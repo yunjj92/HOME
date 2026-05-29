@@ -1,13 +1,13 @@
 import { useNavigate } from "@tanstack/react-router";
 import type { LoginResponse } from "../../api/model";
 import { get, type AuthenticationPublicKeyCredential } from "@github/webauthn-json/browser-ponyfill";
-import { prepareLoginOptions } from "./function/transformLoginResultParam";
+import { prepareLoginOptions } from "../../services/authentication/transformLoginResultParam";
 import { useFinishLogin, useStartLogin } from "../../api/generated";
-import { resolveMutateResult } from "../../util/resolveMutateResult";
+import { resolveMutateResult } from "../../utils/resolveMutateResult";
 import { startLoginParamsSchema } from "../../api/zod/startLoginParams.zod";
 import { finishLoginParamsSchema } from "../../api/zod/finishLoginParams.zod";
-import { useAuthStore } from "./stores/authStore";
-import { getJwtExpiration } from "../../util/jwt";
+import { useAuthStore } from "../../hooks/authentication/authStore";
+import { getJwtExpiration } from "../../utils/jwt";
 import { useState } from "react";
 
 

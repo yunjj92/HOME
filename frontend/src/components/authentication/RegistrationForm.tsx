@@ -1,9 +1,9 @@
 import { create } from "@github/webauthn-json/browser-ponyfill";
 import { useState } from "react";
 import { useFinishRegistration, useStartRegistration } from "../../api/generated";
-import { prepareCreationOptions } from "./function/transformAuthResult";
+import { prepareCreationOptions } from "../../services/authentication/transformAuthResult";
 import { Link } from "@tanstack/react-router";
-import { resolveMutateResult } from "../../util/resolveMutateResult";
+import { resolveMutateResult } from "../../utils/resolveMutateResult";
 
 export const RegistrationForm = () => {
 

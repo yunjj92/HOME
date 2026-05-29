@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { useAuthStore } from '../components/auth/stores/authStore';
-import { UserSchema } from '../schemas/userSchema';
+import { useAuthStore } from '../hooks/authentication/authStore';
+import { UserSchema } from '../services/schemas/userSchema';
 
 export function HomeView() {
   const userName = useAuthStore((state) => state.userName);

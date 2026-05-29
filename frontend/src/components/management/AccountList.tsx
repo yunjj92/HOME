@@ -1,6 +1,6 @@
-import { formatDateTime } from "../../util/formatDateTime";
+import { formatDateTime } from "../../utils/formatDateTime";
 import type { AccountData } from "../../api/zod/accountResponse.zod";
-import { getMappingData } from "../../util/getMappingData";
+import { getMappingData } from "../../utils/getMappingData";
 
 type AccountListProps = {
     accounts: AccountData[];

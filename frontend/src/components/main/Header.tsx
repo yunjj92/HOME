@@ -24,7 +24,7 @@ import {
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useAuthStore } from '../auth/stores/authStore';
+import { useAuthStore } from '../../hooks/authentication/authStore';
 import { SessionTimer } from './SessionTimer';
 
 const products = [

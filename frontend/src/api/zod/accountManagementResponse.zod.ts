@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { accountResultSchema } from './accountResult.zod';
 import { bankResultSchema } from './bankResult.zod';
-import { createApiResponseSchema } from '../../schemas/common/api';
+import { createApiResponseSchema } from '../../services/schemas/common/api';
 
 export const accountManagementResponseSchema = z.object({
   accountResultList: z.array(accountResultSchema).optional(),

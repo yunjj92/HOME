@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createApiResponseSchema } from '../../schemas/common/api';
+import { createApiResponseSchema } from '../../services/schemas/common/api';
 
 export const startRegistrationResponseSchema = z.object({
   username: z.string().optional(),

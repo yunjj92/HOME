@@ -1,5 +1,5 @@
 import type { BankData } from "../../api/zod/bankResponse.zod"
-import { formatDateTime } from "../../util/formatDateTime";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 type BankListProps = {
     banks: BankData[];
