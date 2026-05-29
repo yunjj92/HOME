@@ -1,13 +1,12 @@
 ﻿import z from "zod";
 import { useGetMinistries } from "../../api/generated";
-import { checkError } from "../../util/checkError";
-import { checkLoading } from "../../util/checkLoading";
 import { parseToZodSchema } from "../../util/parseToZodSchema";
 import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MinistryListSkeleton } from "../../components/ministry/MinistryListSkeleton";
 import { MinistryList } from "../../components/ministry/MinistryList";
 import { MinistryListEdit } from "../../components/ministry/MinistryListEdit";
+import { createErrorHandler } from "../../util/errorHandler.ts";
 
 
 const queryConfig = {
@@ -19,12 +18,21 @@ const queryConfig = {
 };
 
 export const MinistryManagementView = () => {
-    const getMinistriesResult = useGetMinistries(queryConfig);
+    const {
+        isLoading,
+        error: ministriesError,
+        data: ministriesData,
+    } = useGetMinistries(queryConfig);
 
-    const isLoading = checkLoading(getMinistriesResult);
-    checkError(getMinistriesResult);
+    useEffect(() => {
+        if (isLoading) return;
 
-    const ministries = parseToZodSchema(getMinistriesResult.data?.data, z.array(ministryDataSchema), []);
+        const errorHandler = createErrorHandler();
+        errorHandler.collectResult({ error: ministriesError, data: ministriesData }, { source: "ministries" });
+        errorHandler.flush();
+    }, [isLoading, ministriesError, ministriesData]);
+
+    const ministries = parseToZodSchema(ministriesData?.data, z.array(ministryDataSchema), []);
 
     // 상태관리
     const [isEditMode, setIsEditMode] = useState(false);
