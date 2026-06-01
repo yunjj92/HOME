@@ -12,6 +12,7 @@ import com.homeproject.business.account.dto.BankParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,10 @@ public class AccountController {
     private final AccountQueryService accountQueryService;
     private final AccountCommandService accountCommandService;
 
-    private AccountParam toAccountParam(AccountUpdateRequest accountUpdateRequest) {
+    private AccountParam toAccountParam(
+            AccountUpdateRequest accountUpdateRequest
+            , String requestedBy
+    ) {
         return new AccountParam(
                 accountUpdateRequest.id(),
                 accountUpdateRequest.bankId(),
@@ -31,16 +35,19 @@ public class AccountController {
                 accountUpdateRequest.currencyType(),
                 accountUpdateRequest.accountNumber(),
                 accountUpdateRequest.description(),
-                accountUpdateRequest.requestedBy(),
+                requestedBy,
                 accountUpdateRequest.toDelete()
         );
     }
 
-    private BankParam toBankParam(BankUpdateRequest bankUpdateRequest) {
+    private BankParam toBankParam(
+            BankUpdateRequest bankUpdateRequest
+            , String requestedBy
+    ) {
         return new BankParam(
                 bankUpdateRequest.id(),
                 bankUpdateRequest.name(),
-                bankUpdateRequest.requestedBy(),
+                requestedBy,
                 bankUpdateRequest.toDelete()
         );
     }
@@ -60,9 +67,12 @@ public class AccountController {
     }
 
     @PostMapping(value = "/update_accounts")
-    public ApiResponse<Void> updateAccounts(@RequestBody List<AccountUpdateRequest> accountUpdateRequests) {
+    public ApiResponse<Void> updateAccounts(
+            @RequestBody List<AccountUpdateRequest> accountUpdateRequests
+            , Principal principal
+    ) {
         List<AccountParam> accountParams = accountUpdateRequests.stream()
-                .map(this::toAccountParam)
+                .map(request -> toAccountParam(request, principal.getName()))
                 .toList();
         accountCommandService.saveAccounts(accountParams);
 
@@ -83,9 +93,12 @@ public class AccountController {
     }
 
     @PostMapping(value = "/update_banks")
-    public ApiResponse<Void> updateBanks(@RequestBody List<BankUpdateRequest> bankUpdateRequests) {
+    public ApiResponse<Void> updateBanks(
+            @RequestBody List<BankUpdateRequest> bankUpdateRequests
+            , Principal principal
+    ) {
         List<BankParam> bankParams = bankUpdateRequests.stream()
-                    .map(this::toBankParam)
+                    .map(request -> toBankParam(request, principal.getName()))
                     .toList();
         accountCommandService.saveBanks(bankParams);
 

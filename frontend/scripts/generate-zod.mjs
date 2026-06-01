@@ -86,7 +86,7 @@ files.forEach(file => {
     // Handle Response suffix
     const isResponse = interfaceName.endsWith('Response');
     if (isResponse) {
-      outputContent += `import { createApiResponseSchema } from '../../schemas/common/api';\n`;
+      outputContent += `import { createApiResponseSchema } from '../../services/schemas/common/api';\n`;
     }
 
     outputContent += `\nexport const ${schemaName} = z.object({\n`;

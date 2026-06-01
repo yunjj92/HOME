@@ -24,7 +24,7 @@ export default defineConfig({
           },
         },
         mutator: {
-          path: 'src/custom/config/axios-instance.ts',
+          path: 'src/services/common/axios-instance.ts',
           name: 'axiosInstance',
         },
       },

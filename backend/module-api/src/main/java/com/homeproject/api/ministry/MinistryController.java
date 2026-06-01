@@ -9,6 +9,7 @@ import com.homeproject.business.ministry.dto.MinistryParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -19,12 +20,15 @@ public class MinistryController {
     private final MinistryQueryService ministryQueryService;
     private final MinistryCommandService ministryCommandService;
 
-    private MinistryParam toMinistryParam(MinistryUpdateRequest ministryUpdateRequest) {
+    private MinistryParam toMinistryParam(
+            MinistryUpdateRequest ministryUpdateRequest
+            , String requestedBy
+    ) {
         return new MinistryParam(
                 ministryUpdateRequest.id(),
                 ministryUpdateRequest.name(),
                 ministryUpdateRequest.description(),
-                ministryUpdateRequest.requestedBy(),
+                requestedBy,
                 ministryUpdateRequest.toDelete()
         );
     }
@@ -44,9 +48,12 @@ public class MinistryController {
     }
 
     @PostMapping(value = "/update_ministries")
-    public ApiResponse<Void> updateMinistries(@RequestBody List<MinistryUpdateRequest> ministryUpdateRequests) {
+    public ApiResponse<Void> updateMinistries(
+            @RequestBody List<MinistryUpdateRequest> ministryUpdateRequests
+            , Principal principal
+    ) {
         List<MinistryParam> ministryParams = ministryUpdateRequests.stream()
-                .map(this::toMinistryParam)
+                .map(request -> toMinistryParam(request, principal.getName()))
                 .toList();
         ministryCommandService.saveMinistries(ministryParams);
 

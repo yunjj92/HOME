@@ -9,6 +9,5 @@
 export interface BankUpdateRequest {
   id?: number;
   name?: string;
-  requestedBy?: string;
   toDelete?: boolean;
 }
