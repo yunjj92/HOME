@@ -9,7 +9,6 @@ export const accountUpdateRequestSchema = z.object({
   currencyType: z.string().optional(),
   accountNumber: z.string().optional(),
   description: z.string().optional(),
-  requestedBy: z.string().optional(),
   toDelete: z.boolean().optional(),
 });
 

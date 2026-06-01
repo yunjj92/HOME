@@ -4,6 +4,5 @@ public record MinistryUpdateRequest(
         Integer id,
         String name,
         String description,
-        String requestedBy,
         boolean toDelete
 ) {};

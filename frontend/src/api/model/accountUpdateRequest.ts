@@ -15,6 +15,5 @@ export interface AccountUpdateRequest {
   currencyType?: string;
   accountNumber?: string;
   description?: string;
-  requestedBy?: string;
   toDelete?: boolean;
 }
