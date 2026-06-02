@@ -42,7 +42,12 @@ public class SecurityConfig {
                 // 4. 인가(Authorization) 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/**"
+                                "/api/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
