@@ -11,14 +11,7 @@ import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { AccountListSkeleton } from "../../components/management/AccountListSkeleton";
 import { AccountListEdit } from "../../components/management/AccountListEdit";
 import { createErrorHandler } from "../../utils/errorHandler.ts";
-
-const queryConfig = {
-    query: {
-        staleTime: Infinity,
-        gcTime: Infinity,
-        retry: 1,
-    }
-};
+import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig.ts";
 
 export const AccountManagementView = () => {
     // 데이터 useQuery로 불러오기
@@ -26,22 +19,22 @@ export const AccountManagementView = () => {
         isLoading: isAccountsLoading,
         error: accountsError,
         data: accountsData,
-    } = useGetAccounts(queryConfig);
+    } = useGetAccounts(COMMON_QUERY_CONFIG);
     const {
         isLoading: isBanksLoading,
         error: banksError,
         data: banksData,
-    } = useGetBanks(queryConfig);
+    } = useGetBanks(COMMON_QUERY_CONFIG);
     const {
         isLoading: isAccountTypeCodesLoading,
         error: accountTypeCodesError,
         data: accountTypeCodesData,
-    } = useGetCodes({ typeId: 1 }, queryConfig);
+    } = useGetCodes({ typeId: 1 }, COMMON_QUERY_CONFIG);
     const {
         isLoading: isCurrencyTypeCodesLoading,
         error: currencyTypeCodesError,
         data: currencyTypeCodesData,
-    } = useGetCodes({ typeId: 2 }, queryConfig);
+    } = useGetCodes({ typeId: 2 }, COMMON_QUERY_CONFIG);
 
     // 로딩, 에러 체크
     const isLoading = isAccountsLoading || isBanksLoading || isAccountTypeCodesLoading || isCurrencyTypeCodesLoading;

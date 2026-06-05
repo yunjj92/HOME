@@ -7,22 +7,14 @@ import { MinistryListSkeleton } from "../../components/management/MinistryListSk
 import { MinistryList } from "../../components/management/MinistryList";
 import { MinistryListEdit } from "../../components/management/MinistryListEdit";
 import { createErrorHandler } from "../../utils/errorHandler.ts";
-
-
-const queryConfig = {
-    query: {
-        staleTime: Infinity,
-        gcTime: Infinity,
-        retry: 1,
-    }
-};
+import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig.ts";
 
 export const MinistryManagementView = () => {
     const {
         isLoading,
         error: ministriesError,
         data: ministriesData,
-    } = useGetMinistries(queryConfig);
+    } = useGetMinistries(COMMON_QUERY_CONFIG);
 
     useEffect(() => {
         if (isLoading) return;

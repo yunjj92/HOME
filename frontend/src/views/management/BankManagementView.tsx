@@ -7,21 +7,14 @@ import { BankList } from "../../components/management/BankList";
 import { BankListSkeleton } from "../../components/management/BankListSkeleton";
 import { BankListEdit } from "../../components/management/BankListEdit";
 import { createErrorHandler } from "../../utils/errorHandler.ts";
-
-const queryConfig = {
-    query: {
-        staleTime: Infinity,
-        gcTime: Infinity,
-        retry: 1,
-    }
-};
+import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig.ts";
 
 export const BankManagementView = () => {
     const {
         isLoading,
         error: banksError,
         data: banksData,
-    } = useGetBanks(queryConfig);
+    } = useGetBanks(COMMON_QUERY_CONFIG);
     
     useEffect(() => {
         if (isLoading) return;
