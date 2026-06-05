@@ -6,10 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CodeResponse {
+export interface TypeResponse {
   id?: number;
-  typeId?: number;
-  code?: string;
   name?: string;
   description?: string;
   createdAt?: string;

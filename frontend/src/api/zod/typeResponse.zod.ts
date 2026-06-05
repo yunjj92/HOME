@@ -1,10 +1,8 @@
 import { z } from 'zod';
 import { createApiResponseSchema } from '../../services/schemas/common/api';
 
-export const codeResponseSchema = z.object({
+export const typeResponseSchema = z.object({
   id: z.number().optional(),
-  typeId: z.number().optional(),
-  code: z.string().optional(),
   name: z.string().optional(),
   description: z.string().optional(),
   createdAt: z.string().optional(),
@@ -13,15 +11,15 @@ export const codeResponseSchema = z.object({
   updatedBy: z.string().nullable().optional(),
 });
 
-export const codeDataSchema = codeResponseSchema;
+export const typeDataSchema = typeResponseSchema;
 
-export const initCodeResponseSchema =
-  createApiResponseSchema(codeDataSchema);
+export const initTypeResponseSchema =
+  createApiResponseSchema(typeDataSchema);
 
-export type CodeData = z.infer<
-  typeof codeDataSchema
+export type TypeData = z.infer<
+  typeof typeDataSchema
 >;
 
-export type InitCodeResponse = z.infer<
-  typeof initCodeResponseSchema
+export type InitTypeResponse = z.infer<
+  typeof initTypeResponseSchema
 >;

@@ -1,25 +1,24 @@
-package com.homeproject.business.common.dto;
+package com.homeproject.api.common.dto;
 
-import com.homeproject.db.common.dto.CodeProjection;
+import com.homeproject.business.common.dto.TypeResult;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
-public record CodeResult(
+public record TypeResponse(
         Integer id,
-        Integer typeId,
-        String code,
         String name,
         String description,
         LocalDateTime createdAt,
         String createdBy,
+        @Schema(nullable = true)
         LocalDateTime updatedAt,
+        @Schema(nullable = true)
         String updatedBy
 ) {
-    public static CodeResult from(CodeProjection p) {
-        return new CodeResult(
+    public static TypeResponse from(TypeResult p) {
+        return new TypeResponse(
                 p.id()
-                , p.typeId()
-                , p.code()
                 , p.name()
                 , p.description()
                 , p.createdAt()

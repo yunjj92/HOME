@@ -6,6 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GetCodesParams = {
-typeId?: number;
-};
+export interface CodeUpdateRequest {
+  id?: number;
+  typeId?: number;
+  code?: string;
+  name?: string;
+  description?: string;
+  toDelete?: boolean;
+}

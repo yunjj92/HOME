@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routers/__root'
 import { Route as managementMinistryManagementRouteImport } from './routers/management/ministryManagement'
 import { Route as authenticationLoginRouteImport } from './routers/authentication/login'
 import { Route as mainMainHomeRouteImport } from './routers/main/mainHome'
+import { Route as managementCodeManagementRouteImport } from './routers/management/codeManagement'
 import { Route as managementBankManagementRouteImport } from './routers/management/bankManagement'
 import { Route as managementAccountManagementRouteImport } from './routers/management/accountManagement'
 import { Route as authenticationRegisterRouteImport } from './routers/authentication/register'
@@ -32,6 +33,12 @@ const mainMainHomeRoute = mainMainHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const managementCodeManagementRoute =
+  managementCodeManagementRouteImport.update({
+    id: '/code',
+    path: '/code',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const managementBankManagementRoute =
   managementBankManagementRouteImport.update({
     id: '/bank',
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/': typeof authenticationRegisterRoute
   '/account': typeof managementAccountManagementRoute
   '/bank': typeof managementBankManagementRoute
+  '/code': typeof managementCodeManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authenticationLoginRoute
   '/ministry': typeof managementMinistryManagementRoute
@@ -62,6 +70,7 @@ export interface FileRoutesByTo {
   '/': typeof authenticationRegisterRoute
   '/account': typeof managementAccountManagementRoute
   '/bank': typeof managementBankManagementRoute
+  '/code': typeof managementCodeManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authenticationLoginRoute
   '/ministry': typeof managementMinistryManagementRoute
@@ -71,22 +80,39 @@ export interface FileRoutesById {
   '/': typeof authenticationRegisterRoute
   '/account': typeof managementAccountManagementRoute
   '/bank': typeof managementBankManagementRoute
+  '/code': typeof managementCodeManagementRoute
   '/home': typeof mainMainHomeRoute
   '/login': typeof authenticationLoginRoute
   '/ministry': typeof managementMinistryManagementRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/bank'
+    | '/code'
+    | '/home'
+    | '/login'
+    | '/ministry'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
-  id: '__root__' | '/' | '/account' | '/bank' | '/home' | '/login' | '/ministry'
+  to: '/' | '/account' | '/bank' | '/code' | '/home' | '/login' | '/ministry'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/bank'
+    | '/code'
+    | '/home'
+    | '/login'
+    | '/ministry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   authenticationRegisterRoute: typeof authenticationRegisterRoute
   managementAccountManagementRoute: typeof managementAccountManagementRoute
   managementBankManagementRoute: typeof managementBankManagementRoute
+  managementCodeManagementRoute: typeof managementCodeManagementRoute
   mainMainHomeRoute: typeof mainMainHomeRoute
   authenticationLoginRoute: typeof authenticationLoginRoute
   managementMinistryManagementRoute: typeof managementMinistryManagementRoute
@@ -113,6 +139,13 @@ declare module '@tanstack/react-router' {
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof mainMainHomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/code': {
+      id: '/code'
+      path: '/code'
+      fullPath: '/code'
+      preLoaderRoute: typeof managementCodeManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bank': {
@@ -143,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   authenticationRegisterRoute: authenticationRegisterRoute,
   managementAccountManagementRoute: managementAccountManagementRoute,
   managementBankManagementRoute: managementBankManagementRoute,
+  managementCodeManagementRoute: managementCodeManagementRoute,
   mainMainHomeRoute: mainMainHomeRoute,
   authenticationLoginRoute: authenticationLoginRoute,
   managementMinistryManagementRoute: managementMinistryManagementRoute,
