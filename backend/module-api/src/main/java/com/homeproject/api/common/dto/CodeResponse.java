@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record CodeResponse(
         Integer id,
-        Integer type_id,
+        Integer typeId,
         String code,
         String name,
         String description,
@@ -21,7 +21,7 @@ public record CodeResponse(
     public static CodeResponse from(CodeResult p) {
         return new CodeResponse(
                 p.id()
-                , p.type_id()
+                , p.typeId()
                 , p.code()
                 , p.name()
                 , p.description()

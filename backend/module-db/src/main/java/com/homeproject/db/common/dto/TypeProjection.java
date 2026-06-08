@@ -2,10 +2,8 @@ package com.homeproject.db.common.dto;
 
 import java.time.LocalDateTime;
 
-public record CodeProjection(
+public record TypeProjection(
         Integer id,
-        Integer typeId,
-        String code,
         String name,
         String description,
         LocalDateTime createdAt,

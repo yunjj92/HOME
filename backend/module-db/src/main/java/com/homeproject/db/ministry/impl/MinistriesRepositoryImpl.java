@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.homeproject.db.jooq.Tables.*;
+import static com.homeproject.db.jooq.Tables.MINISTRIES;
 import static com.homeproject.db.jooq.tables.VMinistries.V_MINISTRIES;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 

@@ -1,13 +1,11 @@
 package com.homeproject.business.common.dto;
 
-import com.homeproject.db.common.dto.CodeProjection;
+import com.homeproject.db.common.dto.TypeProjection;
 
 import java.time.LocalDateTime;
 
-public record CodeResult(
+public record TypeResult(
         Integer id,
-        Integer typeId,
-        String code,
         String name,
         String description,
         LocalDateTime createdAt,
@@ -15,11 +13,9 @@ public record CodeResult(
         LocalDateTime updatedAt,
         String updatedBy
 ) {
-    public static CodeResult from(CodeProjection p) {
-        return new CodeResult(
+    public static TypeResult from(TypeProjection p) {
+        return new TypeResult(
                 p.id()
-                , p.typeId()
-                , p.code()
                 , p.name()
                 , p.description()
                 , p.createdAt()

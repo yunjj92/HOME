@@ -31,11 +31,13 @@ import type {
   ApiResponseListBankResponse,
   ApiResponseListCodeResponse,
   ApiResponseListMinistryResponse,
+  ApiResponseListTypeResponse,
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
   ApiResponseTokenResponse,
   ApiResponseVoid,
   BankUpdateRequest,
+  CodeUpdateRequest,
   FinalizedRegistrationRequest,
   FinishLoginParams,
   GetCodesParams,
@@ -43,7 +45,8 @@ import type {
   MinistryUpdateRequest,
   RefreshParams,
   StartLoginParams,
-  StartRegistrationParams
+  StartRegistrationParams,
+  TypeUpdateRequest
 } from './model';
 
 import { axiosInstance } from '../services/common/axios-instance';
@@ -51,6 +54,122 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
+export const updateTypes = (
+    typeUpdateRequest: TypeUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/common/update_types`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: typeUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateTypesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTypes>>, TError,{data: TypeUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateTypes>>, TError,{data: TypeUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateTypes'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTypes>>, {data: TypeUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateTypes(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateTypesMutationResult = NonNullable<Awaited<ReturnType<typeof updateTypes>>>
+    export type UpdateTypesMutationBody = TypeUpdateRequest[]
+    export type UpdateTypesMutationError = unknown
+
+    export const useUpdateTypes = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTypes>>, TError,{data: TypeUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateTypes>>,
+        TError,
+        {data: TypeUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateTypesMutationOptions(options), queryClient);
+    }
+    
+export const updateCodes = (
+    codeUpdateRequest: CodeUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/common/update_codes`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: codeUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateCodesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCodes>>, TError,{data: CodeUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCodes>>, TError,{data: CodeUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateCodes'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCodes>>, {data: CodeUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateCodes(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCodesMutationResult = NonNullable<Awaited<ReturnType<typeof updateCodes>>>
+    export type UpdateCodesMutationBody = CodeUpdateRequest[]
+    export type UpdateCodesMutationError = unknown
+
+    export const useUpdateCodes = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCodes>>, TError,{data: CodeUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCodes>>,
+        TError,
+        {data: CodeUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateCodesMutationOptions(options), queryClient);
+    }
+    
 export const startRegistration = (
     params: StartRegistrationParams,
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
@@ -571,8 +690,101 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getUpdateAccountsMutationOptions(options), queryClient);
     }
     
+export const getTypes = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListTypeResponse>(
+      {url: `/api/common/get_types`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetTypesQueryKey = () => {
+    return [
+    `/api/common/get_types`
+    ] as const;
+    }
+
+    
+export const getGetTypesQueryOptions = <TData = Awaited<ReturnType<typeof getTypes>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTypesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTypes>>> = ({ signal }) => getTypes(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTypesQueryResult = NonNullable<Awaited<ReturnType<typeof getTypes>>>
+export type GetTypesQueryError = unknown
+
+
+export function useGetTypes<TData = Awaited<ReturnType<typeof getTypes>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTypes>>,
+          TError,
+          Awaited<ReturnType<typeof getTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTypes<TData = Awaited<ReturnType<typeof getTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTypes>>,
+          TError,
+          Awaited<ReturnType<typeof getTypes>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTypes<TData = Awaited<ReturnType<typeof getTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTypes<TData = Awaited<ReturnType<typeof getTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTypes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTypesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetTypes = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetTypesQueryKey() }, options);
+
+  return queryClient;
+}
+
+
+
 export const getCodes = (
-    params: GetCodesParams,
+    params?: GetCodesParams,
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
       
@@ -594,7 +806,7 @@ export const getGetCodesQueryKey = (params?: GetCodesParams,) => {
     }
 
     
-export const getGetCodesQueryOptions = <TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetCodesQueryOptions = <TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(params?: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -617,7 +829,7 @@ export type GetCodesQueryError = unknown
 
 
 export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
- params: GetCodesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
+ params: undefined |  GetCodesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCodes>>,
           TError,
@@ -627,7 +839,7 @@ export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
- params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
+ params?: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getCodes>>,
           TError,
@@ -637,12 +849,12 @@ export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
- params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ params?: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError = unknown>(
- params: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ params?: GetCodesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCodes>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -655,7 +867,7 @@ export function useGetCodes<TData = Awaited<ReturnType<typeof getCodes>>, TError
 
 
 export const invalidateGetCodes = async (
- queryClient: QueryClient, params: GetCodesParams, options?: InvalidateOptions
+ queryClient: QueryClient, params?: GetCodesParams, options?: InvalidateOptions
   ): Promise<QueryClient> => {
 
   await queryClient.invalidateQueries({ queryKey: getGetCodesQueryKey(params) }, options);

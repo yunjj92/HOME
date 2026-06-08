@@ -13,8 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.homeproject.db.jooq.Tables.*;
 import static com.homeproject.db.jooq.tables.VAccounts.V_ACCOUNTS;
+import static com.homeproject.db.jooq.Tables.ACCOUNTS;
+import static com.homeproject.db.jooq.tables.VBanks.V_BANKS;
+import static com.homeproject.db.jooq.Tables.BANKS;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 
 @Repository
