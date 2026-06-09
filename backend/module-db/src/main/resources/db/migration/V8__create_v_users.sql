@@ -8,10 +8,8 @@ create or replace view v_users as
            created_at,
            created_by,
            updated_at,
-           updated_by,
-           deleted_at,
-           deleted_by
-        from users
+           updated_by
+       from users
        where
            deleted_at is null
        order by
