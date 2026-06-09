@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import static com.homeproject.db.jooq.Tables.V_USERS;
 import static com.homeproject.db.jooq.Tables.USERS;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 
@@ -31,17 +32,15 @@ public class UsersRepositoryImpl implements UsersRepository {
 
     @Override
     public Optional<UsersEntity> getUserByUserId(String userId) {
-        return dsl.selectFrom(USERS)
-                .where(USERS.USER_ID.eq(userId))
-                .and(USERS.DELETED_AT.isNull())
+        return dsl.selectFrom(V_USERS)
+                .where(V_USERS.USER_ID.eq(userId))
                 .fetchOptionalInto(UsersEntity.class);
     }
 
     @Override
     public Optional<UsersEntity> getUserByCredentialId(String credentialId) {
-        return dsl.selectFrom(USERS)
-                .where(USERS.CREDENTIAL_ID.eq(credentialId))
-                .and(USERS.DELETED_AT.isNull())
+        return dsl.selectFrom(V_USERS)
+                .where(V_USERS.CREDENTIAL_ID.eq(credentialId))
                 .fetchOptionalInto(UsersEntity.class);
     }
 
