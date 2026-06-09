@@ -34,7 +34,6 @@ public class UsersRepositoryImpl implements UsersRepository {
     public Optional<UsersEntity> getUserByUserId(String userId) {
         return dsl.selectFrom(V_USERS)
                 .where(V_USERS.USER_ID.eq(userId))
-                .and(V_USERS.DELETED_AT.isNull())
                 .fetchOptionalInto(UsersEntity.class);
     }
 
@@ -42,7 +41,6 @@ public class UsersRepositoryImpl implements UsersRepository {
     public Optional<UsersEntity> getUserByCredentialId(String credentialId) {
         return dsl.selectFrom(V_USERS)
                 .where(V_USERS.CREDENTIAL_ID.eq(credentialId))
-                .and(V_USERS.DELETED_AT.isNull())
                 .fetchOptionalInto(UsersEntity.class);
     }
 
