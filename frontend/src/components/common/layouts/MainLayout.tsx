@@ -1,5 +1,5 @@
 import { Outlet } from "@tanstack/react-router";
-import Header from "../../main/Header";
+import Header from "./Header";
 import { useEffect } from "react";
 import { useAuthStore } from "../../../hooks/authentication/authStore";
 import { getJwtExpiration } from "../../../utils/jwt";

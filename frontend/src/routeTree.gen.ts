@@ -9,177 +9,180 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routers/__root'
-import { Route as managementMinistryManagementRouteImport } from './routers/management/ministryManagement'
-import { Route as authenticationLoginRouteImport } from './routers/authentication/login'
-import { Route as mainMainHomeRouteImport } from './routers/main/mainHome'
-import { Route as managementCodeManagementRouteImport } from './routers/management/codeManagement'
-import { Route as managementBankManagementRouteImport } from './routers/management/bankManagement'
-import { Route as managementAccountManagementRouteImport } from './routers/management/accountManagement'
-import { Route as authenticationRegisterRouteImport } from './routers/authentication/register'
+import { Route as LoginRouteImport } from './routers/login'
+import { Route as HomeRouteImport } from './routers/home'
+import { Route as IndexRouteImport } from './routers/index'
+import { Route as ManagementMinistryRouteImport } from './routers/management/ministry'
+import { Route as ManagementCodeRouteImport } from './routers/management/code'
+import { Route as ManagementBankRouteImport } from './routers/management/bank'
+import { Route as ManagementAccountRouteImport } from './routers/management/account'
 
-const managementMinistryManagementRoute =
-  managementMinistryManagementRouteImport.update({
-    id: '/ministry',
-    path: '/ministry',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const authenticationLoginRoute = authenticationLoginRouteImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const mainMainHomeRoute = mainMainHomeRouteImport.update({
+const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
-const managementCodeManagementRoute =
-  managementCodeManagementRouteImport.update({
-    id: '/code',
-    path: '/code',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const managementBankManagementRoute =
-  managementBankManagementRouteImport.update({
-    id: '/bank',
-    path: '/bank',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const managementAccountManagementRoute =
-  managementAccountManagementRouteImport.update({
-    id: '/account',
-    path: '/account',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const authenticationRegisterRoute = authenticationRegisterRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManagementMinistryRoute = ManagementMinistryRouteImport.update({
+  id: '/management/ministry',
+  path: '/management/ministry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManagementCodeRoute = ManagementCodeRouteImport.update({
+  id: '/management/code',
+  path: '/management/code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManagementBankRoute = ManagementBankRouteImport.update({
+  id: '/management/bank',
+  path: '/management/bank',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManagementAccountRoute = ManagementAccountRouteImport.update({
+  id: '/management/account',
+  path: '/management/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof authenticationRegisterRoute
-  '/account': typeof managementAccountManagementRoute
-  '/bank': typeof managementBankManagementRoute
-  '/code': typeof managementCodeManagementRoute
-  '/home': typeof mainMainHomeRoute
-  '/login': typeof authenticationLoginRoute
-  '/ministry': typeof managementMinistryManagementRoute
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/management/account': typeof ManagementAccountRoute
+  '/management/bank': typeof ManagementBankRoute
+  '/management/code': typeof ManagementCodeRoute
+  '/management/ministry': typeof ManagementMinistryRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof authenticationRegisterRoute
-  '/account': typeof managementAccountManagementRoute
-  '/bank': typeof managementBankManagementRoute
-  '/code': typeof managementCodeManagementRoute
-  '/home': typeof mainMainHomeRoute
-  '/login': typeof authenticationLoginRoute
-  '/ministry': typeof managementMinistryManagementRoute
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/management/account': typeof ManagementAccountRoute
+  '/management/bank': typeof ManagementBankRoute
+  '/management/code': typeof ManagementCodeRoute
+  '/management/ministry': typeof ManagementMinistryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof authenticationRegisterRoute
-  '/account': typeof managementAccountManagementRoute
-  '/bank': typeof managementBankManagementRoute
-  '/code': typeof managementCodeManagementRoute
-  '/home': typeof mainMainHomeRoute
-  '/login': typeof authenticationLoginRoute
-  '/ministry': typeof managementMinistryManagementRoute
+  '/': typeof IndexRoute
+  '/home': typeof HomeRoute
+  '/login': typeof LoginRoute
+  '/management/account': typeof ManagementAccountRoute
+  '/management/bank': typeof ManagementBankRoute
+  '/management/code': typeof ManagementCodeRoute
+  '/management/ministry': typeof ManagementMinistryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/account'
-    | '/bank'
-    | '/code'
     | '/home'
     | '/login'
-    | '/ministry'
+    | '/management/account'
+    | '/management/bank'
+    | '/management/code'
+    | '/management/ministry'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/bank' | '/code' | '/home' | '/login' | '/ministry'
+  to:
+    | '/'
+    | '/home'
+    | '/login'
+    | '/management/account'
+    | '/management/bank'
+    | '/management/code'
+    | '/management/ministry'
   id:
     | '__root__'
     | '/'
-    | '/account'
-    | '/bank'
-    | '/code'
     | '/home'
     | '/login'
-    | '/ministry'
+    | '/management/account'
+    | '/management/bank'
+    | '/management/code'
+    | '/management/ministry'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  authenticationRegisterRoute: typeof authenticationRegisterRoute
-  managementAccountManagementRoute: typeof managementAccountManagementRoute
-  managementBankManagementRoute: typeof managementBankManagementRoute
-  managementCodeManagementRoute: typeof managementCodeManagementRoute
-  mainMainHomeRoute: typeof mainMainHomeRoute
-  authenticationLoginRoute: typeof authenticationLoginRoute
-  managementMinistryManagementRoute: typeof managementMinistryManagementRoute
+  IndexRoute: typeof IndexRoute
+  HomeRoute: typeof HomeRoute
+  LoginRoute: typeof LoginRoute
+  ManagementAccountRoute: typeof ManagementAccountRoute
+  ManagementBankRoute: typeof ManagementBankRoute
+  ManagementCodeRoute: typeof ManagementCodeRoute
+  ManagementMinistryRoute: typeof ManagementMinistryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/ministry': {
-      id: '/ministry'
-      path: '/ministry'
-      fullPath: '/ministry'
-      preLoaderRoute: typeof managementMinistryManagementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof authenticationLoginRouteImport
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
       id: '/home'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof mainMainHomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/code': {
-      id: '/code'
-      path: '/code'
-      fullPath: '/code'
-      preLoaderRoute: typeof managementCodeManagementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bank': {
-      id: '/bank'
-      path: '/bank'
-      fullPath: '/bank'
-      preLoaderRoute: typeof managementBankManagementRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof managementAccountManagementRouteImport
+      preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof authenticationRegisterRouteImport
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/management/ministry': {
+      id: '/management/ministry'
+      path: '/management/ministry'
+      fullPath: '/management/ministry'
+      preLoaderRoute: typeof ManagementMinistryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/management/code': {
+      id: '/management/code'
+      path: '/management/code'
+      fullPath: '/management/code'
+      preLoaderRoute: typeof ManagementCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/management/bank': {
+      id: '/management/bank'
+      path: '/management/bank'
+      fullPath: '/management/bank'
+      preLoaderRoute: typeof ManagementBankRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/management/account': {
+      id: '/management/account'
+      path: '/management/account'
+      fullPath: '/management/account'
+      preLoaderRoute: typeof ManagementAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  authenticationRegisterRoute: authenticationRegisterRoute,
-  managementAccountManagementRoute: managementAccountManagementRoute,
-  managementBankManagementRoute: managementBankManagementRoute,
-  managementCodeManagementRoute: managementCodeManagementRoute,
-  mainMainHomeRoute: mainMainHomeRoute,
-  authenticationLoginRoute: authenticationLoginRoute,
-  managementMinistryManagementRoute: managementMinistryManagementRoute,
+  IndexRoute: IndexRoute,
+  HomeRoute: HomeRoute,
+  LoginRoute: LoginRoute,
+  ManagementAccountRoute: ManagementAccountRoute,
+  ManagementBankRoute: ManagementBankRoute,
+  ManagementCodeRoute: ManagementCodeRoute,
+  ManagementMinistryRoute: ManagementMinistryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
