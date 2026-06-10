@@ -14,6 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AccountCommandService {
+
     private final AccountsRepository accountsRepository;
 
     private BankCommand toBankCommand(BankParam bankParam) {
