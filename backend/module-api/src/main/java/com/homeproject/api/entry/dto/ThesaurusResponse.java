@@ -11,6 +11,8 @@ public record ThesaurusResponse(
         Integer ministryId,
         @Schema(nullable = true)
         Integer tagId,
+        @Schema(nullable = true)
+        String tagName,
         LocalDateTime createdAt,
         String createdBy,
         @Schema(nullable = true)
@@ -24,6 +26,7 @@ public record ThesaurusResponse(
                 , p.merchant()
                 , p.ministryId()
                 , p.tagId()
+                , p.tagName()
                 , p.createdAt()
                 , p.createdBy()
                 , p.updatedAt()

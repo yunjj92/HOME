@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.ZoneId;
 
-import static com.homeproject.db.jooq.Tables.SOURCES;
-import static com.homeproject.db.jooq.Tables.TAGS;
 import static com.homeproject.db.jooq.Tables.ENTRIES;
 import static com.homeproject.db.jooq.Tables.INCOMES;
 import static com.homeproject.db.jooq.Tables.EXPENSES;
@@ -21,32 +19,7 @@ public class EntriesRepositoryImpl implements EntriesRepository {
 
     private final DSLContext dsl;
 
-    @Override
-    public Integer insertSource(SourceCommand sourceCommand) {
-        SourcesRecord sourcesRecord = dsl.insertInto(SOURCES)
-                .set(SOURCES.NAME, sourceCommand.name())
-                .set(SOURCES.DESCRIPTION, sourceCommand.description())
-                .set(SOURCES.CREATED_BY, sourceCommand.requestedBy())
-                .returning(SOURCES.ID)
-                .fetchOne();
 
-        if(sourcesRecord == null) throw new IllegalStateException("Source insert failed");
-
-        return sourcesRecord.getId();
-    }
-
-    @Override
-    public Integer insertTag(TagCommand tagCommand) {
-        TagsRecord tagsRecord = dsl.insertInto(TAGS)
-                .set(TAGS.NAME, tagCommand.name())
-                .set(TAGS.CREATED_BY, tagCommand.requestedBy())
-                .returning(TAGS.ID)
-                .fetchOne();
-
-        if(tagsRecord == null) throw new IllegalStateException("Tag insert failed");
-
-        return tagsRecord.getId();
-    }
 
     @Override
     public Integer insertEntry(EntryCommand entryCommand) {

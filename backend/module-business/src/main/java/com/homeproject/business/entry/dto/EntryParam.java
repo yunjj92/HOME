@@ -9,10 +9,9 @@ public record EntryParam(
         LocalDate date,
         BigDecimal amount,
         String memo,
-        Integer sourceId,
-        String merchant,
+        String connection,
         Integer ministryId,
-        Integer tagId,
+        String tagName,
         String requestedBy,
         String entryType,
         boolean toDelete

@@ -9,6 +9,7 @@ public record ThesaurusResult(
         String merchant,
         Integer ministryId,
         Integer tagId,
+        String tagName,
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime updatedAt,
@@ -20,6 +21,7 @@ public record ThesaurusResult(
                 , p.merchant()
                 , p.ministryId()
                 , p.tagId()
+                , p.tagName()
                 , p.createdAt()
                 , p.createdBy()
                 , p.updatedAt()

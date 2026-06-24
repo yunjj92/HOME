@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record SourceResponse(
         Integer id,
         String name,
+        @Schema(nullable = true)
         String description,
         LocalDateTime createdAt,
         String createdBy,
