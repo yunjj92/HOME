@@ -40,7 +40,7 @@ import type {
   ApiResponseVoid,
   BankUpdateRequest,
   CodeUpdateRequest,
-  EntryInputRequest,
+  EntryUpdateRequest,
   FinalizedRegistrationRequest,
   FinishLoginParams,
   GetCodesParams,
@@ -58,7 +58,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 export const updateEntries = (
-    entryInputRequest: EntryInputRequest,
+    entryUpdateRequest: EntryUpdateRequest[],
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
       
@@ -66,7 +66,7 @@ export const updateEntries = (
       return axiosInstance<ApiResponseVoid>(
       {url: `/api/entry/update_entries`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: entryInputRequest, signal
+      data: entryUpdateRequest, signal
     },
       options);
     }
@@ -74,8 +74,8 @@ export const updateEntries = (
 
 
 export const getUpdateEntriesMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryInputRequest}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryInputRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext> => {
 
 const mutationKey = ['updateEntries'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -87,7 +87,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateEntries>>, {data: EntryInputRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateEntries>>, {data: EntryUpdateRequest[]}> = (props) => {
           const {data} = props ?? {};
 
           return  updateEntries(data,requestOptions)
@@ -101,15 +101,15 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type UpdateEntriesMutationResult = NonNullable<Awaited<ReturnType<typeof updateEntries>>>
-    export type UpdateEntriesMutationBody = EntryInputRequest
+    export type UpdateEntriesMutationBody = EntryUpdateRequest[]
     export type UpdateEntriesMutationError = unknown
 
     export const useUpdateEntries = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryInputRequest}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateEntries>>,
         TError,
-        {data: EntryInputRequest},
+        {data: EntryUpdateRequest[]},
         TContext
       > => {
       return useMutation(getUpdateEntriesMutationOptions(options), queryClient);

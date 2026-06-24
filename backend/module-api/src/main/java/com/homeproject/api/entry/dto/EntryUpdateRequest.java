@@ -1,6 +1,5 @@
 package com.homeproject.api.entry.dto;
 
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,7 +11,7 @@ public record EntryUpdateRequest(
         Integer id,
         @NotNull Integer accountId,
         @NotNull LocalDate date,
-        @NotNull @DecimalMin("0") BigDecimal amount,
+        @NotNull BigDecimal amount,
         String memo,
         @NotBlank String connection,
         Integer ministryId,

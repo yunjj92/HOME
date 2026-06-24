@@ -12,6 +12,8 @@ export interface ThesaurusResponse {
   ministryId?: number;
   /** @nullable */
   tagId?: number | null;
+  /** @nullable */
+  tagName?: string | null;
   createdAt?: string;
   createdBy?: string;
   /** @nullable */

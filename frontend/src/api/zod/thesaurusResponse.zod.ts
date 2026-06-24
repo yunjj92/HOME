@@ -6,6 +6,7 @@ export const thesaurusResponseSchema = z.object({
   merchant: z.string().optional(),
   ministryId: z.number().optional(),
   tagId: z.number().nullable().optional(),
+  tagName: z.string().nullable().optional(),
   createdAt: z.string().optional(),
   createdBy: z.string().optional(),
   updatedAt: z.string().nullable().optional(),

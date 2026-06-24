@@ -6,10 +6,9 @@ export const entryUpdateRequestSchema = z.object({
   date: z.string(),
   amount: z.number(),
   memo: z.string().optional(),
-  sourceId: z.number().optional(),
-  merchant: z.string().optional(),
+  connection: z.string(),
   ministryId: z.number().optional(),
-  tagId: z.number().optional(),
+  tagName: z.string().optional(),
   entryType: z.string(),
   toDelete: z.boolean().optional(),
 });

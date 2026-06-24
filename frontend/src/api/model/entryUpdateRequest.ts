@@ -10,14 +10,12 @@ export interface EntryUpdateRequest {
   id?: number;
   accountId: number;
   date: string;
-  /** @minimum 0 */
   amount: number;
   memo?: string;
-  sourceId?: number;
-  merchant?: string;
+  connection: string;
   ministryId?: number;
-  tagId?: number;
-  /** @pattern income|expense */
+  tagName?: string;
+  /** @pattern inc|exp */
   entryType: string;
   toDelete?: boolean;
 }
