@@ -16,6 +16,7 @@ import { Route as ManagementMinistryRouteImport } from './routers/management/min
 import { Route as ManagementCodeRouteImport } from './routers/management/code'
 import { Route as ManagementBankRouteImport } from './routers/management/bank'
 import { Route as ManagementAccountRouteImport } from './routers/management/account'
+import { Route as FinanceInsertRouteImport } from './routers/finance/insert'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -52,11 +53,17 @@ const ManagementAccountRoute = ManagementAccountRouteImport.update({
   path: '/management/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FinanceInsertRoute = FinanceInsertRouteImport.update({
+  id: '/finance/insert',
+  path: '/finance/insert',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/finance/insert': typeof FinanceInsertRoute
   '/management/account': typeof ManagementAccountRoute
   '/management/bank': typeof ManagementBankRoute
   '/management/code': typeof ManagementCodeRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/finance/insert': typeof FinanceInsertRoute
   '/management/account': typeof ManagementAccountRoute
   '/management/bank': typeof ManagementBankRoute
   '/management/code': typeof ManagementCodeRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
   '/login': typeof LoginRoute
+  '/finance/insert': typeof FinanceInsertRoute
   '/management/account': typeof ManagementAccountRoute
   '/management/bank': typeof ManagementBankRoute
   '/management/code': typeof ManagementCodeRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/finance/insert'
     | '/management/account'
     | '/management/bank'
     | '/management/code'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/finance/insert'
     | '/management/account'
     | '/management/bank'
     | '/management/code'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/home'
     | '/login'
+    | '/finance/insert'
     | '/management/account'
     | '/management/bank'
     | '/management/code'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  FinanceInsertRoute: typeof FinanceInsertRoute
   ManagementAccountRoute: typeof ManagementAccountRoute
   ManagementBankRoute: typeof ManagementBankRoute
   ManagementCodeRoute: typeof ManagementCodeRoute
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManagementAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/finance/insert': {
+      id: '/finance/insert'
+      path: '/finance/insert'
+      fullPath: '/finance/insert'
+      preLoaderRoute: typeof FinanceInsertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  FinanceInsertRoute: FinanceInsertRoute,
   ManagementAccountRoute: ManagementAccountRoute,
   ManagementBankRoute: ManagementBankRoute,
   ManagementCodeRoute: ManagementCodeRoute,

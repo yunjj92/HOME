@@ -35,6 +35,7 @@ export const menus: MenuItem[] = [
     name: '재무',
     basePath: '/finance',
     subCategories: [
+      { name: '재무 데이터 입력', description: '계좌별 수입/지출 데이터 입력', path: '/insert', icon: CursorArrowRaysIcon },
       { name: '재무 상태', description: '재무 상태 파악', path: '/status', icon: CursorArrowRaysIcon, inactive: true },
     ],
     callsToAction: [

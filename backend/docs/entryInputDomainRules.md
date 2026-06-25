@@ -9,8 +9,10 @@
 
 - 거래는 수입과 지출로 구분한다.
 - 프론트엔드 요청에서는 `entryType`으로 거래 구분을 전달한다.
-- `entryType`이 수입이면 `entries`와 `incomes`에 저장한다.
-- `entryType`이 지출이면 `entries`와 `expenses`에 저장한다.
+- 수입의 `entryType` 코드값은 `inc`를 사용한다.
+- 지출의 `entryType` 코드값은 `exp`를 사용한다.
+- `entryType`이 `inc`이면 `entries`와 `incomes`에 저장한다.
+- `entryType`이 `exp`이면 `entries`와 `expenses`에 저장한다.
 
 ## 금액
 

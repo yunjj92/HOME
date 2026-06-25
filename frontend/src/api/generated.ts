@@ -31,6 +31,8 @@ import type {
   ApiResponseListBankResponse,
   ApiResponseListCodeResponse,
   ApiResponseListMinistryResponse,
+  ApiResponseListSourceResponse,
+  ApiResponseListThesaurusResponse,
   ApiResponseListTypeResponse,
   ApiResponseLoginResponse,
   ApiResponseStartRegistrationResponse,
@@ -38,6 +40,7 @@ import type {
   ApiResponseVoid,
   BankUpdateRequest,
   CodeUpdateRequest,
+  EntryUpdateRequest,
   FinalizedRegistrationRequest,
   FinishLoginParams,
   GetCodesParams,
@@ -54,6 +57,64 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
+export const updateEntries = (
+    entryUpdateRequest: EntryUpdateRequest[],
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseVoid>(
+      {url: `/api/entry/update_entries`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: entryUpdateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getUpdateEntriesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext> => {
+
+const mutationKey = ['updateEntries'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateEntries>>, {data: EntryUpdateRequest[]}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateEntries(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateEntriesMutationResult = NonNullable<Awaited<ReturnType<typeof updateEntries>>>
+    export type UpdateEntriesMutationBody = EntryUpdateRequest[]
+    export type UpdateEntriesMutationError = unknown
+
+    export const useUpdateEntries = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEntries>>, TError,{data: EntryUpdateRequest[]}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateEntries>>,
+        TError,
+        {data: EntryUpdateRequest[]},
+        TContext
+      > => {
+      return useMutation(getUpdateEntriesMutationOptions(options), queryClient);
+    }
+    
 export const updateTypes = (
     typeUpdateRequest: TypeUpdateRequest[],
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
@@ -690,6 +751,192 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(getUpdateAccountsMutationOptions(options), queryClient);
     }
     
+export const getThesauruses = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListThesaurusResponse>(
+      {url: `/api/entry/get_thesauruses`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetThesaurusesQueryKey = () => {
+    return [
+    `/api/entry/get_thesauruses`
+    ] as const;
+    }
+
+    
+export const getGetThesaurusesQueryOptions = <TData = Awaited<ReturnType<typeof getThesauruses>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetThesaurusesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getThesauruses>>> = ({ signal }) => getThesauruses(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetThesaurusesQueryResult = NonNullable<Awaited<ReturnType<typeof getThesauruses>>>
+export type GetThesaurusesQueryError = unknown
+
+
+export function useGetThesauruses<TData = Awaited<ReturnType<typeof getThesauruses>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getThesauruses>>,
+          TError,
+          Awaited<ReturnType<typeof getThesauruses>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetThesauruses<TData = Awaited<ReturnType<typeof getThesauruses>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getThesauruses>>,
+          TError,
+          Awaited<ReturnType<typeof getThesauruses>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetThesauruses<TData = Awaited<ReturnType<typeof getThesauruses>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetThesauruses<TData = Awaited<ReturnType<typeof getThesauruses>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getThesauruses>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetThesaurusesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetThesauruses = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetThesaurusesQueryKey() }, options);
+
+  return queryClient;
+}
+
+
+
+export const getSources = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListSourceResponse>(
+      {url: `/api/entry/get_sources`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetSourcesQueryKey = () => {
+    return [
+    `/api/entry/get_sources`
+    ] as const;
+    }
+
+    
+export const getGetSourcesQueryOptions = <TData = Awaited<ReturnType<typeof getSources>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSourcesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSources>>> = ({ signal }) => getSources(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetSourcesQueryResult = NonNullable<Awaited<ReturnType<typeof getSources>>>
+export type GetSourcesQueryError = unknown
+
+
+export function useGetSources<TData = Awaited<ReturnType<typeof getSources>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSources>>,
+          TError,
+          Awaited<ReturnType<typeof getSources>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSources<TData = Awaited<ReturnType<typeof getSources>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSources>>,
+          TError,
+          Awaited<ReturnType<typeof getSources>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSources<TData = Awaited<ReturnType<typeof getSources>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetSources<TData = Awaited<ReturnType<typeof getSources>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSources>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetSourcesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetSources = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetSourcesQueryKey() }, options);
+
+  return queryClient;
+}
+
+
+
 export const getTypes = (
     
  options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal

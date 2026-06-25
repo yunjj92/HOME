@@ -53,7 +53,7 @@ entries
   "entries": [
     {
       "rowKey": "row-1",
-      "entryType": "income",
+      "entryType": "inc",
       "accountId": 1,
       "date": "2026-06-08",
       "amount": 100000,
@@ -63,7 +63,7 @@ entries
     },
     {
       "rowKey": "row-2",
-      "entryType": "expense",
+      "entryType": "exp",
       "accountId": 1,
       "date": "2026-06-08",
       "amount": 12000,
@@ -149,7 +149,7 @@ tagClientKey
 공통:
 
 - `rowKey`는 필수이다.
-- `entryType`은 `income` 또는 `expense`만 허용한다.
+- `entryType`은 `inc` 또는 `exp`만 허용한다.
 - `accountId`는 필수이다.
 - `date`는 필수이다.
 - `amount`는 필수이다.
