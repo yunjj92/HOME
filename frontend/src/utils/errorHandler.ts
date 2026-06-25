@@ -1,6 +1,7 @@
 import { AxiosError, isAxiosError } from "axios";
 import { ERROR_MESSAGES, ERROR_STATUS } from "./errorConstants";
 import type { ApiError } from "../api/model";
+import { ZodError } from "zod";
 
 export type AppErrorType =
     | "network"     // 서버와 통신 자체가 안됨, 서버 꺼짐 등
@@ -70,6 +71,26 @@ const STATUS_MESSAGES: Partial<Record<number, string>> = {
 const getHttpUserMessage = (status?: number, fallbackMessage?: string) => {
     if (status && STATUS_MESSAGES[status]) return STATUS_MESSAGES[status];
     return fallbackMessage || DEFAULT_USER_MESSAGE;
+};
+
+// Zod 에러 정규화
+const normalizeZodError = (error: ZodError, options?: ErrorHandlerOptions): AppError => {
+    const details = error.issues.map((issue) => {
+        const [ rowIndex ] = issue.path;
+        const rowLabel = typeof rowIndex === "number" ? `${rowIndex + 1}행` : undefined;
+        const errorMessage = issue.message;
+        return rowLabel ? `${rowLabel}: ${errorMessage}` : errorMessage;
+    });
+
+    return {
+        type: "validation",
+        status: ERROR_STATUS.BAD_REQUEST,
+        code: "ZOD_VALIDATION_ERROR",
+        message: details.join("\n"),
+        userMessage: details.join("\n"),
+        source: options?.source,
+        cause: error,
+    };
 };
 
 // Axios 에러 정규화
@@ -182,9 +203,10 @@ function normalizeUnknownError(error: unknown, options?: ErrorHandlerOptions): A
 
 // 에러 정규화
 const normalizeError = (error: unknown, options?: ErrorHandlerOptions): AppError | null => {
-    if (!error) return null;
-    if (isAxiosError<ApiResponseLike>(error)) return normalizeAxiosError(error, options);
-    if (isApiResponseLike(error)) return normalizeApiResponse(error, options);
+    if(!error) return null;
+    if(error instanceof ZodError) return normalizeZodError(error, options);
+    if(isAxiosError<ApiResponseLike>(error)) return normalizeAxiosError(error, options);
+    if(isApiResponseLike(error)) return normalizeApiResponse(error, options);
     return normalizeUnknownError(error, options);
 };
 
