@@ -5,7 +5,6 @@ import { AgGridProvider, AgGridReact } from "ag-grid-react";
 import { useGetAccounts, useGetCodes, useGetMinistries, useGetThesauruses, useUpdateEntries } from "../../api/generated";
 import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig";
 import { createErrorHandler } from "../../utils/errorHandler";
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
 import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
@@ -61,31 +60,56 @@ export const FinanceDataInsertView = () => {
 
     const isLoading = isEntryTypesLoading || isAccountsLoading || isMinistriesLoading || isThesaurusesLoading;
 
+    const entryTypeCodesParsed = useMemo(
+        () => z.array(codeDataSchema).safeParse(entryTypeCodesData?.data),
+        [entryTypeCodesData?.data],
+    );
+    const accountsParsed = useMemo(
+        () => z.array(accountDataSchema).safeParse(accountsData?.data),
+        [accountsData?.data],
+    );
+    const ministriesParsed = useMemo(
+        () => z.array(ministryDataSchema).safeParse(ministriesData?.data),
+        [ministriesData?.data],
+    );
+    const thesaurusesParsed = useMemo(
+        () => z.array(thesaurusDataSchema).safeParse(thesaurusesData?.data),
+        [thesaurusesData?.data],
+    );
+
     useEffect(() => {
         if (isLoading) return;
         
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: entryTypeCodesError, data: entryTypeCodesData }, { source: "entries" });
+        errorHandler.collect(entryTypeCodesParsed.error, { source: "entries" });
         errorHandler.collectResult({ error: accountsError, data: accountsData }, { source: "accounts" });
+        errorHandler.collect(accountsParsed.error, { source: "accounts" });
         errorHandler.collectResult({ error: ministriesError, data: ministriesData }, { source: "ministries" });
+        errorHandler.collect(ministriesParsed.error, { source: "ministries" });
         errorHandler.collectResult({ error: thesaurusesError, data: thesaurusesData }, { source: "thesauruses" });
+        errorHandler.collect(thesaurusesParsed.error, { source: "thesauruses" });
         errorHandler.flush();
     }, [
         isLoading,
         entryTypeCodesError,
         entryTypeCodesData,
+        entryTypeCodesParsed,
         accountsError,
         accountsData,
+        accountsParsed,
         ministriesError,
         ministriesData, 
+        ministriesParsed,
         thesaurusesError, 
         thesaurusesData,
+        thesaurusesParsed,
     ]);
 
-    const entryTypeCodes = parseToZodSchema(entryTypeCodesData?.data, z.array(codeDataSchema), []);
-    const accounts = parseToZodSchema(accountsData?.data, z.array(accountDataSchema), []);
-    const ministries = parseToZodSchema(ministriesData?.data, z.array(ministryDataSchema), []);
-    const thesauruses = parseToZodSchema(thesaurusesData?.data, z.array(thesaurusDataSchema), []);
+    const entryTypeCodes = entryTypeCodesParsed.success ? entryTypeCodesParsed.data : [];
+    const accounts = accountsParsed.success ? accountsParsed.data : [];
+    const ministries = ministriesParsed.success ? ministriesParsed.data : [];
+    const thesauruses = thesaurusesParsed.success ? thesaurusesParsed.data : [];
 
     const entryTypeCodeMap = useCodesMapping(entryTypeCodes);
     const accountMap = useListMapping(accounts, "id", "name");
@@ -159,13 +183,13 @@ export const FinanceDataInsertView = () => {
         if(saveRows.length === 0) return alert(`저장할 항목이 없습니다.`);
         if(!confirm(`총 ${saveRows.length}건의 데이터를 저장하시겠습니까?`)) return;
 
-        const parsedRows = parseToZodSchema(saveRows, z.array(
+        const parsedResult = z.array(
             entryUpdateRequestSchema.extend({
-                entryType: z.enum(["inc", "exp"], { message: "구분이 선택되지 않았습니다."}),
-                accountId: z.number({ message: "계좌가 선택되지 않았습니다." }),
-                date: z.string().min(1, "거래일이 입력되지 않았습니다."),
-                amount: z.number({ message: "금액이 입력되지 않았습니다. "}).int("금액은 정수로 입력해야합니다."),
-                connection: z.string().trim().min(1, "거래처가 입력되지 않았습니다."),
+                entryType: z.enum(["inc", "exp"], { error: "구분이 선택되지 않았습니다."}),
+                accountId: z.number({ error: "계좌가 선택되지 않았습니다." }),
+                date: z.string({ error: "거래일이 입력되지 않았습니다." }),
+                amount: z.number({ error: "금액이 입력되지 않았습니다. "}).int("금액은 정수로 입력해야합니다."),
+                connection: z.string({ error: "거래처가 입력되지 않았습니다." }).trim().min(1, "거래처가 입력되지 않았습니다."),
             }).superRefine((row, ctx) => {
                 if(row.entryType === "exp" && !row.ministryId) {
                     ctx.addIssue({
@@ -175,10 +199,16 @@ export const FinanceDataInsertView = () => {
                     })
                 }
             }),
-        ), []);
-        if(parsedRows.length === 0) return;
+        ).safeParse(saveRows);
 
-        await resolveMutateAsync({ data: parsedRows });
+        if(!parsedResult.success) {
+            const errorHandler = createErrorHandler();
+            errorHandler.collect(parsedResult.error);
+            errorHandler.flush();
+            return;
+        }
+
+        await resolveMutateAsync({ data: parsedResult.data });
     };
 
     const columnDefs = useMemo<ColDef<Entry>[]>(() => [

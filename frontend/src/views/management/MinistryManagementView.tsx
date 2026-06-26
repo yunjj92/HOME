@@ -1,8 +1,7 @@
 ﻿import z from "zod";
 import { useGetMinistries } from "../../api/generated";
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MinistryListSkeleton } from "../../components/management/MinistryListSkeleton";
 import { MinistryList } from "../../components/management/MinistryList";
 import { MinistryListEdit } from "../../components/management/MinistryListEdit";
@@ -16,15 +15,21 @@ export const MinistryManagementView = () => {
         data: ministriesData,
     } = useGetMinistries(COMMON_QUERY_CONFIG);
 
+    const ministriesParsed = useMemo(
+        () => z.array(ministryDataSchema).safeParse(ministriesData?.data),
+        [ministriesData?.data],
+    );
+
     useEffect(() => {
         if (isLoading) return;
 
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: ministriesError, data: ministriesData }, { source: "ministries" });
+        errorHandler.collect(ministriesParsed.error, { source: "ministries" });
         errorHandler.flush();
-    }, [isLoading, ministriesError, ministriesData]);
+    }, [isLoading, ministriesError, ministriesData, ministriesParsed]);
 
-    const ministries = parseToZodSchema(ministriesData?.data, z.array(ministryDataSchema), []);
+    const ministries = ministriesParsed.success ? ministriesParsed.data : [];
 
     // 상태관리
     const [isEditMode, setIsEditMode] = useState(false);

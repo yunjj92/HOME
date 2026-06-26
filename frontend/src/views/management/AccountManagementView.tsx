@@ -1,5 +1,5 @@
 ﻿import { AccountList } from "../../components/management/AccountList";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetAccounts, useGetBanks, useGetCodes } from "../../api/generated";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
@@ -7,7 +7,6 @@ import { bankDataSchema } from "../../api/zod/bankResponse.zod";
 import { codeDataSchema } from "../../api/zod/codeResponse.zod";
 import { useListMapping } from "../../hooks/common/useListMapping";
 import { useCodesMapping } from "../../hooks/common/useCodesMapping";
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { AccountListSkeleton } from "../../components/management/AccountListSkeleton";
 import { AccountListEdit } from "../../components/management/AccountListEdit";
 import { createErrorHandler } from "../../utils/errorHandler.ts";
@@ -39,32 +38,60 @@ export const AccountManagementView = () => {
     // 로딩, 에러 체크
     const isLoading = isAccountsLoading || isBanksLoading || isAccountTypeCodesLoading || isCurrencyTypeCodesLoading;
 
+    // 데이터 파싱
+    const accountsParsed = useMemo(
+        () => z.array(accountDataSchema).safeParse(accountsData?.data),
+        [accountsData?.data],
+    );
+    const banksParsed = useMemo(
+        () => z.array(bankDataSchema).safeParse(banksData?.data),
+        [banksData?.data],
+    );
+    const accountTypeCodesParsed = useMemo(
+        () => z.array(codeDataSchema).safeParse(accountTypeCodesData?.data),
+        [accountTypeCodesData?.data],
+    );
+    const currencyTypeCodesParsed = useMemo(
+        () => z.array(codeDataSchema).safeParse(currencyTypeCodesData?.data),
+        [currencyTypeCodesData?.data],
+    );
+    
+    // 에러 체크
     useEffect(() => {
         if (isLoading) return;
 
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: accountsError, data: accountsData }, { source: "accounts" });
+        errorHandler.collect(accountsParsed.error, { source: "accounts" });
         errorHandler.collectResult({ error: banksError, data: banksData }, { source: "banks" });
+        errorHandler.collect(banksParsed.error, { source: "banks" });
         errorHandler.collectResult({ error: accountTypeCodesError, data: accountTypeCodesData }, { source: "accountTypeCodes" });
+        errorHandler.collect(accountTypeCodesParsed.error, { source: "accountTypeCodes" });
         errorHandler.collectResult({ error: currencyTypeCodesError, data: currencyTypeCodesData }, { source: "currencyTypeCodes" });
+        errorHandler.collect(currencyTypeCodesParsed.error, { source: "currencyTypeCodes" });
+
         errorHandler.flush();
     }, [
         isLoading,
         accountsError,
         accountsData,
+        accountsParsed,
         banksError,
         banksData,
+        banksParsed,
         accountTypeCodesError,
         accountTypeCodesData,
+        accountTypeCodesParsed,
         currencyTypeCodesError,
         currencyTypeCodesData,
+        currencyTypeCodesParsed,
     ]);
 
-    // 데이터 파싱
-    const accounts = parseToZodSchema(accountsData?.data, z.array(accountDataSchema), []);
-    const banks = parseToZodSchema(banksData?.data, z.array(bankDataSchema), []);
-    const accountTypeCodes = parseToZodSchema(accountTypeCodesData?.data, z.array(codeDataSchema), []);
-    const currencyTypeCodes = parseToZodSchema(currencyTypeCodesData?.data, z.array(codeDataSchema), []);
+    // 데이터 할당
+    const accounts = accountsParsed.success ? accountsParsed.data : [];
+    const banks = banksParsed.success ? banksParsed.data : [];
+    const accountTypeCodes = accountTypeCodesParsed.success ? accountTypeCodesParsed.data : [];
+    const currencyTypeCodes = currencyTypeCodesParsed.success ? currencyTypeCodesParsed.data : [];
 
     // 맵핑 데이터 생성
     const bankMap = useListMapping(banks, "id", "name");
