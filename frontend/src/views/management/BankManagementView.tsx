@@ -1,8 +1,7 @@
 import z from "zod";
 import { useGetBanks } from "../../api/generated"
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import { bankDataSchema } from "../../api/zod/bankResponse.zod";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BankList } from "../../components/management/BankList";
 import { BankListSkeleton } from "../../components/management/BankListSkeleton";
 import { BankListEdit } from "../../components/management/BankListEdit";
@@ -15,16 +14,22 @@ export const BankManagementView = () => {
         error: banksError,
         data: banksData,
     } = useGetBanks(COMMON_QUERY_CONFIG);
+
+    const banksParsed = useMemo(
+        () => z.array(bankDataSchema).safeParse(banksData?.data),
+        [banksData?.data],
+    );
     
     useEffect(() => {
         if (isLoading) return;
 
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: banksError, data: banksData }, { source: "banks" });
+        errorHandler.collect(banksParsed.error, { source: "banks" });
         errorHandler.flush();
-    }, [isLoading, banksError, banksData]);
+    }, [isLoading, banksError, banksData, banksParsed]);
 
-    const banks = parseToZodSchema(banksData?.data, z.array(bankDataSchema), []);
+    const banks = banksParsed.success ? banksParsed.data : [];
 
     const [isEditMode, setIsEditMode] = useState(false);
 

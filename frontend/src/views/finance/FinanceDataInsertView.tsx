@@ -5,7 +5,6 @@ import { AgGridProvider, AgGridReact } from "ag-grid-react";
 import { useGetAccounts, useGetCodes, useGetMinistries, useGetThesauruses, useUpdateEntries } from "../../api/generated";
 import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig";
 import { createErrorHandler } from "../../utils/errorHandler";
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
 import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
@@ -61,31 +60,56 @@ export const FinanceDataInsertView = () => {
 
     const isLoading = isEntryTypesLoading || isAccountsLoading || isMinistriesLoading || isThesaurusesLoading;
 
+    const entryTypeCodesParsed = useMemo(
+        () => z.array(codeDataSchema).safeParse(entryTypeCodesData?.data),
+        [entryTypeCodesData?.data],
+    );
+    const accountsParsed = useMemo(
+        () => z.array(accountDataSchema).safeParse(accountsData?.data),
+        [accountsData?.data],
+    );
+    const ministriesParsed = useMemo(
+        () => z.array(ministryDataSchema).safeParse(ministriesData?.data),
+        [ministriesData?.data],
+    );
+    const thesaurusesParsed = useMemo(
+        () => z.array(thesaurusDataSchema).safeParse(thesaurusesData?.data),
+        [thesaurusesData?.data],
+    );
+
     useEffect(() => {
         if (isLoading) return;
         
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: entryTypeCodesError, data: entryTypeCodesData }, { source: "entries" });
+        errorHandler.collect(entryTypeCodesParsed.error, { source: "entries" });
         errorHandler.collectResult({ error: accountsError, data: accountsData }, { source: "accounts" });
+        errorHandler.collect(accountsParsed.error, { source: "accounts" });
         errorHandler.collectResult({ error: ministriesError, data: ministriesData }, { source: "ministries" });
+        errorHandler.collect(ministriesParsed.error, { source: "ministries" });
         errorHandler.collectResult({ error: thesaurusesError, data: thesaurusesData }, { source: "thesauruses" });
+        errorHandler.collect(thesaurusesParsed.error, { source: "thesauruses" });
         errorHandler.flush();
     }, [
         isLoading,
         entryTypeCodesError,
         entryTypeCodesData,
+        entryTypeCodesParsed,
         accountsError,
         accountsData,
+        accountsParsed,
         ministriesError,
         ministriesData, 
+        ministriesParsed,
         thesaurusesError, 
         thesaurusesData,
+        thesaurusesParsed,
     ]);
 
-    const entryTypeCodes = parseToZodSchema(entryTypeCodesData?.data, z.array(codeDataSchema), []);
-    const accounts = parseToZodSchema(accountsData?.data, z.array(accountDataSchema), []);
-    const ministries = parseToZodSchema(ministriesData?.data, z.array(ministryDataSchema), []);
-    const thesauruses = parseToZodSchema(thesaurusesData?.data, z.array(thesaurusDataSchema), []);
+    const entryTypeCodes = entryTypeCodesParsed.success ? entryTypeCodesParsed.data : [];
+    const accounts = accountsParsed.success ? accountsParsed.data : [];
+    const ministries = ministriesParsed.success ? ministriesParsed.data : [];
+    const thesauruses = thesaurusesParsed.success ? thesaurusesParsed.data : [];
 
     const entryTypeCodeMap = useCodesMapping(entryTypeCodes);
     const accountMap = useListMapping(accounts, "id", "name");

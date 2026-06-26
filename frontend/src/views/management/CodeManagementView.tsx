@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useGetCodes, useGetTypes } from "../../api/generated"
 import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig"
 import { createErrorHandler } from "../../utils/errorHandler";
-import { parseToZodSchema } from "../../utils/parseToZodSchema";
 import z from "zod";
 import { codeDataSchema } from "../../api/zod/codeResponse.zod";
 import { typeDataSchema } from "../../api/zod/typeResponse.zod";
@@ -26,23 +25,43 @@ export const CodeManagementView = () => {
 
     const isLoading = isTypesLoading || isCodesLoading;
 
+    const typesParsed = useMemo(
+        () => z.array(typeDataSchema).safeParse(typesData?.data),
+        [typesData?.data],
+    );
+
+    const codesParsed = useMemo(
+        () => z.array(codeDataSchema).safeParse(codesData?.data),
+        [codesData?.data],
+    );
+
     useEffect(() => {
         if(isLoading) return;
 
         const errorHandler = createErrorHandler();
         errorHandler.collectResult({ error: typesError, data: typesData }, { source: "types"});
+        errorHandler.collect(typesParsed.error, { source: "types"});
         errorHandler.collectResult({ error: codesError, data: codesData }, { source: "codes"});
+        errorHandler.collect(codesParsed.error, { source: "codes"});
         errorHandler.flush();
     }, [
         isLoading,
         typesError,
         typesData,
+        typesParsed,
         codesError,
         codesData,
+        codesParsed,
     ]);
 
-    const types = parseToZodSchema(typesData?.data, z.array(typeDataSchema), []);
-    const codes = parseToZodSchema(codesData?.data, z.array(codeDataSchema), []);
+    const types = useMemo(
+        () => typesParsed.success ? typesParsed.data : [],
+        [typesParsed],
+    );
+    const codes = useMemo(
+        () => codesParsed.success ? codesParsed.data : [],
+        [codesParsed],
+    );
 
     const [selectedTypeId, setSelectedTypeId] = useState(1);
 
