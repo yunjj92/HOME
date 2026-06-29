@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.homeproject.api.authentication.request.FinalizedRegistrationRequest;
 import com.homeproject.api.authentication.response.LoginResponse;
 import com.homeproject.api.authentication.response.StartRegistrationResponse;
+import com.homeproject.api.exception.ApiErrorCode;
+import com.homeproject.api.exception.ApiException;
 import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.security.jwt.JwtTokenProvider;
 import com.homeproject.security.jwt.RefreshTokenService;
@@ -44,13 +46,9 @@ public class AuthenticationController {
     @Operation
     @PostMapping("/register/options")
     public ApiResponse<StartRegistrationResponse> startRegistration(@RequestParam String username){
-        try {
-            UserRegistrationResult userRegistrationResult = webAuthnProcessor.startRegistration(username);
-            registrationOptionsStore.put(username, userRegistrationResult.creationOptions());
-            return ApiResponse.success(StartRegistrationResponse.from(userRegistrationResult));
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        UserRegistrationResult userRegistrationResult = webAuthnProcessor.startRegistration(username);
+        registrationOptionsStore.put(username, userRegistrationResult.creationOptions());
+        return ApiResponse.success(StartRegistrationResponse.from(userRegistrationResult));
     }
 
     @PostMapping("/register/finish")
@@ -75,51 +73,43 @@ public class AuthenticationController {
             assertionRequestStore.put(username, loginResult.assertionRequest());
             return ApiResponse.success(LoginResponse.from(loginResult));
         } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
+            throw new ApiException(ApiErrorCode.AUTH_LOGIN_FAILED);
         }
     }
 
     @PostMapping("/login/finish")
     public ApiResponse<TokenResponse> finishLogin(@RequestParam String username, @RequestBody String responseJson) throws Exception {
+        AssertionRequest request = assertionRequestStore.get(username);
 
+        if (request == null) {
+            throw new ApiException(ApiErrorCode.AUTH_CHALLENGE_EXPIRED);
+        }
+
+        AssertionResult result;
         try {
-            AssertionRequest request = assertionRequestStore.get(username);
-            if (request == null) {
-                throw new RuntimeException("Assertion request not found");
-            }
-
             FinalizedLoginParam finalizedLoginParam = new FinalizedLoginParam(username, request, PublicKeyCredential.parseAssertionResponseJson(responseJson));
 
-            AssertionResult result = webAuthnProcessor.finishAssertion(finalizedLoginParam);
-
-            if(!result.isSuccess()) {
-                throw new RuntimeException("Authentication failed");
-            }
-
-            assertionRequestStore.remove(username);
-            return ApiResponse.success(refreshTokenService.createTokens(username));
+            result = webAuthnProcessor.finishAssertion(finalizedLoginParam);
         } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
+            throw new ApiException(ApiErrorCode.AUTH_ASSERTION_INVALID);
         }
+
+        if(!result.isSuccess()) {
+            throw new ApiException(ApiErrorCode.AUTH_LOGIN_FAILED);
+        }
+
+        assertionRequestStore.remove(username);
+        return ApiResponse.success(refreshTokenService.createTokens(username));
     }
 
     @PostMapping("/refresh")
     public ApiResponse<TokenResponse> refresh(@RequestParam String refreshToken) {
-        try {
-            return ApiResponse.success(refreshTokenService.refresh(refreshToken));
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(refreshTokenService.refresh(refreshToken));
     }
 
     @PostMapping("/logout")
     public ApiResponse<Void> logout(@RequestParam String refreshToken) {
-        try {
-            refreshTokenService.logout(refreshToken);
-            return ApiResponse.success(null);
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        refreshTokenService.logout(refreshToken);
+        return ApiResponse.success(null);
     }
-
 }

@@ -9,6 +9,7 @@ import com.homeproject.business.account.AccountCommandService;
 import com.homeproject.business.account.AccountQueryService;
 import com.homeproject.business.account.dto.AccountParam;
 import com.homeproject.business.account.dto.BankParam;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,21 +55,17 @@ public class AccountController {
 
     @GetMapping(value = "/get_accounts")
     public ApiResponse<List<AccountResponse>> getAccounts() {
-        try {
-            return ApiResponse.success(
-                    accountQueryService.getAccountList()
-                    .stream()
-                    .map(AccountResponse::from)
-                    .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                accountQueryService.getAccountList()
+                .stream()
+                .map(AccountResponse::from)
+                .toList()
+        );
     }
 
     @PostMapping(value = "/update_accounts")
     public ApiResponse<Void> updateAccounts(
-            @RequestBody List<AccountUpdateRequest> accountUpdateRequests
+            @RequestBody @Valid List<@Valid AccountUpdateRequest> accountUpdateRequests
             , Principal principal
     ) {
         List<AccountParam> accountParams = accountUpdateRequests.stream()
@@ -81,20 +78,16 @@ public class AccountController {
 
     @GetMapping(value = "/get_banks")
     public ApiResponse<List<BankResponse>> getBanks() {
-        try {
-            return ApiResponse.success(accountQueryService.getBankList()
-                    .stream()
-                    .map(BankResponse::from)
-                    .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(accountQueryService.getBankList()
+                .stream()
+                .map(BankResponse::from)
+                .toList()
+        );
     }
 
     @PostMapping(value = "/update_banks")
     public ApiResponse<Void> updateBanks(
-            @RequestBody List<BankUpdateRequest> bankUpdateRequests
+            @RequestBody @Valid List<@Valid BankUpdateRequest> bankUpdateRequests
             , Principal principal
     ) {
         List<BankParam> bankParams = bankUpdateRequests.stream()

@@ -6,6 +6,7 @@ import com.homeproject.api.wrapper.ApiResponse;
 import com.homeproject.business.ministry.MinistryCommandService;
 import com.homeproject.business.ministry.MinistryQueryService;
 import com.homeproject.business.ministry.dto.MinistryParam;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,21 +36,17 @@ public class MinistryController {
 
     @GetMapping(value = "/get_ministries")
     public ApiResponse<List<MinistryResponse>> getMinistries() {
-        try {
-            return ApiResponse.success(
-                    ministryQueryService.getMinistryList()
-                    .stream()
-                    .map(MinistryResponse::from)
-                    .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                ministryQueryService.getMinistryList()
+                .stream()
+                .map(MinistryResponse::from)
+                .toList()
+        );
     }
 
     @PostMapping(value = "/update_ministries")
     public ApiResponse<Void> updateMinistries(
-            @RequestBody List<MinistryUpdateRequest> ministryUpdateRequests
+            @RequestBody @Valid List<@Valid MinistryUpdateRequest> ministryUpdateRequests
             , Principal principal
     ) {
         List<MinistryParam> ministryParams = ministryUpdateRequests.stream()

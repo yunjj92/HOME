@@ -48,48 +48,37 @@ public class EntryController {
 
     @GetMapping(value = "/get_sources")
     public ApiResponse<List<SourceResponse>> getSources() {
-        try {
-            return ApiResponse.success(
-                    entryQueryService.getSourceList()
-                            .stream()
-                            .map(SourceResponse::from)
-                            .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                entryQueryService.getSourceList()
+                        .stream()
+                        .map(SourceResponse::from)
+                        .toList()
+        );
     }
 
     @GetMapping(value = "/get_thesauruses")
     public ApiResponse<List<ThesaurusResponse>> getThesauruses() {
-        try {
-            return ApiResponse.success(
-                    entryQueryService.getThesaurusList()
-                            .stream()
-                            .map(ThesaurusResponse::from)
-                            .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                entryQueryService.getThesaurusList()
+                        .stream()
+                        .map(ThesaurusResponse::from)
+                        .toList()
+        );
     }
 
     @PostMapping(value = "/update_entries")
     public ApiResponse<Void> updateEntries(
-            @RequestBody List<@Valid EntryUpdateRequest> entryUpdateRequests,
+            @RequestBody @Valid List<@Valid EntryUpdateRequest> entryUpdateRequests,
             Principal principal
     ) {
         String requestedBy = principal.getName();
-        try {
-            entryCommandService.saveEntries(
-                    entryUpdateRequests
-                            .stream()
-                            .map(request -> toEntryParam(request, requestedBy))
-                            .toList()
-                    , requestedBy);
-            return ApiResponse.success(null);
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        entryCommandService.saveEntries(
+                entryUpdateRequests
+                        .stream()
+                        .map(request -> toEntryParam(request, requestedBy))
+                        .toList()
+                , requestedBy);
+
+        return ApiResponse.success(null);
     }
 }

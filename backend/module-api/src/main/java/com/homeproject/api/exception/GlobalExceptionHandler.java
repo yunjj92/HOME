@@ -1,4 +1,4 @@
-﻿package com.homeproject.api.exception;
+package com.homeproject.api.exception;
 
 import com.homeproject.api.wrapper.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
