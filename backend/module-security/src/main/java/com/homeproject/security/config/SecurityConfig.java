@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                
+
                 // 로그인 검증
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
