@@ -2,7 +2,7 @@ package com.homeproject.api.ministry;
 
 import com.homeproject.api.ministry.dto.MinistryResponse;
 import com.homeproject.api.ministry.dto.MinistryUpdateRequest;
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import com.homeproject.business.ministry.MinistryCommandService;
 import com.homeproject.business.ministry.MinistryQueryService;
 import com.homeproject.business.ministry.dto.MinistryParam;

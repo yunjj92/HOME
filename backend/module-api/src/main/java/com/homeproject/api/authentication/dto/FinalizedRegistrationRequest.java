@@ -1,4 +1,4 @@
-package com.homeproject.api.authentication.request;
+package com.homeproject.api.authentication.dto;
 
 import lombok.Getter;
 import lombok.Setter;

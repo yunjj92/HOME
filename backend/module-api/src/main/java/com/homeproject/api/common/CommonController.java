@@ -4,7 +4,7 @@ import com.homeproject.api.common.dto.CodeResponse;
 import com.homeproject.api.common.dto.CodeUpdateRequest;
 import com.homeproject.api.common.dto.TypeResponse;
 import com.homeproject.api.common.dto.TypeUpdateRequest;
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import com.homeproject.business.common.CommonCommandService;
 import com.homeproject.business.common.CommonQueryService;
 import com.homeproject.business.common.dto.CodeParam;

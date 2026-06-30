@@ -4,7 +4,7 @@ import com.homeproject.api.account.dto.AccountResponse;
 import com.homeproject.api.account.dto.AccountUpdateRequest;
 import com.homeproject.api.account.dto.BankResponse;
 import com.homeproject.api.account.dto.BankUpdateRequest;
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import com.homeproject.business.account.AccountCommandService;
 import com.homeproject.business.account.AccountQueryService;
 import com.homeproject.business.account.dto.AccountParam;

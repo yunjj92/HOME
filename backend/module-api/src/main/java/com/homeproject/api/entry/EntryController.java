@@ -3,7 +3,7 @@ package com.homeproject.api.entry;
 import com.homeproject.api.entry.dto.EntryUpdateRequest;
 import com.homeproject.api.entry.dto.SourceResponse;
 import com.homeproject.api.entry.dto.ThesaurusResponse;
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import com.homeproject.business.entry.EntryCommandService;
 import com.homeproject.business.entry.EntryQueryService;
 import com.homeproject.business.entry.dto.EntryParam;

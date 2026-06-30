@@ -1,4 +1,4 @@
-package com.homeproject.api.wrapper;
+package com.homeproject.api.support.wrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
