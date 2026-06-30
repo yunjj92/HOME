@@ -4,11 +4,11 @@ import { createApiResponseSchema } from '../../services/schemas/common/api';
 export const sourceResponseSchema = z.object({
   id: z.number().optional(),
   name: z.string().optional(),
-  description: z.string().nullable().optional(),
+  description: z.string().optional(),
   createdAt: z.string().optional(),
   createdBy: z.string().optional(),
-  updatedAt: z.string().nullable().optional(),
-  updatedBy: z.string().nullable().optional(),
+  updatedAt: z.string().optional(),
+  updatedBy: z.string().optional(),
 });
 
 export const sourceDataSchema = sourceResponseSchema;

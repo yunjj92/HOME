@@ -6,8 +6,8 @@ export const bankResponseSchema = z.object({
   name: z.string().optional(),
   createdAt: z.string().optional(),
   createdBy: z.string().optional(),
-  updatedAt: z.string().nullable().optional(),
-  updatedBy: z.string().nullable().optional(),
+  updatedAt: z.string().optional(),
+  updatedBy: z.string().optional(),
 });
 
 export const bankDataSchema = bankResponseSchema;
