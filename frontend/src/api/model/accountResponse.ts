@@ -18,8 +18,6 @@ export interface AccountResponse {
   description?: string;
   createdAt?: string;
   createdBy?: string;
-  /** @nullable */
-  updatedAt?: string | null;
-  /** @nullable */
-  updatedBy?: string | null;
+  updatedAt?: string;
+  updatedBy?: string;
 }

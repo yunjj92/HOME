@@ -12,6 +12,7 @@ export interface EntryUpdateRequest {
   date: string;
   amount: number;
   memo?: string;
+  /** @minLength 1 */
   connection: string;
   ministryId?: number;
   tagName?: string;
