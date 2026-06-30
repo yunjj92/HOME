@@ -8,6 +8,7 @@ import java.util.List;
 public interface EntriesReferenceRepository {
     Integer insertSource(SourceCommand sourceCommand);
     Integer insertTag(TagCommand tagCommand);
+    void upsertThesaurus(ThesaurusCommand thesaurusCommand);
     List<SourceProjection> getSourceList();
     List<SourceProjection> getSourceList(Collection<String> names);
     List<TagProjection> getTagList(Collection<String> names);
