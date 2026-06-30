@@ -21,6 +21,8 @@ spring:
     baseline-on-migrate: true
 springdoc:
   default-produces-media-type: application/json
+  api-docs:
+    version: OPENAPI_3_0
 
 jwt:
   secret: ${JWT_SECRET}

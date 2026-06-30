@@ -10,10 +10,14 @@ export interface ThesaurusResponse {
   accountId?: number;
   merchant?: string;
   ministryId?: number;
-  tagId?: number;
-  tagName?: string;
+  /** @nullable */
+  tagId?: number | null;
+  /** @nullable */
+  tagName?: string | null;
   createdAt?: string;
   createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
+  /** @nullable */
+  updatedAt?: string | null;
+  /** @nullable */
+  updatedBy?: string | null;
 }

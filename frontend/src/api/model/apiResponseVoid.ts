@@ -6,9 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 import type { ApiError } from './apiError';
+import type { ApiResponseVoidData } from './apiResponseVoidData';
 
 export interface ApiResponseVoid {
   success?: boolean;
   apiError?: ApiError;
-  data?: unknown;
+  data?: ApiResponseVoidData;
 }
