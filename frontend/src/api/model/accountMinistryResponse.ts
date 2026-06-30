@@ -6,14 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface ThesaurusResponse {
+export interface AccountMinistryResponse {
   accountId?: number;
-  merchant?: string;
-  ministryId?: number;
-  /** @nullable */
-  tagId?: number | null;
-  /** @nullable */
-  tagName?: string | null;
+  id?: number;
+  name?: string;
+  description?: string;
   createdAt?: string;
   createdBy?: string;
   /** @nullable */

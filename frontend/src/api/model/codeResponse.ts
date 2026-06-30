@@ -14,6 +14,8 @@ export interface CodeResponse {
   description?: string;
   createdAt?: string;
   createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
+  /** @nullable */
+  updatedAt?: string | null;
+  /** @nullable */
+  updatedBy?: string | null;
 }

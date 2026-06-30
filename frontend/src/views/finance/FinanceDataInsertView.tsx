@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CellValueChangedEvent, ColDef, ICellRendererParams } from "ag-grid-community";
+import type { CellValueChangedEvent, ColDef, ICellEditorParams, ICellRendererParams } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import { AgGridProvider, AgGridReact } from "ag-grid-react";
-import { useGetAccounts, useGetCodes, useGetMinistries, useGetThesauruses, useUpdateEntries } from "../../api/generated";
+import { useGetAccountMinistries, useGetAccounts, useGetCodes, useGetThesauruses, useUpdateEntries } from "../../api/generated";
 import { COMMON_QUERY_CONFIG } from "../../constants/queryConfig";
 import { createErrorHandler } from "../../utils/errorHandler";
 import z from "zod";
 import { accountDataSchema } from "../../api/zod/accountResponse.zod";
-import { ministryDataSchema } from "../../api/zod/ministryResponse.zod";
 import { codeDataSchema } from "../../api/zod/codeResponse.zod";
 import { useCodesMapping } from "../../hooks/common/useCodesMapping";
 import { useListMapping } from "../../hooks/common/useListMapping";
 import { thesaurusDataSchema } from "../../api/zod/thesaurusResponse.zod";
 import { entryUpdateRequestSchema } from "../../api/zod/entryUpdateRequest.zod";
 import { resolveMutateResult } from "../../utils/resolveMutateResult";
+import { accountMinistryDataSchema } from "../../api/zod/accountMinistryResponse.zod";
 
 type Entry = {
     rowKey: string;
@@ -50,7 +50,7 @@ export const FinanceDataInsertView = () => {
         isLoading: isMinistriesLoading,
         error: ministriesError,
         data: ministriesData,
-    } = useGetMinistries(COMMON_QUERY_CONFIG);
+    } = useGetAccountMinistries(COMMON_QUERY_CONFIG);
 
     const {
         isLoading: isThesaurusesLoading,
@@ -69,7 +69,7 @@ export const FinanceDataInsertView = () => {
         [accountsData?.data],
     );
     const ministriesParsed = useMemo(
-        () => z.array(ministryDataSchema).safeParse(ministriesData?.data),
+        () => z.array(accountMinistryDataSchema).safeParse(ministriesData?.data),
         [ministriesData?.data],
     );
     const thesaurusesParsed = useMemo(
@@ -114,6 +114,19 @@ export const FinanceDataInsertView = () => {
     const entryTypeCodeMap = useCodesMapping(entryTypeCodes);
     const accountMap = useListMapping(accounts, "id", "name");
     const ministryMap = useListMapping(ministries, "id", "name");
+    const ministriesByAccountId = useMemo(() => {
+        const map = new Map<number, number[]>();
+
+        ministries.forEach((ministry) => {
+            if (ministry.accountId == null || ministry.id == null) return;
+
+            const ministryIds = map.get(ministry.accountId) ?? [];
+            ministryIds.push(ministry.id);
+            map.set(ministry.accountId, ministryIds);
+        });
+
+        return map;
+    }, [ministries]);
 
     const [rows, setRows] = useState<Entry[]>([
         createEmptyRow(),
@@ -150,12 +163,13 @@ export const FinanceDataInsertView = () => {
             // 시소러스 적용여부 확인
             const shouldApplyThesaurus = ["entryType", "accountId", "connection"].includes(params.column.getColId());
             
-            // toSave적용 및 수입선택시 데이터 삭제 및 시소러스 적용
+            // toSave적용 및 소비부처 초기화 및 시소러스 적용
             const nextRows = prev.map((row) => {
                 if(row.rowKey !== params.data?.rowKey) return row;
                 const isInc = params.column.getColId() === "entryType" && row.entryType === "inc";
+                const isAccountId = params.column.getColId() === "accountId";
                 const toSaveRow = { ...row, 
-                    ministryId: isInc ? undefined : row.ministryId,
+                    ministryId: isInc || isAccountId ? undefined : row.ministryId,
                     tagName: isInc ? undefined : row.tagName,
                     toSave: true,
                 };
@@ -271,7 +285,11 @@ export const FinanceDataInsertView = () => {
             headerName: "소비부처",
             editable: (params) => params.data?.entryType === "exp",
             cellEditor: "agSelectCellEditor",
-            cellEditorParams: { values: Array.from(ministryMap.keys()), },
+            cellEditorParams: (params: ICellEditorParams<Entry>) => ({
+                values: params.data?.accountId
+                    ? ministriesByAccountId.get(params.data.accountId) ?? []
+                    : [],
+            }),
             valueFormatter: ({ value }) => ministryMap.get(value) ?? "선택",
             cellClassRules: { 
                 "text-gray-400": (params) => params.value == null || params.value === "", 
@@ -300,7 +318,7 @@ export const FinanceDataInsertView = () => {
                 );
             },
         },
-    ], [entryTypeCodeMap, accountMap, ministryMap, removeRow]);
+    ], [entryTypeCodeMap, accountMap, ministryMap, ministriesByAccountId, removeRow]);
 
     return (
         <div>

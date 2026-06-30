@@ -27,6 +27,7 @@ import type {
 
 import type {
   AccountUpdateRequest,
+  ApiResponseListAccountMinistryResponse,
   ApiResponseListAccountResponse,
   ApiResponseListBankResponse,
   ApiResponseListCodeResponse,
@@ -1397,6 +1398,99 @@ export const invalidateGetAccounts = async (
   ): Promise<QueryClient> => {
 
   await queryClient.invalidateQueries({ queryKey: getGetAccountsQueryKey() }, options);
+
+  return queryClient;
+}
+
+
+
+export const getAccountMinistries = (
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ApiResponseListAccountMinistryResponse>(
+      {url: `/api/account/get_account_ministries`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+
+
+export const getGetAccountMinistriesQueryKey = () => {
+    return [
+    `/api/account/get_account_ministries`
+    ] as const;
+    }
+
+    
+export const getGetAccountMinistriesQueryOptions = <TData = Awaited<ReturnType<typeof getAccountMinistries>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAccountMinistriesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAccountMinistries>>> = ({ signal }) => getAccountMinistries(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: Infinity, refetchOnWindowFocus: false,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAccountMinistriesQueryResult = NonNullable<Awaited<ReturnType<typeof getAccountMinistries>>>
+export type GetAccountMinistriesQueryError = unknown
+
+
+export function useGetAccountMinistries<TData = Awaited<ReturnType<typeof getAccountMinistries>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountMinistries>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountMinistries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAccountMinistries<TData = Awaited<ReturnType<typeof getAccountMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAccountMinistries>>,
+          TError,
+          Awaited<ReturnType<typeof getAccountMinistries>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAccountMinistries<TData = Awaited<ReturnType<typeof getAccountMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAccountMinistries<TData = Awaited<ReturnType<typeof getAccountMinistries>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAccountMinistries>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAccountMinistriesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+export const invalidateGetAccountMinistries = async (
+ queryClient: QueryClient,  options?: InvalidateOptions
+  ): Promise<QueryClient> => {
+
+  await queryClient.invalidateQueries({ queryKey: getGetAccountMinistriesQueryKey() }, options);
 
   return queryClient;
 }
