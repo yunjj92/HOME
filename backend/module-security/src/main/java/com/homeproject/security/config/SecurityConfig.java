@@ -2,6 +2,7 @@ package com.homeproject.security.config;
 
 import com.homeproject.security.jwt.JwtAuthenticationFilter;
 import com.homeproject.security.jwt.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,13 @@ public class SecurityConfig {
                 // 3. 세션 정책: Stateless 설정
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // 로그인 검증
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                        })
                 )
 
                 // 4. 인가(Authorization) 설정

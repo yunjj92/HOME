@@ -9,6 +9,7 @@ import com.homeproject.business.common.CommonCommandService;
 import com.homeproject.business.common.CommonQueryService;
 import com.homeproject.business.common.dto.CodeParam;
 import com.homeproject.business.common.dto.TypeParam;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,63 +53,47 @@ public class CommonController {
 
     @GetMapping(value = "/get_codes")
     public ApiResponse<List<CodeResponse>> getCodes(@RequestParam(required = false) Integer typeId) {
-        try {
-            return ApiResponse.success(
-                    commonQueryService.getCodeList(typeId)
-                            .stream()
-                            .map(CodeResponse::from)
-                            .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                commonQueryService.getCodeList(typeId)
+                        .stream()
+                        .map(CodeResponse::from)
+                        .toList()
+        );
     }
 
     @GetMapping(value = "/get_types")
     public ApiResponse<List<TypeResponse>> getTypes() {
-        try {
-            return ApiResponse.success(
-                    commonQueryService.getTypeList()
-                            .stream()
-                            .map(TypeResponse::from)
-                            .toList()
-            );
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(
+                commonQueryService.getTypeList()
+                        .stream()
+                        .map(TypeResponse::from)
+                        .toList()
+        );
     }
 
     @PostMapping(value = "/update_codes")
     public ApiResponse<Void> updateCodes(
-            @RequestBody List<CodeUpdateRequest> codeUpdateRequests
+            @RequestBody @Valid List<@Valid CodeUpdateRequest> codeUpdateRequests
             , Principal principal
     ) {
-        try {
-            List<CodeParam> codeParams = codeUpdateRequests.stream()
-                    .map(request -> toCodeParam(request, principal.getName()))
-                    .toList();
-            commonCommandService.saveCodes(codeParams);
+        List<CodeParam> codeParams = codeUpdateRequests.stream()
+                .map(request -> toCodeParam(request, principal.getName()))
+                .toList();
+        commonCommandService.saveCodes(codeParams);
 
-            return ApiResponse.success(null);
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(null);
     }
 
     @PostMapping(value = "/update_types")
     public ApiResponse<Void> updateTypes(
-            @RequestBody List<TypeUpdateRequest> typeUpdateRequests
+            @RequestBody @Valid List<@Valid TypeUpdateRequest> typeUpdateRequests
             , Principal principal
     ) {
-        try {
-            List<TypeParam> typeParams = typeUpdateRequests.stream()
-                    .map(request -> toTypeParam(request, principal.getName()))
-                    .toList();
-            commonCommandService.saveTypes(typeParams);
+        List<TypeParam> typeParams = typeUpdateRequests.stream()
+                .map(request -> toTypeParam(request, principal.getName()))
+                .toList();
+        commonCommandService.saveTypes(typeParams);
 
-            return ApiResponse.success(null);
-        } catch (Exception e) {
-            return ApiResponse.error(e.getMessage(), "");
-        }
+        return ApiResponse.success(null);
     }
 }
