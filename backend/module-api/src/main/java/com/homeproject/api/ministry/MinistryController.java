@@ -1,5 +1,6 @@
 package com.homeproject.api.ministry;
 
+import com.homeproject.api.ministry.dto.AccountMinistryResponse;
 import com.homeproject.api.ministry.dto.MinistryResponse;
 import com.homeproject.api.ministry.dto.MinistryUpdateRequest;
 import com.homeproject.api.support.wrapper.ApiResponse;
@@ -41,6 +42,16 @@ public class MinistryController {
                 .stream()
                 .map(MinistryResponse::from)
                 .toList()
+        );
+    }
+
+    @GetMapping(value = "/get_account_ministries")
+    public ApiResponse<List<AccountMinistryResponse>> getAccountMinistries() {
+        return ApiResponse.success(
+                ministryQueryService.getAccountMinistryList()
+                        .stream()
+                        .map(AccountMinistryResponse::from)
+                        .toList()
         );
     }
 

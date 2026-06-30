@@ -1,5 +1,6 @@
 package com.homeproject.business.ministry;
 
+import com.homeproject.business.ministry.dto.AccountMinistryResult;
 import com.homeproject.business.ministry.dto.MinistryResult;
 import com.homeproject.db.ministry.MinistriesRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,13 @@ public class MinistryQueryService {
         return ministriesRepository.getMinistryList()
                 .stream()
                 .map(MinistryResult::from)
+                .toList();
+    }
+
+    public List<AccountMinistryResult> getAccountMinistryList() {
+        return ministriesRepository.getAccountMinistryList()
+                .stream()
+                .map(AccountMinistryResult::from)
                 .toList();
     }
 }

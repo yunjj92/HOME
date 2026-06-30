@@ -2,6 +2,7 @@ package com.homeproject.db.ministry.impl;
 
 import com.homeproject.db.jooq.tables.records.MinistriesRecord;
 import com.homeproject.db.ministry.MinistriesRepository;
+import com.homeproject.db.ministry.dto.AccountMinistryProjection;
 import com.homeproject.db.ministry.dto.MinistryCommand;
 import com.homeproject.db.ministry.dto.MinistryProjection;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.homeproject.db.jooq.Tables.MINISTRIES;
+import static com.homeproject.db.jooq.Tables.V_ACCOUNT_MINISTRIES;
 import static com.homeproject.db.jooq.tables.VMinistries.V_MINISTRIES;
 import static org.jooq.impl.DSL.currentOffsetDateTime;
 
@@ -25,6 +27,13 @@ public class MinistriesRepositoryImpl implements MinistriesRepository {
         return dsl
                 .selectFrom(V_MINISTRIES)
                 .fetchInto(MinistryProjection.class);
+    }
+
+    @Override
+    public List<AccountMinistryProjection> getAccountMinistryList() {
+        return dsl
+                .selectFrom(V_ACCOUNT_MINISTRIES)
+                .fetchInto(AccountMinistryProjection.class);
     }
 
     @Override

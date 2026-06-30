@@ -13,8 +13,8 @@ export const accountResponseSchema = z.object({
   description: z.string().optional(),
   createdAt: z.string().optional(),
   createdBy: z.string().optional(),
-  updatedAt: z.string().optional(),
-  updatedBy: z.string().optional(),
+  updatedAt: z.string().nullable().optional(),
+  updatedBy: z.string().nullable().optional(),
 });
 
 export const accountDataSchema = accountResponseSchema;

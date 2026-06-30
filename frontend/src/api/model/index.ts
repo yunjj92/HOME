@@ -7,12 +7,14 @@
  */
 
 export * from './accountManagementResponse';
+export * from './accountMinistryResponse';
 export * from './accountResponse';
 export * from './accountResult';
 export * from './accountUpdateRequest';
 export * from './allowedCredentialResponse';
 export * from './apiError';
 export * from './apiResponseAccountManagementResponse';
+export * from './apiResponseListAccountMinistryResponse';
 export * from './apiResponseListAccountResponse';
 export * from './apiResponseListBankResponse';
 export * from './apiResponseListCodeResponse';

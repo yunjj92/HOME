@@ -9,9 +9,12 @@
 export interface SourceResponse {
   id?: number;
   name?: string;
-  description?: string;
+  /** @nullable */
+  description?: string | null;
   createdAt?: string;
   createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
+  /** @nullable */
+  updatedAt?: string | null;
+  /** @nullable */
+  updatedBy?: string | null;
 }

@@ -5,12 +5,12 @@ export const thesaurusResponseSchema = z.object({
   accountId: z.number().optional(),
   merchant: z.string().optional(),
   ministryId: z.number().optional(),
-  tagId: z.number().optional(),
-  tagName: z.string().optional(),
+  tagId: z.number().nullable().optional(),
+  tagName: z.string().nullable().optional(),
   createdAt: z.string().optional(),
   createdBy: z.string().optional(),
-  updatedAt: z.string().optional(),
-  updatedBy: z.string().optional(),
+  updatedAt: z.string().nullable().optional(),
+  updatedBy: z.string().nullable().optional(),
 });
 
 export const thesaurusDataSchema = thesaurusResponseSchema;

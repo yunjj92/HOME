@@ -5,11 +5,11 @@
  * 백엔드 멀티 모듈 API 명세서
  * OpenAPI spec version: 1.0
  */
+import type { AccountMinistryResponse } from './accountMinistryResponse';
 import type { ApiError } from './apiError';
-import type { ApiResponseVoidData } from './apiResponseVoidData';
 
-export interface ApiResponseVoid {
+export interface ApiResponseListAccountMinistryResponse {
   success?: boolean;
   apiError?: ApiError;
-  data?: ApiResponseVoidData;
+  data?: AccountMinistryResponse[];
 }
