@@ -1,4 +1,4 @@
-package com.homeproject.api.authentication.response;
+package com.homeproject.api.authentication.dto;
 
 import com.homeproject.security.webauthn.result.UserLoginResult;
 import com.yubico.webauthn.AssertionRequest;

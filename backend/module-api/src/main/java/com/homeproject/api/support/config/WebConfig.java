@@ -1,4 +1,4 @@
-package com.homeproject.api.config;
+package com.homeproject.api.support.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,4 +1,4 @@
-package com.homeproject.api.authentication.response;
+package com.homeproject.api.authentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

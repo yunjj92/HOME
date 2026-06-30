@@ -1,4 +1,4 @@
-package com.homeproject.api.exception;
+package com.homeproject.api.support.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

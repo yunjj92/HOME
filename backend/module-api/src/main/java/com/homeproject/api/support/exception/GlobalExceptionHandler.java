@@ -1,6 +1,6 @@
-package com.homeproject.api.exception;
+package com.homeproject.api.support.exception;
 
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

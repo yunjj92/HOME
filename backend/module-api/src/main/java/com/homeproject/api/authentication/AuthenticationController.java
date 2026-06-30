@@ -1,12 +1,12 @@
 package com.homeproject.api.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.homeproject.api.authentication.request.FinalizedRegistrationRequest;
-import com.homeproject.api.authentication.response.LoginResponse;
-import com.homeproject.api.authentication.response.StartRegistrationResponse;
-import com.homeproject.api.exception.ApiErrorCode;
-import com.homeproject.api.exception.ApiException;
-import com.homeproject.api.wrapper.ApiResponse;
+import com.homeproject.api.authentication.dto.FinalizedRegistrationRequest;
+import com.homeproject.api.authentication.dto.LoginResponse;
+import com.homeproject.api.authentication.dto.StartRegistrationResponse;
+import com.homeproject.api.support.exception.ApiErrorCode;
+import com.homeproject.api.support.exception.ApiException;
+import com.homeproject.api.support.wrapper.ApiResponse;
 import com.homeproject.security.jwt.JwtTokenProvider;
 import com.homeproject.security.jwt.RefreshTokenService;
 import com.homeproject.security.jwt.TokenResponse;
