@@ -113,6 +113,13 @@ public class EntryCommandService {
                             tagsMap.get(entryParam.tagName()),
                             requestedBy
                     ));
+                    entriesReferenceRepository.upsertThesaurus(new ThesaurusCommand(
+                            entryParam.accountId(),
+                            entryParam.connection(),
+                            entryParam.ministryId(),
+                            tagsMap.get(entryParam.tagName()),
+                            requestedBy
+                    ));
                 }
                 /*else if(entryParam.toDelete()) {
 

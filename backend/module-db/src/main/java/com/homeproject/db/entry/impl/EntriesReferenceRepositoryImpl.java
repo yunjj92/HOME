@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,6 +47,24 @@ public class EntriesReferenceRepositoryImpl implements EntriesReferenceRepositor
         if(tagsRecord == null) throw new IllegalStateException("Tag insert failed");
 
         return tagsRecord.getId();
+    }
+
+    @Override
+    public void upsertThesaurus(ThesaurusCommand thesaurusCommand) {
+        dsl.insertInto(THESAURUSES)
+                .set(THESAURUSES.ACCOUNT_ID, thesaurusCommand.accountId())
+                .set(THESAURUSES.MERCHANT, thesaurusCommand.merchant())
+                .set(THESAURUSES.MINISTRY_ID, thesaurusCommand.ministryId())
+                .set(THESAURUSES.TAG_ID, thesaurusCommand.tagId())
+                .set(THESAURUSES.CREATED_BY, thesaurusCommand.requestedBy())
+                .onConflict(THESAURUSES.ACCOUNT_ID, THESAURUSES.MERCHANT)
+                .where(THESAURUSES.DELETED_AT.isNull())
+                .doUpdate()
+                .set(THESAURUSES.MINISTRY_ID, thesaurusCommand.ministryId())
+                .set(THESAURUSES.TAG_ID, thesaurusCommand.tagId())
+                .set(THESAURUSES.UPDATED_BY, thesaurusCommand.requestedBy())
+                .set(THESAURUSES.UPDATED_AT, LocalDateTime.now())
+                .execute();
     }
 
     @Override
